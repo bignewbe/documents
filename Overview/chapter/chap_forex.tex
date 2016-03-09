@@ -1,0 +1,190 @@
+\chapter{Forex trader}
+Here we describe algorithm and software design for forex trading
+
+\section{Trade W}
+\subsection{Criteria}
+\subsection{Problems}
+\subsection{Possible solutions}
+
+
+\section{Forex leverage basic}
+\subsection*{Example1: USD account buy USD.JPY without loan}
+\begin{listb}
+# To buy $M$ contracts of USD.JPY (buy USD with JPY) at exchange rate of $r_1$ (jpy/usd) with leverage $L$. We require $J_1=M*r_1$ JPY.  
+# Convert USD into JPY at a conversion rate of $r_1$. We need $U_1=J_1/r_1$ USD.
+# Long $M$ contracts of USD.JPY at $r_1$.  
+# Close position at rate $r_2 = r_1(1+\mu)$. We make profit of $\delta J = M\times (r_2-r_1)=Mr_1\mu$. Substitute  $M=J_1/r_1$ into above equation, we have $\delta J=J_1\mu$, i.e., the new amount of JPY equals to $J_2=J_1(1+\mu)$.
+# Covert JPY back into USD. We have $U_2=J_2/r_2=J_1(1+\mu)/(1+\mu)/r_1 = U_1(1+L\mu)/(1+\mu)$. 
+# Thus $\frac{U_2}{U_1}=\frac{1+L\mu}{1+\mu}$, $\delta U=U_1(L-1)\mu$ and gain $g=\delta U/U_1 = (L-1)\mu$. 
+# Since $r_2-r_1 = pip$, we have $\mu=pip/r_1$. Thus, $g=(L-1)pip/r_1$. Assume $r_1=110$, $L=40$ and $pip=20/100$, we have $g=7.1\%$. Assume $M=40000$, we have $U_1=M/L=1000$.
+# For each transaction we also pay commission of $2$ dollar. We need to pay 4 times commission for above transactions.
+
+\end{listb}
+
+\subsection*{Example1: USD account buy USD.JPY with loan}
+\begin{listb}
+# Buy $M$ contract of USD.JPY (buy USD with JPY) at $r_1$ with leverage $L$. We require a loan of $J_1=M/L*r_1$ JPY.  
+# Close $M$ contract of USD.JPY at rate $r_2 = r_1(1+\mu)$. We make profit of $\delta J = M\times (r_2-r_1)=Mr_1\mu$. Substitute  $M=J_1L/r_1$ into above equation. We have $\delta J=J_1L\mu$.
+# We pay daily interest of the loan at a rate of $r_d=3.5\%/360$ for $d$ days, $interest = J_1*r_d*d$.
+# The overall profit $\delta J=J_1(L\mu-r_dd)$, and $g=L\mu-r_dd=L\times pip/r_1 - r_dd$. Assume $r_1=110$, $L=40$ and $r_d=3.5\%/360$, one day of interest worth around 0.0003 pip. 
+# We pay 2 times commission fee for above transactions.
+\end{listb}
+
+\section{Algorithm buy sell}
+\begin{listb}
+# Entry long
+## Break from resistance.
+## Re-break from resistance.
+## Break from support.
+## Re-break from support.
+
+# Exit long
+## Price drop from high.
+## Consecutive drop.
+## Price drop below support. 
+\end{listb}
+
+\subsubsection{Common Entry Algorithm}
+
+Using short order as example:
+\begin{listb}
+# The buy price of new order cannot be lower than previous neighboring order.
+# The entry point cannot be take profit point. 
+# The maximum hold orders should be within range.
+\end{listb}
+
+\subsubsection{Common Exit Algorithm}
+\begin{listb}
+# Limit the stop price to previous high.
+# Clip the margin to min max.
+\end{listb}
+
+
+\subsubsection{Calculate Initial Stop Price}
+\begin{listb}
+# For non-buyback order
+  ## Limit to max loss
+  ## Limit to previous high/low plus break margin. 
+# For buyback order, break margin is zero.
+\end{listb}
+
+\subsection{Resist Bounce With Resist Line Prediction}
+Todo: 
+\begin{listb}
+# Investigate take profit strategy 
+  ## Limit stop for every drop bar? 
+# Investigate initial bid strategy
+# Investigate entry strategy
+  ## Slope
+  ## Distance? 
+  ## Space?  
+\end{listb}
+
+\subsection{Short Double Tops (M)}
+\subsubsection{Entry}
+\begin{listb}
+# Sharp price rise with sufficient magnitude and rise rate
+  ## Rise above a threshold.
+  ## If rise ratio is sufficiently large, magnitude can be smaller. 
+  ## Rise rate larger than previous rise. 
+# M shape detected (maybe 3rd Top detected?)
+\end{listb}
+
+\subsubsection{Take profit}
+\begin{listb}
+# Predictive
+  ## Horizontal support line formed.
+
+# Afterward detection
+  ## New low is formed
+  ## Price drop above threshold
+     ### Current HL drop larger than previous HL drop.
+     ### Single drop is large enough
+     ### Consecutive drop is large enough
+  ## Price retrace above threshold
+  
+# Problem is how to set the retrace margin.  
+\end{listb}
+
+\subsubsection{Update stop price}
+\begin{listb}
+# Whenever new high is formed.
+# Whenever previous low is broken through. 
+# First high should have a larger margin. 
+\end{listb}
+
+
+\subsection{Resist Bounce}
+
+\subsubsection{Entry}
+\begin{listb}
+# Resist line is formed at the recent local max
+  ## NumRecentOfflinePoints is maximally one. 
+  ## Slope is within range.
+# There must be a price rise before resist line. 
+# Check distance from resist line
+  ## The minimum distance from resist line must be larger than threshold.
+  ## If the minimum distance is small, the distance ratio must be small also. 
+# Check space ratio between support points if NumRecentOfflinePoints is not zero.
+# Check room to drop compare to maximum distance
+  ## The current price still has room to drop to the max distance. 
+  ## The drop ratio should be smaller than a threshold
+# Check support line at previous two lows.
+  ## Support line should be parallel to resist line
+  ## Has enough room to drop to the support line. 
+\end{listb}
+
+\subsubsection{Take profit}
+We take profit in following situations:
+
+\begin{listb}
+# If single drop rate larger than largest price change in past a few days. 
+# If consecutive drop rate larger than threshold.
+# If ratio of High-Low drop larger than threshold.
+# If support line parallel to the resit line is formed for non-buyback order
+# If support line is formed for buyback order
+# New low is formed for buyback order.
+\end{listb}
+
+
+\subsubsection{Buy back}
+\begin{listb}
+# Buy back only when new price is higher than previous sold price.
+# When fake low disappears. 
+# When new high is formed. 
+# When EMA5 goes up and down again. 
+# There cannot be support line formed or distance should be large enough.
+\end{listb}
+
+\subsection{Determining trading day based on daily chart}
+\subsubsection{Check whether to trade}
+
+\subsubsection{Double tops at two different scale}
+\subsubsection{Double tops at same scale}
+\subsubsection{Triple tops at same scale}
+
+
+\section{Data}
+We use 1-minute quotes with 5D EMA as the input. Quotes can be captured from screen or from API if available. 
+
+\begin{listb}
+# Raw data
+## Fixed list of certain maximum number of data points. 
+## Each data point taken with 5 seconds interval. 
+# Processed data
+## We use 1 minute quote 
+## We can aslo use 5D EMA on 1 minute data.
+## Decision is based on the local minimum and maximum.
+# On every new raw data
+## Check if we need to calculate 1 minute quote and associated local min/max. 
+## With every new 1-minute quote, run algorithm to determine whether to long/short. 
+\end{listb}
+
+\section{Software desgin}
+\begin{listb}
+# Capture quotes from screen. 
+# Process raw data.
+# For every new processed data, determine entry point.
+# If order is executed, for every new processed data, determine exit point. 
+\end{listb}
+

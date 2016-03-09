@@ -1,0 +1,41 @@
+
+14:30 21:00 AMEX American Stock Exchange
+08:00 16:40 Euronext  Amsterdam Stock Exchange
+08:26 15:05 ASE Athens Stock Exchange
+23:50 06:12 ASX Australia Stock Exchange
+Berlin Stock Exchange
+08:00 16:30 Euronext  Brussels Stock Exchange
+Cairo Stock Exchange
+CBOE When Trading NASDAQ Global Select Market
+Chicago Board Options Exchange
+07:00 21:00 Frankfurt Frankfurt Stock Exchange
+Istanbul Stock Exchange
+Jakarta Stock Exchange
+Johannesburg Stock Exchange
+Kuala Lumpur Stock Exchange
+08:00 16:30 London    London Stock Exchange
+08:00 16:00 Spain Madrid SE C.A.T.S.
+Midwest Stock Exchange
+Milan Stock Exchange
+Munich Stock Exchange
+14:30 21:00 Newyork Nasdaq
+03:45 10:00 Mumbai National Stock Exchange of India
+14:30 21:00 Newyork New York Consolidated
+14:30 21:00 Newyork New York Stock Exchange
+22:00 05:00 NZSX    New Zealand Stock Exchange
+08:00 15:30 Norway Oslo Stock Exchange
+OTC BB
+OTC Markets Group
+OTC Markets Group - US Other OTC and Grey Market
+08:00 16:30 France Paris Stock Exchange
+Philadelphia Stock Exchange
+01:30 07:30 PSE  Philippine Stock Exchange
+Russian Trading System (Paufor)
+08:00 16:30 Sweden Stockholm Stock Exchange
+08:00 16:30 Swiss  Swiss Exchange
+Tel Aviv Stock Exchange
+14:30 21:00 Toronto Toronto Stock Exchange
+TSX Venture Exchange
+Vienna Stock Exchange
+Xetra
+

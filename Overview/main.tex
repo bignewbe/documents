@@ -1,0 +1,166 @@
+%\documentclass[11pt,openright,final,twoside]{memoir}
+%\documentclass[9pt]{article}
+\documentclass[9pt]{mybook}
+%
+% Used Packages
+%
+\usepackage{float}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{lscape}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{times}
+\usepackage{wrapfig}
+\usepackage{bm}  % bold math
+\usepackage{subfigure}
+%\usepackage[named]{algo}
+\usepackage{varioref}
+\usepackage{fancyheadings}
+\usepackage[dutch,english]{babel}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{fancybox}
+\usepackage{pseudocode}
+\usepackage{enumitem}
+\usepackage{wrapfig}
+\usepackage{nomencl}
+\usepackage[style=long,nonumberlist]{glossaries}
+\usepackage[sharp]{easylist}
+
+%Font
+\usepackage[T1]{fontenc}
+\usepackage{charter}
+\usepackage[expert]{mathdesign}
+%\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[hidelinks]{hyperref}
+
+%\newtheorem{Discussions}{Discussions}
+%\def\argmin{\mbox{\rm{argmin}}}
+\newcommand{\B}[1]{\mathbf{#1}}        % boldface characters for vectors and matrices
+\newcommand{\BH}[1]{\mathbf{\hat{#1}}} % 
+\newcommand{\BO}[1]{\mathbf{\overline{#1}}} % 
+\newcommand{\T}{\top}                  % 
+\newcommand{\fig}[1]{Fig.~\ref{#1}}        
+\newcommand{\eq}[1]{Eq.~(\ref{#1})}        
+
+\newcommand{\counter}[2]{#1 #2}
+
+%\newcommand{\blista}{\begin{easylist}
+%\ListProperties(Space=0cm,Space*=0cm,Hide2=1,Numbers2=l,Mark2={)},Hide3=10,Start1=1,Style1*=\bfseries,Style1**=\bfseries,Style3*=$%%\diamond$, Margin=0cm,Progressive=0.5cm,Align=0.5cm,Hang=true)}%Margin2=1.5cm,Margin3=2cm,CtrCom3=\fbox)}
+%\newcommand{\elista}{\end{easylist}}
+%\newenvironment{lista}
+%{\begin{easylist}
+%\ListProperties(Space=-0.05cm,Space1*=-0.2cm,Space2*=-0.2cm,Hide2=1,Numbers2=l,Mark2={)},Hide3=10,Start1=1,Style1*=
+%\bfseries,Style1**=\bfseries,Style3*=$\diamond$, Margin=0cm,Progressive=0.5cm,Align=0.5cm,Hang=true)\noindent\ignorespaces}
+%{\end{easylist}}
+
+\newenvironment{listb}
+{\begin{easylist}
+\ListProperties(CtrCom1=\counter{})
+\ListProperties(Space2*=-0.2cm,Space3*=-0.2cm,Hide2=10,Hide3=10,Start1=1,Style2*=$\bullet$,Style3*=$\diamond$, Margin=0cm,Progressive=0.5cm,Align1=fixed,FinalSpace1=0.2cm,Align2=0.5cm,Align3=0.5cm,Hang=true)\noindent\ignorespaces}
+{\end{easylist}}
+
+
+%\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+%\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\newcommand{\sfbold}[1]{{\fontfamily{phv}\selectfont \textbf{#1}}}
+\newenvironment{cmd}{\begin{verse} \small \tt \$}{\end{verse}}
+
+% add = sign in the list of abbreviations:
+\renewenvironment{theglossary}
+  {\begin{longtable}{l@{ = }p{\glsdescwidth}}}
+  {\end{longtable}}%
+\renewcommand{\glsgroupskip}{}
+
+\newacronym{asap}{ASAP}{As Soon As Possible}
+\newacronym{ps}{PS}{Post Script}
+
+\newenvironment{correct}
+{\noindent\ignorespaces}
+{\par\noindent\ignorespacesafterend}
+
+
+%
+% Page dimensions
+%
+\paperwidth=169mm%
+\paperheight=245mm%
+\oddsidemargin=0mm%
+\evensidemargin=0mm%
+\voffset=-1cm%
+\topmargin=8mm%
+\headheight=12pt%
+\headsep=0.8cm%
+\textheight= 19.5cm %
+\textwidth= 13cm
+\renewcommand{\baselinestretch}{1.02}
+\addtolength{\parskip}{+0.2cm}
+
+\subfigcapskip=0pt
+%
+% Other settings (For a description about the "fancyheadings" package
+% see "The LaTeX companion" and/or the article by Piet van Oostrum
+% "Page headers and footers in LaTeX".
+%
+\parindent=18pt
+
+\makeglossaries
+
+% Create an index (if no index is wanted remove the \makeindex command}
+\makeindex
+\makenomenclature
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%\include{chapter/title}
+
+\pagestyle{empty}
+\selectlanguage{english}
+\bibliographystyle{plain}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Create the cover page
+%\input{chapter/title}
+%\input{chapter/summary_en_v2}
+%\input{chapter/summary_dutch}
+%\input{chapter/abreviation}
+
+\pagestyle{fancyplain}
+\cfoot{}
+\pagenumbering{roman}
+\addtocounter{page}{0}
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\pagenumbering{arabic}
+\input{chapter/chap_intro}
+\input{chapter/chap_knowledge}
+\input{chapter/chap_plan}
+\input{chapter/chap_forex}
+\input{chapter/chap_screener}
+%\input{chapter/chap_screener_algorithm}
+\input{chapter/chap_screener_design}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\appendix
+%\input{chapter/appendix_A}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{IEEE}
+\bibliography{../publication/ref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\input{chapter/acknowledgement}
+%\input{chapter/biography_v2}
+
+\end{document}

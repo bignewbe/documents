@@ -1,0 +1,53 @@
+\chapter{Stock screener software design}
+\label{chap:design}
+
+This chapter describes the software design to realize the screening algorithms presented in Chap~\ref{chap:screener}. 
+
+\section{Downloading stock quotes}
+\section{Downloading financial data}
+\subsection{Reuters financial data}
+\subsection{Google financial data}
+Google provides quarterly and yearly reports for many companies. This section describes how to download those reports. 
+
+\begin{listb}
+\ListProperties(CtrCom1=\counter{Step})
+%\ListProperties(Style1=NA)
+# Download original table as string
+  ## quarterly data
+     ### income statement, cash flow, balance sheet
+     ### one column corresponds to one quarter with end date
+     ### keep a fixed number of quarters for each stock
+# Convert string table to numerical table
+# Ways to compute financial metrics
+\end{listb}
+
+\subsubsection{Data structure}
+
+
+\section{TradeKing server}
+
+\section{Binary serializer and object comparer}
+Features: 
+\begin{listb}
+\ListProperties(CtrCom1=\counter{})
+%\ListProperties(Style1=NA)
+# They support recursive data structure
+# They support IList, IEumerable, IDictionary, Array, KeyValuePair and HiPerSerializable Class
+\end{listb}
+\vspace{0.1cm}
+\noindent The following are steps:
+\begin{listb}
+\ListProperties(CtrCom1=\counter{Step})
+# A central dispatcher checks the type and assign appropriate type serializer for the input objet.
+# The individual serializer unpacks the input object one level deeper and handle it back to central dispatcher.
+# The above process continues until the object is serializied either in the central dispatcher or individual serializers. 
+\end{listb}
+
+\section{Design of algorithm~1}
+\subsection{Data flow}
+\subsection{Subsystems and interfaces}
+\subsection{User interface}
+\subsection{Diagnostic}
+\subsection{Considered alternatives}
+
+

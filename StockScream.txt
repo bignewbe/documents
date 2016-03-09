@@ -1,0 +1,43 @@
+1. Load Userprofile from mongodb
+   a. when user log in
+   b. when session start 
+
+2. ForgotPassword => Send Email link => confirm email sent => click email link => reset password => Confirm password reset
+
+ 
+ //remove
+ ForgotPasswordConfirmation
+         Please check your email to reset your password.
+
+ ResetPasswordConfirmation 
+         Your password has been reset. Please @Html.ActionLink("click here to log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+
+SELECT_W		 
+
+"halfsize1":
+"halfsize2":
+"price": 
+"volume":		 
+	
+//Group1
+"rise1": none
+"drop1": none
+"retrace": k > 0.2
+
+//Group2
+"rise2": none
+"drop2": none
+"ratio1": k > 0.5     //ratio1 = drop2 / rise2
+"ratio2": none        //ratio2 = rise2 / drop1
+
+//L1
+"seg1 duration": k > 10 and k < 120  (days)
+"seg1 rate": k > -0.001 and k < 0.1  
+
+//L2
+"seg2 duration": k > 10 and k < 120
+"seg2 rate":
+
+
+
+		 

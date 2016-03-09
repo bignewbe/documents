@@ -1,0 +1,60 @@
+\chapter{Introduction}
+\label{chap:intro}
+
+This chapter gives a introduction of the project including products, document structure, process control, etc.
+
+\section{Document tree}
+
+Below is an overview of the document tree that is used in the project:
+\begin{listb}
+# Product backlog and road map (company wide).
+# Requirement document for each product.
+	## Standing from the user point of view
+	## Describe features, use cases, performance, etc. 
+# Algorithm document.
+	## Intelligence to realize the requirement abstractly.
+	## Data needed should be described here.
+# Design document (can be in multiple level).
+    ## describe subsystems, interfaces, data flow, technology, diagnostic, etc.
+	## Balance flexibility/cost/time/robust/etc
+	## Balance between complexity/flexibility 
+# Code comment. 
+    ## Describe the detailed and low-level design of class, function, variable, etc.
+    ## Is also one kind of design document.
+# Test document.
+    ## Describe test plan and test case to test software functionality and to verify requirements. 
+    ## Include unit test to test software functionality
+    ## Include progression and regression tests to verify requirements are met. 
+# Development process document for progress tracking/communication/etc.
+	## Methodologies: scrum, water fall, etc
+	## Tools such as PERT/excel/etc are useful
+\end{listb}
+
+\section{Products}
+
+
+\begin{listb}
+\ListProperties(CtrCom1=\counter{\textbf{Product}})
+%\ListProperties(Style1=\bfseries)
+# Command line interactive trading system 
+  ##	Allow user to view/create/cancel orders using command line
+  ##	Manage activity history
+# Offline stock screener (with three sub-products)
+  ## Screening using historical quotes
+     ### Break over resist
+     ### Bounce from support
+     ### Trend       
+  ## Screening using historical financial
+     ### Value 
+     ### Financial strength
+     ### Grow 
+     ### Sentiment  
+  ## Screening using events/news/economic indicators 
+     ### Predict trend based on financial indicators/event 
+# Automated online stock monitor
+  ## Submit/cancel order based on real time quote info
+     ### Only sell a stock only if the price falls below stop price longer than a specified time
+# Automated online stock screener
+  ## Screening stock using real time quotes
+# Trading simulator, allows user to test their strategies
+\end{listb}

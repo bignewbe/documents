@@ -1,0 +1,53 @@
+
+===layer3
+EReader:
+     1. parent    (ELcientSocket)
+	 2. tcpReader (EclientSocket.tcpClientStream)
+
+===layer2	 
+EClientSocket: provides functions to send/receive messages/commands to/from TWSo
+     1. EReader
+	 2. tcpClient
+	 3. tcpClientStream
+	 4. tcpWriter
+	 5. EWrapper: interfaces to present messages to UI; initialized during construction by assigning IBClient to it. 
+	 
+===layer1
+IBClient: EWapper (interface)
+     1. EClientSocket
+	 2. parentUI
+
+===layer0
+DataManger: 
+     1. IBClient
+	 2. uiControl
+	 
+HistoricalDataManager: DataManager	 
+     1. DataGridView
+
+a) Connect: EClientSocket.eConnect
+   1) create TcpClient, tcpWriter and tcpReader (EReader) => connection attempted here
+   2) check server version
+   3) start EReader message loop
+
+b) HistoricalDataManger.AddRequest -> IBClient.EClientSocket.tcpWriter write to underlying stream (tcpClientStream) -> EReader.ReadAndProcessMessages thread
+   constantly reads from EReader.tcpReader -> and triggers EReader.HistoricalDataEvent -> parent's EWrapper interface is called to process the data
+   note1: EClientSocket's EWrapper interface is passed from IBClient during construction
+   note2: EReader and EClientSocket are coupled via tcpClientStream which is passed to EReader during construction
+   
+c) EReader's message loop:
+   1) EReader: read message type
+   2) EReader:Delegate message type to ProcessIncomingMessage
+   3) EReader:ProcessIncomingMessage delegate message type to invidual Event (e.g. ManagedAccountsEvent)
+   4) EReader:Event read further message from network stream and call parent's EWrapper interface to handle the message
+   5) EClientSocket's EWrapper interface are passed from IBClient during construction
+   6) IBClient EWrapper interface construct corresoponing Message and call its ParentUI's HandleMessage function to UpdateUI
+   7) App: UpdateUI update the UI based on the message type
+   
+d) AddRequest (realTime_Button_Click)
+   1) Creat Contract from UI inputs (GetMDContract)
+   2) Call individual AddRequest function from different Managers (realTimeBarManager.AddRequest)
+   3) AddRequest clear the UI and call EClientSocket's individual request function (ibClient.ClientSocket.reqRealTimeBars)
+   4) request function construct the paramsList and write the parameters to the network stream from TcpClient
+   
+   

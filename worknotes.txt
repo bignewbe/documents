@@ -1,0 +1,937 @@
+3. SQL
+   a) SELECT s.ID, s.Symbol, i.IndustryID FROM Test.dbo.Stock_financials as s,
+      Test.dbo.Industry_financials as i
+      where s.pc1w > i.pc1w AND s.pc4w > i.pc4w AND s.pc1w > i.pc1w AND s.IndustryID=i.IndustryID
+
+   b) SELECT s.ID, s.Symbol, i.IndustryID, a.MRC FROM Test.dbo.Stock_financials as s,
+      Test.dbo.Industry_financials as i,
+	  Test.dbo.Stock_analyst as a
+      WHERE s.SMRQv1Y > i.SMRQv1Y AND s.SMRQv1Y > 0
+	  AND s.STTMv1Y > i.STTMv1Y AND s.STTMv1Y > 0
+	  AND s.S5YGR > i.S5YGR AND s.S5YGR > 0
+	  AND s.EPSv1YMRQ > i.EPSv1YMRQ
+	  AND s.EPSv1YTTM > i.EPSv1YTTM
+	  AND s.EPS5YGR > i.EPS5YGR
+	  AND a.EPSEQC1 > a.EPSEQ2M1 AND a.EPSEQC1 > 0
+	  AND s.PETTM < i.PETTM AND s.P2FCFTTM < i.P2FCFTTM
+	  AND s.IndustryID = i.IndustryID
+	  AND s.Symbol = a.Symbol
+	  
+	  //Select the IndustryID for a stock
+	  SELECT s.Symbol, p.IndustryID from Test.dbo.Stock_financials as s,
+      Test.dbo.Stock_priceChange as p
+      WHERE s.Symbol = 'ASML' AND s.IndustryID = p.IndustryID AND p.Symbol like 'Ind%'
+	  
+//sort the industry price performance 
+SELECT p.IndustryID, p.NumStock, p.pc1w, p.pc4w, p.pc13w, p.pc26w, p.pc52w, p.pcYTD from
+      Test.dbo.Stock_priceChange as p
+      WHERE p.Symbol like 'Ind%'
+	  ORDER BY pc52w DESC
+
+//select all stocks in a particualr industry
+SELECT s.Symbol from Test.dbo.Stock_financials as s
+      WHERE s.IndustryID = 93
+
+4. The Datetime format have to be set to M/D/yyyy to make the code work! 
+
+SELECT p.Bid, p.DateSelected, p.IndustryID, p.SectorID, p.Symbol, p.Shape, p.DateBuy, p.DateSell, p.StopLoss, p.PriceBuy, p.PriceSell, p.Gain, p.Hold, 
+       p.Len, p.Gain7, p.Gain14, p.Gain30, p.Gain60, p.GainMax, p.HoldMax from
+      Test.dbo.TradedStocks as p
+      --WHERE --p.Shape like '%up4'--AND
+	  --p.Gain <> -1 
+	  --AND p.Bid = 3 
+	  --p.Bid = 2
+	  --AND p.Gain7 > 8
+	  --p.Hold = 1 -- AND p.Gain7 > 0
+	  --p.Symbol = 'PRGX'
+	  ORDER BY p.Gain ASC
+	  
+5) C# reference type: assignment and pass by value = copy of object address
+   C# reference type: pass by reference = pointer to pointer to object
+   
+6) windows 7 activation
+   a) run "slui.exe 4" and you will get 9 strings of 5-digit numbers
+   b) once activation code (win7): 046070 - 538090 - 063216 - 774336 - 387512 - 786300 - 301212 - 033196
+   c) win8 activation code: 089522 313585 021476 161310 223104 040450 283321 727982 
+   
+7) C# out of memory error
+   a) it seems that allocating memory in main thread reduces the chance to have the error
+   b) run "CorFlags.exe assembly" in VS command prompt to show the assembly info such as if it is a 64 bit application etc.
+
+8) C# dictionary: we cannot remove item from a dict in foreach loop
+
+9) C# culture invariant impacts "str to number" conversion. we must make sure each thread uses the same 
+
+10) C# how to implement event in event publisher
+   a) declare event handler: "event EventHandler PreDrawEvent" => needed internally to store customer's event handler
+   b) implement "add" and "remove" event publisher (function) => here the customer's event handler is assigned to or removed from the above declared event handler
+   c) use the internal event handler 
+
+11) install Xwin server for Cygwin  => select Xinit in cygwin installer
+12) change Cygwin HOME directory => edit the HOME in environment variable
+13) Interactive Broker API: https://www.interactivebrokers.com/en/software/api/api.htm
+14) ActiveX: 
+    a) Microsoft technology to build COM object that can be inserted into website using "OBJECT"
+	b) VC++ is normally used to develop the ActiveX control; follow the Wizard
+
+15) TradeKing application 
+Description:	help myself to place/cancel orders more easily
+Owner:	bignewbe
+Email:	imliping@gmail.com
+Phone:	31621464236
+Consumer Key:	YhBBwM1ZOvvlwxeIDZmys6ny8FxQfgMJxI9mkFNS  
+Consumer Secret:	J2SKjQnnqykcDawnatmGwJdxPoNsVJrD9JNaNA0l  
+OAuth Token:	G3wz3ZN1q1aC0H2Tc3zhSZVaYa1F2M7U4t465FP8  
+OAuth Token Secret:	LYbAbv8kChKDlrkxpmyCtLLSrknp3A1KkWQrgFds 	
+
+16) to start a driver manually in windows: 
+   a) Run a cmd.exe as administrator and run the command "sc start npf". here the driver is "npf"
+
+17) Yahoo real time stock quote API: 
+
+18) windows run BBB.exe as administrator: 
+    a) runas /profile /user:AAA “C:\programs\BBB.exe”  and press “Enter”
+	b) type the password for user AAA
+
+19) check if UDP port 1434 on SQL server "ping-PC" is responsive:
+    a) PortQry.exe -n ping-PC -p UDP -e 1434
+	b) UDP port 1434 is used to enquire about the server configuration via SQL server browser, which must be active in services. 
+
+20) C# properties vs fields
+    a) properties provides an additional layer of protection of the class data (e.g. we can easily change the boundary later on via get and set)
+	b) additional method codes are added automatically by complier for the get and set functions
+
+21) C# attributes
+    a) it is class derived from Attributes
+	b) it inserted data into the assembly metadata (CIL code) that can be queried using reflection
+	c) Obsolete, Service, TestMethod, etc.
+
+22) C# JSON serialize => serialize object into Json
+    var json = new JavaScriptSerializer().Serialize(dic);
+    var nDic = new JavaScriptSerializer().Deserialize(json, typeof(Dictionary<string, object>));
+    Console.WriteLine(json);
+
+23) Windows 7 get SID (Security Identifier):
+   run: ~]$: wmic useraccount get name,sid
+    Name           SID
+    Administrator  S-1-5-21-1979610183-232468902-3886218441-500
+    Guest          S-1-5-21-1979610183-232468902-3886218441-501
+    ping           S-1-5-21-1979610183-232468902-3886218441-1000
+
+24) Windows change file permission denied: (file, permission, security, properties, SID)
+   a) run cmd as administrator
+   b) run "TAKEOWN -F directory /R" => this will reset the ownership of the directory to currently logon user; /R make it recursive
+   c) run "icacls directory/ /t /grant Everyone:F" => this will grant Full control to Everyone; /t make it recursive
+   d) go to file explorer and set the file property as you want
+   f) "getfacl file" and "icacls file" can also be used to get user/group/security info about a file/folder
+   
+25) Windows change services and starup programs
+   a) run msconfig.exe
+
+26) Option: 
+   a) buy Call: right to purchase stocks in a given period at a fixed strike price. Profit when stock price rises above the strike price + premium. 
+   b) sell Call: obligation to sell stocks in a given period at a fixed strike price. Profit = premium when stock price fall below the strike price, because in this
+                 case, the option holder will not excercise the option.
+   c) buy Put:   right to sell stocks
+   d) sell Put:  obligation to buy stocks
+
+27) install IronPython module:
+   a) install ironpkg by running in cmd with admin: "ipy ironpkg-1.0.0.py --install"
+   a) enter program files (x86)/ironpython
+   b) type "ironpkg packname (e.g scipy)"
+
+28) show environment variable in windows cmd:
+   a) "set P" will show all variables started with 'P'
+   
+29) install python package using easy_install
+   a) easy_install: install easy_install by downloading ez_install.py and run it; run 'easy_install package'
+   b) pip: download pip-Win_1.6.exe for windows and run it; pip search package => pip install package
+   c) the best way: find exe installer from http://www.lfd.uci.edu/~gohlke/pythonlibs/
+   
+30) Visual studio Compile Debug and Release with different DLL   
+   a) edit csproj project file and set the condition for the ItemGroup containing references:
+         <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+         <Reference Include="MyLib">
+         <HintPath>..\..\Debug\MyLib.dll</HintPath>
+          </Reference>
+         </ItemGroup>
+
+         <ItemGroup Condition="'$(Configuration)' == 'Release'">
+         <Reference Include="MyLib">
+         <HintPath>..\..\Release\MyLib.dll</HintPath>
+         </Reference>
+         </ItemGroup>
+
+31) Visual studio Snippet
+   a) create an snippet file
+   b) open Tools -> Snippet Manager
+   c) import from the Snippet file
+   
+32) Change to IP API
+   a) Add property IsConnected to ClientSocket
+   b) Add OnConnectionChange event to ClientSocket
+   c) Mark Order and OrderComboLeg as serializable
+   
+33) Update chart (invoke) freezes the GUI
+   a) Cause: updating should be done in a separate thread in order to let the Form to respond to invoke. Otherwise, dead lock occurs. 
+
+
+
+1)    find . -name core -type f -print0 | xargs -0 /bin/rm -f
+      Find  files named core in or below the current directory and delete them, processing filenames in such a way that file or directory names containing spaces or newlines are correctly handled.
+
+
+2)    find . -name "*.cpp" -o -name "*.h" | xargs grep -liwC 1 "spiht.h"
+      sed '/.*Default.*:.*/ d'
+      sed 's/Default.*Path/Default/g'
+
+
+3)    find . -name "*.hh" -o -name "*.cpp" -o -name "*.cc" -o -name "*.[cChH]" | xargs etags --m --declarations --ignore-indentation
+
+4) #expand a file to specific size; add space to end of the file
+
+dd if=STF_0822.JPG of=s.img bs=1024 skip=0 seek=500
+
+dd if=s.img of=ss.img bs=1024 skip=500 seek=0
+
+dd if=/dev/null of=ss.img bs=1024 skip=0 seek=10000 count=0
+
+dd if=ss.img of=sss.img bs=1024 skip=0 seek=0 count=1404
+
+
+5) #mount ntfs img 
+ mount -o loop=,offset=32256 /home/liping/hd.img /windows/
+
+
+6) #mount qemu windows partition
+mount -o loop=,offset=32256 /dev/sda1 /windows
+
+7) rsync -avzt --force --delete --delete-excluded --exclude=hd.img --exclude=download/ --exclude=bkp/ --exclude=tmp/ --exclude=temp/ --exclude=sequence/ /home/liping/ liping@131.155.26.30:~/bkp/mbs-pc50/linux/
+
+8) tar xvf *.tar.bz2
+
+9) mknod /dev/kqemu c 250 0
+chmod 666 /dev/kqemu
+/sbin/modprobe kqemu
+
+10) #mount remote filesystem
+shfsmount liping@131.155.26.30:/home/liping/bkp /mnt/remote/
+shfsmount liping@131.155.26.30:/home/archive    /mnt/remote/
+
+11) #create qemu image
+
+qemu-img create -f qcow w2k.img 20G
+
+
+12) #run qemu install w2k
+nice -15 qemu -boot d -cdrom /dev/cdrom -hda /mnt/sda1/w2k.img -enable-audio
+
+13) #cvs import project to cvs repository
+ cvs import -m "<import_comment>" <module_name> <tag> start
+ cvs import -m "Echo added to repository" stock/stock_analysis stock start
+ cvs checkout <module>
+ cvs update: update the files in the local directory to the status of repository 
+ cvs commit: commit the changes to the repository 
+ cvs remove <filename>
+ cvs add <filename>
+
+
+
+14)#boot from cdrom
+ qemu -boot d -cdrom /dev/cdrom -hda /home/liping/hd.img
+ 
+ qemu -boot c -hda /mnt/sda1/hd.img -user-net -cdrom /dev/cdrom -m 256 -enable-audio
+
+15) #locate "fonts" that doesnt contain ". -" and "share"
+locate fonts | grep -v "[.-]" | grep -v "share"
+
+
+16)  find /tmp -name core -type f -print0 | xargs -0 /bin/rm -f
+    # Find  files named core in or below the directory /tmp and delete them, processing filenames in such a way that file or directory names containing spaces or newlines are correctly handled.
+	
+     find . 2>nul | grep dependency.json	=> suppress warning message
+
+17) find . -name "*.cpp" -o -name "*.h" | xargs grep -liwC 1 "spiht.h"
+
+18) #etags
+   find . -name "*.hh" -o -name "*.cpp" -o -name "*.cc" -o -name "*.[cChH]" | xargs etags --m --declarations --ignore-indentation
+
+19) #compiling the programm using libvideogfx
+ g++ -g -o -O00 exam main.cc `libvideogfx-config --cflags --libs`
+
+
+20) make uninstall #uninstall the package
+    make distclean #remove the compiled files
+
+21) #format of the argument using the Unified loader
+ /home/liping/liping/work/viewfile input.avi:start:25:length:50:quarter:crop:10:50:10:50
+
+#macro in .
+=stefen  dir/**.avi agument
+
+22) #compile the source disabling optimization and enable debug
+
+    LDFLAGS="-g"  CXXFLAGS="-O0 -g" ./configure --enable-debug --includedir=/usr/X11R6/include:/home/liping/include:/usr/include
+
+23) #/etc/ld.so.conf
+
+when run 'ldconfig', all the lib paths in the conf file are searched. the SONAME of the searched libs are written into ld.so.cache
+
+24) #Create a shared library: 
+
+        gcc -fPIC -c foo.c bar.c 
+        gcc -shared -o libFooBar.so.1.2 -Wl,-soname="libFooBar.so.1" foo.o bar.o 
+        gcc -o your_app main.o -L. -lFooBar 
+
+    (Replace "gcc" with "g++" if it's a C++ lib you're building.) 
+
+25) #Create a static library (or "archive"): 
+
+        ar -r libFooBar.a foo.o bar.o 
+        gcc -o your_app main.o libFooBar.a 
+
+
+26) ls | grep -v ".tex" | xargs rm
+    #delete all the files in current directory, whose file names do not contain ".tex"
+
+27) # assign the version numbers of all files in cvs 
+    cvs commit -r 3.0
+    # tag the file
+    cvs tag rel-1-0 back.cpp
+    # tag all files
+    cvs tag rel-1-0 . 
+    # checkout specific version
+    cvs checkout -r rel-1-0 back.cpp
+    # move the tag 'harris-rel-1-0' of 'mian_harris.cpp' from old version to v1.6
+    cvs tag -r 1.6 -F harris-rel-1-0 main_harris.cpp    
+    # delete the tag
+    cvs tag -d rel-1-0 test.cpp
+    # add a new tag 'rel-2-0'
+    cvs tag -r rel-1-0 rel-2-0 test.cpp
+    #remote cvs server
+    cvs -d :ext:liping@131.155.26.30:/home/liping/cvsroot co stock
+
+# checkout version 'harris-rel-1-0' from module 'linux_src'
+cvs co -r harris-rel-1-0 linux_src/.
+cd linux_src
+cvs co -r harris-rel-1-0 .
+
+28) #list the module in the memory
+    lsmod
+
+29) # load the module into memory 
+    modprobe nvidia
+or add the module to /etc/modules
+
+30) # Dirk read image
+  a) Grey scale image: file_mxn.grey
+  b) YUV image: file_mxn.yuv
+  c) read multiple images: Setinput ("pic%03d.jpg")
+
+
+
+31) file script: changing file extenstion
+echo
+echo "chaging all files in diretory: " $1 
+echo "with extension: " $2 
+echo "to extension:" $3
+echo
+
+if [ -d $1 ]; then
+    echo $1;
+    cd $1;
+    path=`pwd`;
+    echo $path;
+    for dfile in *$2; do	
+	if [ -f $dfile ]; then
+	    fname=${dfile#$path/} # parameter expansion used to get filename without path
+	    echo $fname;
+	    name=`basename $fname $2`
+	    echo $name$3;
+	    mv $fname $name$3
+	fi
+    done
+    cd -;
+fi
+
+echo 
+echo "done!"
+echo
+
+32) C++: 
+error: 'const clRect' as 'this' argument of 'bool clRect::Check_in_rect(T, T) [with T = int]' discards qualifiers
+solution: add 'const' to the end of the function decalaration
+
+
+33) #compress a directory using tar
+tar -cvzf rate_control_h264.tar.gz --exclude '*.OPJ' --exclude '*.dat' --exclude '*.txt' rate_control_h264/
+
+
+34) #find all the files in current directory whose size is over 10M, write the file names in 'big.txt'
+    find . -size +10M -fprintf big.txt '%-10s %p\n'
+
+35) Create a dynamic library
+
+ a. create the object file:  g++ -fPIC -g -c -Wall matrix.cpp  -I../inc/ -I/usr/X11R6/include -I/home/liping/sys/include -I/usr/include -I/home/liping/sys/StatPack -I/usr/lib/glib-2.0/include/  -I/usr/include/glib-2.0/ -L/home/liping/sys/lib -lvideogfx -ljpeg -lpng -lz -lm -L/usr/X11R6/lib -lXext -lX11 -lXv -L/usr/lib -lgsl -lgslcblas -lm  -L/home/liping/sys/StatPack -lStatPack -L/usr/lib -lgts -lglib-2.0
+
+ b. link the object files: g++ -shared -Wl,-soname,libmatrix.so.1 -o libmatrix.so.1.0.1 matrix.o general.o -lc
+
+ c. update the /etc/lib.so.cache by runing: ldconfig -n directory_with_shared_libraries
+
+ d. can also be used by setting the LD_LIBRARY_PATH or by -L 
+
+
+36) #create static library: 
+
+      ar rcs my_library.a file1.o file2.o
+
+37) #to check the functions available in a library
+    nm libmatrix.a
+
+38) #CVS
+    cvs update -r branch #update to branch
+    cvs update -A        #update to the main branch
+    cvs update -j branch #merge the branch into the main branch; make sure main branch is in the current directory
+    cvs tag release      #tag all the files in curent status to release
+    cvs co -r release module #check out the module of release    
+    cvs tag -r 1.6 -F harris-rel-1-0 main_harris.cpp     #move the tag 'harris-rel-1-0' of 'mian_harris.cpp' from old version to v1.6
+    cvs tag -d rel-1-0 test.cpp                          #delete the tag
+    cvs tag -r rel-1-0 rel-2-0 test.cpp                  #add a new tag 'rel-2-0'
+
+         $ cvs tag -b EXPR1              #create a branch EXPR1
+         $ cvs update -r EXPR1           #move the working directory to brach EXPR1
+         $ cvs commit                    #commit the working directory to repository
+    
+    cvs admin -kb filename               #make the file binary so that no merge will happen
+
+
+39) #remove all the word in the file
+
+    sed '/.*Default.*:.*/ d'
+    sed 's/Default.*Path/Default/g'
+
+    sed 's/[a-zA-Z]*//g' <f1 >f2
+    #remve all words starting with ":", "!" or "="
+    sed 's/[:!=]*//g'    <f1 >f2
+
+    #Deleting all lines that start with a "#" is easy: 
+    sed '/^#/ d' 
+
+    #Removing comments and blank lines takes two commands. The first removes every character from the "#" to the end of the line, and the second deletes all blank lines: 
+    sed -e 's/#.*//' -e '/^$/ d' 
+
+    #A third one should be added to remove all blanks and tabs immediately before the end of line: 
+    sed -e 's/#.*//' -e 's/[ ^I]*$//' -e '/^$/ d' 
+
+    #remove the blank before the line 
+    sed 's/[ ]*//' <f1 >f2
+
+    #remove blank lines 
+    sed -e '/^$/ d' <f1 >f2 
+    
+    # 86) sed: repace part of file name with some other string 
+    for f in *; do nf=`echo $f | sed 's/235955/235959/g'`; echo $f; mv $f $nf; done;
+    for f in *; do nf=`echo $f | sed 's/215955/235959/g'`; if [ $f != $nf ]; then mv $f $nf; fi; done;
+
+40) #matlab
+
+surf(X,YY,Z1)
+axis([0 10 0 80 0 100])
+view([1,1,1])
+axis normal
+
+text('Interpreter','latex', 'String','$$\pi\times DoD=4^o$$','Position',[0.5,0.5], 'FontSize',16, 'Rotation', 90)
+
+
+
+41) apt-cache search package
+#search package
+
+
+42) ssh password
+1) ssh-keygen -t rsa  #generate pub key in local machine in (~/.ssh/id_rsa.pub)
+2) copy the key to the remote computer to (~/.ssh/authorized_keys)
+
+
+43) #transcode campus2.avi into camp2.avi; -b means the given bit rate; -psnr shows the psnr of the transcoded video
+    ffmpeg -i campus2.avi -b 20000 -psnr -deinterlace camp2.avi
+
+44) Steps to solving this problem
+
+Once the release node that is pointing to the old tag has been temporarily modified, you can follow these steps to remove the tag and create a branch from the same set of files and revisions. All earlier revisions history will be kept. We will assume Drupal 4.7 below.
+
+   1. Make sure the release node is no longer pointing to your old tag (see above).
+   2. cvs checkout -r DRUPAL-4-7 modules/mymodule
+      (get a copy based on the old, non-branch tag)
+   3. cd modules/mymodule
+      (DON'T FORGET THIS!)
+   4. cvs tag -d DRUPAL-4-7
+      (delete the existing, non-branch tag)
+   5. cvs tag -b DRUPAL-4-7
+      (add the new branch tag to the same revisions of the files you've checked out in step #1)
+   6. cvs update -r DRUPAL-4-7
+      (to reset the sticky tag on your workspace to the new branch tag) 
+
+45) cvs update results: 
+
+U file
+The file was brought up to date with respect to the repository. This is done for any file that exists in the repository but not in your source, and for files that you haven't changed but are not the most recent versions available in the repository. 
+P file 
+like U, but the cvs server sends a patch instead of an entire file. These two things accomplish the same thing. 
+A file 
+The file has been added to your private copy of the sources, and will be added to the source repository when you run `cvs commit' on the file. This is a reminder to you that the file needs to be committed. 
+R file 
+The file has been removed from your private copy of the sources, and will be removed from the source repository when you run `cvs commit' on the file. This is a reminder to you that the file needs to be committed. 
+  file 
+The file is modified in your working directory. `M' can indicate one of two states for a file you're working on: either there were no modifications to the same file in the repository, so that your file remains as you last saw it; or there were modifications in the repository as well as in your copy, but they were merged suc- cessfully, without conflict, in your working directory. 
+C file 
+A conflict was detected while trying to merge your changes to file with changes from the source repository. file (the copy in your working directory) is now the result of merging the two ver sions; an unmodified copy of your file is also in your working directory, with the name `.#file.version', where version is the revision that your modified file started from. (Note that some systems automatically purge files that begin with `.#' if they have not been accessed for a few days. If you intend to keep a copy of your original file, it is a very good idea to rename it.) 
+? file 
+file is in your working directory, but does not correspond to anything in the source repository, and is not in the list of files for cvs to ignore (see the description of the -I option). 
+
+
+46) cvs branch
+
+The rtag command can be used to create a branch. The rtag command is much like tag, but it does not require that you have a working copy of the module. See section rtag--Add a tag to the RCS file. (You can also use the tag command; see section tag--Add a symbolic tag to checked out version of RCS file).
+
+cvs rtag -b -r release-1-0 release-1-0-patches tc
+
+The `-b' flag makes rtag create a branch (rather than just a symbolic revision name). `-r release-1-0' says that this branch should be rooted at the node (in the revision tree) that corresponds to the tag `release-1-0'. Note that the numeric revision number that matches `release-1-0' will probably be different from file to file. The name of the new branch is `release-1-0-patches', and the module affected is `tc'. 
+
+
+47) remove space from file name
+   for ifile in *; do ofile=`echo $ifile | sed -e 's/ /_/g'`; echo $ifile; echo $ofile; mv "$ifile" $ofile; done
+   
+   convert image format
+   for if in *.ppm; do echo $if; of=`echo $if | sed -e 's/ppm/eps/g'`; echo $of; convert $if $of; done
+   
+   for if in mvcdata/*.raw; do echo $if; of=`echo $if | sed -e 's/raw/own/g'`; echo $of; view.exe -r 13 -i $if -I $of -w 1024 -g 768 -c 2 -m 420; done
+   
+48) Compile GTS under windows
+   a: install GTK (glib)
+   b: set the environment variable INCLUDE and LIB to:
+      set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\include;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;C:\GTK\include;C:\GTK\include\glib-2.0;C:\GTK\lib\glib-2.0\include;
+      set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\lib;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;C:\GTK\lib;   
+   c: nmake -f makefile.msc (need some midification of makefile.msc: add tribox3.obj to the end of the obj list)
+   d: copy the .lib, .h and .dll to appropriate directories
+   
+49) OpenCV environment
+   Include: C:\OpenCV\cv\include;C:\OpenCV\cvaux\include;C:\OpenCV\cxcore\include;C:\OpenCV\otherlibs\highgui
+   Lib:     C:\OpenCV\lib
+   Link:    cv.lib highgui.lib cvaux.lib cxcore.lib
+   
+   set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\include;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;C:\OpenCV\cv\include;C:\OpenCV\cvaux\include;C:\OpenCV\cxcore\include;C:\OpenCV\otherlibs\highgui
+   set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\lib;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;C:\OpenCV\lib;   
+         
+50) GTS enviroment
+    Include: C:\gts-0.7.6\include
+    Lib:     C:\gts-0.7.6\lib
+    
+51) glib environment
+    Include: C:\GTK\include\glib-2.0;C:\GTK\lib\glib-2.0\include;
+    Lib:     C:\GTK\lib;   
+  
+    set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\include;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;C:\OpenCV\cv\include;C:\OpenCV\cvaux\include;C:\OpenCV\cxcore\include;C:\OpenCV\otherlibs\highgui;C:\GTK\include\glib-2.0;C:\GTK\lib\glib-2.0\include;
+    set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\lib;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;C:\OpenCV\lib;C:\GTK\lib;
+    
+52) Windows DLL search path can be set by the 'path' command
+
+53) msvcr80.dll not found in Debug mode
+    reason: all lib have to be built for debug using /MDd option
+    
+54) manifest file is to indicate which dll the compiler should link with
+
+55) gengetopt:
+    a. generate cmdline .h and .c in linux using "gengetopt"
+    b. in cmdline.c: change the "getopt.h" to "gnugetopt.h"
+    c. add getopt.c and getopt1.c in C:\Program Files\GnuWin32\share\gengetopt to project
+    d. in getopt.c:   change the "getopt.h" to "gnugetopt.h"
+    e. in getopt1.c:  change the "getopt.h" to "gnugetopt.h"; add #include <string.h>
+    
+    
+56) remove space from file name
+   for ifile in *; do ofile=`echo $ifile | sed -e 's/ /_/g'`; echo $ifile; echo $ofile; mv "$ifile" $ofile; done
+   
+
+57) Philips computer complier search path setting
+
+Bin: 
+
+%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;C:\cygwin\bin;C:\Program Files\QuickTime\QTSystem\;%GTK_BASEPATH%\bin;C:\gts-0.7.6\bin;C:\libgsl-1.8\bin;C:\OpenCV\bin;C:\gnuwin32\bin
+
+Include: 
+
+C:\Program Files\Microsoft Visual Studio 8\VC\include;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;C:\GTK\include;C:\GTK\include\glib-2.0;C:\GTK\lib\glib-2.0\include;C:\OpenCV\cv\include;C:\OpenCV\cvaux\include;C:\OpenCV\cxcore\include;C:\OpenCV\otherlibs\highgui;C:\gts-0.7.6\include;C:\libgsl-1.8\include
+
+Lib:
+
+C:\Program Files\Microsoft Visual Studio 8\VC\lib;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;C:\GTK\lib;C:\lib;C:\gts-0.7.6\lib;C:\libgsl-1.8\lib;C:\OpenCV\lib
+
+
+58) "assert" is not executed in Release mode!! do not put anything that need to be run into assert!!!
+
+59) when link debug and non-debug libraries together, there will appear the Error Message: "defaultlib 'library' conflicts with use of other libs;"
+solution: use /NODEFAULTLIB:library
+
+
+60) GSL: error LNK2001: unresolved external symbol _gsl_rng_default
+solution: remember to define GSL_DLL preprocessor macro
+
+
+61) ordering file names from 000 to 999
+ a=0;ext=ppm;for file in *.$ext; do let a=a+1;b=`printf "%03d" $a`; f1=`basename $file .$ext`; f2=$f1.$b.$ext; echo $f2; cp $file $f2; done
+
+62) if libvideogfx fail for reading and displaying image try to resize the image to multiple of 8
+    ./view.bin -r 1 -i %03d.ppm:resize:1024:768 -o teddy.own
+
+
+63) GdiPlus has to be initialized before they can be used
+    	//CWinMaker needs GdiPlus
+	GdiplusStartupInput _gdiplusStartupInput;
+	ULONG_PTR           _gdiplusToken;
+	//Initialize GDI+
+ 	void StartGdiplus ()    {GdiplusStartup  (&_gdiplusToken, &_gdiplusStartupInput, NULL);};
+	//Shutdown GDI+
+	void ShutdownGdiplus () {GdiplusShutdown (_gdiplusToken);};
+
+64) remove ^M in a file
+    sed 's/^M/ /g'  <tip.txt >tip.tmp
+
+65) remove all CVS directories
+    find . CVS | grep CVS | xargs rm -rvf
+
+66) important VC++ project file
+   *.sln = project file
+   *.suo = project configuration file
+   *.ncb = project browse file
+
+
+67) d3dRender.exe: s=medusa;ext=.out;d3dRender.exe -i $s.own:0 -p $s.P$ext -x $s.X$ext -c $s.CC$ext
+
+
+68) reconstruction is not stable when harris threshold is too low=======
+
+69) cvs sticky tag is not a branch, commit fail; solution: 
+
+Make sure the release node is no longer pointing to your old tag (see above). 
+
+cvs checkout -r DRUPAL-4-7 modules/mymodule
+(get a copy based on the old, non-branch tag)
+
+cd modules/mymodule
+(DON'T FORGET THIS!) 
+
+cvs tag -d DRUPAL-4-7
+(delete the existing, non-branch tag) 
+
+cvs tag -b DRUPAL-4-7
+(add the new branch tag to the same revisions of the files you've checked out in step #1) 
+
+cvs update -r DRUPAL-4-7
+(to reset the sticky tag on your workspace to the new branch tag) =======
+   *.ncb = project browse file
+
+70) d3dRender.exe: s=medusa;ext=.out;d3dRender.exe -i $s.own:0 -p $s.P$ext -x $s.X$ext -c $s.CC$ext
+
+71) vc++ 9.0 PATH, in cmd window run: 
+   set PATH=C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN;C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools;C:\WINDOWS\Microsoft.NET\Framework\v3.5;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 9.0\VC\VCPackages;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin;
+   
+   if want to compile project under vc9, set the following directories
+   set INCLUDE=C:\Program Files\Microsoft Visual Studio 9.0\VC\include;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;C:\GTK\include;C:\GTK\include\glib-2.0;C:\GTK\lib\glib-2.0\include;C:\OpenCV\cv\include;C:\OpenCV\cvaux\include;C:\OpenCV\cxcore\include;C:\OpenCV\otherlibs\highgui;C:\gts-0.7.6\include;C:\libgsl-1.8\include;C:\gts-0.7.6\include
+   set LIB=C:\Program Files\Microsoft Visual Studio 9.0\VC\lib;C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;C:\GTK\lib;C:\lib;C:\gts-0.7.6\lib;C:\libgsl-1.8\lib;C:\OpenCV\lib;C:\gts-0.7.6\lib
+
+72) install gengetopt in Cygwin
+   
+73) LNK2005: multiple defined objects
+    a. except in main.cpp, all function implementation should be put in .cpp file;
+    b. template, static funtions should be in .h file
+    
+74) updatedb  --prunepaths='/proc /cygdrive/c/program_disk/cygwin
+ /cygdrive/c/Documents.and.Settings/[^/]*/Local.Settings/Temp
+ /cygdrive/c/Documents.and.Settings/[^/]*/Local.Settings/Temporary.Internet.Files
+ /cygdrive/c/Documents.and.Settings/[^/]*/Local.Settings/Application.Data/Mozilla/Firefox/Profiles/[^/]*/Cache
+ /cygdrive/[^/]*/System.Volume.Information
+ /cygdrive/c/data/System.Volume.Information
+ /cygdrive/c/backup/System.Volume.Information
+ /cygdrive/c/shared/System.Volume.Information
+ /cygdrive/c/program_disk/System.Volume.Information
+ /cygdrive/g
+ /cygdrive/h ?   
+ 
+ updatedb  --prunepaths='/cygdrive/h /cygdrive/q /cygdrive/[^/]*/System.Volume.Information /cygdrive/c/Documents.and.Settings/[^/]*/Local.Settings /cygdrive/c/Documents.and.Settings/[^/]*/Recent /cygdrive/c/Documents.and.Settings/[^/]*/Application.Data'
+ updatedb  --prunepaths='/cygdrive/d/backup /cygdrive/d/Download /cygdrive/d/Entertainment /cygdrive/[^/]*/System.Volume.Information /cygdrive/c/Documents.and.Settings/[^/]*/Local.Settings /cygdrive/c/Documents.and.Settings/[^/]*/Recent /cygdrive/c/Documents.and.Settings/[^/]*/Application.Data'
+ 
+ 
+ 75) a: harris corder detection (TIFM)
+     b: feature point matching  (TIFM)
+     c: 3D reconstruction       (recon.sh)
+     d: obtain motion field     (MRF_MOTION)
+     e: create depth            (MRF_DEPTH)
+
+    note: it is important to add some blank space after the script statement, otherwise the command processor will recognize the 'return' as a command     
+
+ 76) fixed-width number in linux batch file
+     for (( i = 1; i < 100; i++ )); do a=`printf "%03d" $i`; echo $a; done
+     for (( i = 2; i < 379; i++ )); do a=`printf "%03d" $i`; b=cam_mvd_$a; echo $b.own; depth_batch.sh $b; done
+     
+ 77) set the program priority in shell
+     nice.exe -n 15   program.exe [options]  //decrease the cpu priority of program.exe 
+     start.exe /low   program.exe [options]      //start program.exe as low-priority
+     
+ 78) remove part of the filename
+  s=40.25_cam_mvd_001_point2D.bin; a=`echo $s | sed 's/40.25_//g' | sed 's/_point2D.bin//g'`; echo $a;
+  
+  
+  s=house2;n=+132;view.exe -r 4 -i $s.own$n -f $s.feature.w3t50$n -t $s.2frm.match.w3t50$n -s 17
+  s=house2;n=+270+270;TIFM.exe -r 4 -i $s.own$n -f $s.feature.w3t50$n -t $s.2frm.match.tmp -z 140
+      
+  i=3;m1=r1(3*i-2:3*i,:);m2=r2(3*i-2:3*i,:);h=inv(m1)*m2
+  i=3;m1=k1(3*i-2:3*i,:);m2=k2(3*i-2:3*i,:);h=inv(k1)*k2
+  i=3;m1=r1(3*i-2:3*i,:);m2=r2(3*i-2:3*i,:);t1=c1(:,i);t2=c2(:,i);h=t1-inv(m1)*m2*t2
+  
+ 79) convert all PNG file to PDF file in a directory
+  for a in *.png; do b=`basename $a .png`; echo $a; echo $b.pdf; convert $a $b.pdf; done
+    
+ 80) pre-pend text to all files in current folder and all subfolders
+ for f in `find . -name "*.hh" -o -name "*.cpp" -o -name "*.cc" -o -name "*.[cChH]"`; do echo $f; cat /cygdrive/d/home/cvsfile/WinCode/work/filehead.txt $f > tt; mv tt $f; done
+ 
+ 
+ 81) ffmpeg
+ ffmpeg -i /tmp/a.wav -s 640x480 -i /tmp/a.yuv /tmp/a.mpg
+ 
+ H.264 I-frame only Highest Quality Encoding 
+ ffmpeg -i <input_file> -vcodec h264 -cqp 1 -intra -coder ac -an output.mp4 
+
+ 82) Avisynth script
+ 
+ #LoadPlugin("SmoothDeinterlacer.dll")
+ #DirectShowSource("G:\sony\19-02-2009\20090219145407.m2ts", audio=false)
+ #SmoothDeinterlace()
+ ##AssumeTFF().FieldDeinterlace()
+ #LanczosResize(1280,720) #Lanczos (Sharp)
+
+ #load RGB raw format
+ LoadPlugin("C:\Program Files\AviSynth 2.5\plugins\rawsource\rawsource.dll")
+ RawSource("D:\home\cvsfile\WinCode\work\mvcdata\grid\depth.raw",1024,768,"Y8")
+ ConvertToYV12()
+ 
+ #load YUV420 raw format 
+ LoadPlugin("C:\Program Files\AviSynth 2.5\plugins\rawsource\rawsource.dll")
+ RawSource("D:\home\cvsfile\WinCode\work\IJCV\castle\castle_MV2.raw",768,576,"YV12")
+ 
+ #read mp4 video
+ DirectShowSource("D:\video\SANY0001.MP4",fps=60,convertfps=true)
+ ConvertToYV12()
+ 
+ use MeGui to compress into Xvid and x264 file 
+ use VirtualDub to compress into RAW, MPEG2, avi file  (choose setting from the 'compression' menu)
+ 
+ 83) set matlab figure font
+ figure; set(gcf,'defaultaxesfontsize',25);
+ 
+ 84) set matlab tick interval
+ surf(X,Y,Z1); set(gca,'xtick',[0:40:200], 'XTickLabel',[0:40:200])
+
+ 85) regular expression: find string between two strings
+    a) "(?<=\[)(.*?)(?=\])" => find string between []
+    b) @"(?<=_)(\d{10})(?=_\d)";   //find 10 digit between "_"
+    c) @"(?<=\d{10}_\d{4}_\d{10}?)(.*?)$";  //find between preceded string and end of string 
+    
+86) databinding/propertychanged principle: 
+     1) databinding creates a subscription to the property between datasource and binding object; 
+     2) once property is changed, the subsribed delegate is called with the property name; 
+    3) the datasource is searched for the property either to get the value or set the value.
+
+87) get directory structure in windows
+   a) dir /s /b /o:n /ad
+   b) tree 
+
+88) fix visual studio error: may userdata is messed up
+    common7/IDE/devenv /resetuserdata
+  
+89) ASP.NET mvc5
+    1) every request create UserManager, SignInManager and RoleManager before Controller is created
+    2) Install-Package Microsoft.AspNet.Identity.Samples -Pre => install identity 2.0 sample
+	3) SignInManager.PasswordSignInAsync will only succeed if UserName == Email!
+
+90) Mcv5 database migration
+    1) Enable-Migrations => enable migrate ApplicationDbContext database when model changed
+    2) update-database to update ApplicationDbContext and execute the Seed function in Configuration class
+	3) sqllocaldb.exe stop followed by sqllocaldb.exe delete to stop localDb such that we can delete mdf file
+	4) after update-database, we need to restart visual studio to make the dataconnection right.
+	5) another method is through Seed in ApplicationDbInitializer, which is triggered by first time register or log in 
+	6) database error just delete files, close program and start from fresh
+	7) Add-Migration InitialMigrations -IgnoreChanges => This should generate a blank "InitialMigration" file. Now, add any desired changes to the class you want. Once changes are added, run the update command again:
+    8) update-database -verbose => Now the automatic migration will be applied and the table will be altered with your changes
+	9) if migration fails, try to delete entire migration folder and restart whole process including close studio and open again
+	
+91) Entity framwork database migration:
+    1. two types of migration: 
+	    a) via Code First Migration triggered by running update-database in terminal. Since all data are retained in this case, we usually use 
+		   AddOrUpdate to handle exisiting data.
+	    b) via ApplicationDbInitializer,  which is triggered when DbContext is first used, and when model is changed compare with last run. 
+		   Since in this case the table is dropped, we dont have to handle exisiting data.	
+	
+91) Attached mdf file to sql server
+    1) run sql management tool as administrator
+	2) right click Databases and click attach to select mdf file
+	3) to detach: right click the attached database => Task => Detach
+
+92) configure sql server express and iis: http://www.codeproject.com/Articles/674930/Configuring-IIS-ASP-NET-and-SQL-Server
+    1) configure TCP/IP in SQL Server Configuration Manager to allow connection using IP address
+	   a. Protocols for SQLEXPRESS => Enable TCP/IP => Enable Listen All => set TCP Port to 1433 in IP Address
+	2) configure IIS to run IIS using NetworkService identity
+	   a. Root => Authentication => Anonymous Authentication => use Application pool identity
+	   b. Application Pools => set Identity for all items (DefaultAppPool etc.) to NetworkService
+	3) give full permission of the website root directories to NetworkService
+	4) Configure Sql Server management studio to allow access from IIS (NetworkService)
+       a. add NetworkService in new login 	
+	   b. assign it to sysadmin group   
+    5) connectionString =  <add name="DefaultConnection"  connectionString="Data Source=127.0.0.1;Integrated Security=True" providerName="System.Data.SqlClient" />
+	6) Viewing my IIS hosted site on other machines on my network 
+	   a. http://stackoverflow.com/questions/2184013/viewing-my-iis-hosted-site-on-other-machines-on-my-network
+	   b. follow the link to allow incoming calls on port 80 (predefined world wide web service) 
+	
+	7) before publish from visual studio, we need to add application to IIS: Default Web Site -> Add Application, otherwise we will see many assemblies could
+	   not be resolved warnings and deployment fail.
+	
+	References: https://www.youtube.com/watch?v=-ymjT8C-tHc
+	            https://www.youtube.com/watch?v=q7LBgyQwNLc
+				
+				
+	   
+93) test sql server connection: create an empty file with .udl extension and open it
+
+94) set Asp.Net web app to use SSL: http://www.asp.net/mvc/overview/security/create-an-aspnet-mvc-5-app-with-facebook-and-google-oauth2-and-openid-sign-on
+    1) enable SSL in project properties: view => properties window
+	2) copy the SSL URL to Project Properties web tab
+
+95) fix assembly load prolem in visual studio 2015
+    1) error message: Could not load file or assembly 'Microsoft.VisualStudio.JSLS,Version=14.0.0.0 , Culture=neutral , PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.the system can not find the file specified.
+	2) Open a command prompt as administrator or Develop Command prompt 
+    3) CD into C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE (not needed for Develop Command)
+	4) Run devenv /updateconfiguration 
+    5) Run devenv /clearcache	
+
+96) Antiforgery token works only with POST, since it relies on Cookie to send the token
+
+97) serve local json/csv file for webdevelopment:
+    a) in python run: npm install -g http-server
+	b) then, as above, cd into dir containing your some.html and issue: http-server -c-1 
+	   which spins up a nodejs httpd which does a dir listing of your static files visible from :
+	c) open webpage using http://localhost:8080/index.html. json/csv can be loaded in html. 
+	
+98) reference different Debug/Release DLL: You can edit the csproj file manually set the Condition attribute on the ItemGroup containing the reference.
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <Reference Include="MyLib">
+      <HintPath>..\..\Debug\MyLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <Reference Include="MyLib">
+      <HintPath>..\..\Release\MyLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+99) Cygwin Root access 
+    a. create in /usr/bin "sudo" with following content:    cygstart --action=runas "$@"
+	b. make sudo executeable: chmod +x ~/bin/sudo
+	c. "sudo command" will then use root previlige
+
+100) Git:
+     a. clone single branch:  "git clone user@git-server:project_name.git -b branch_name --single-branch /some/folder"
+	 b. view files: git ls-tree --full-tree -r HEAD	 
+	 $ git checkout -b release-1.2 develop: Switched to a new branch "release-1.2" which is created based on develop branch	 
+     $ ./bump-version.sh 1.2: Files modified successfully, version bumped to 1.2.
+     $ git commit -a -m "Bumped version number to 1.2": Bumped version number to 1.2
+	 c. git clone --branch <tag_name> <repo_url>: checkout a tag but we cannot push to repositoryd
+	 d. visualize git log: git log --graph --full-history --all --color --date=short --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%ad %s"
+	 e. git checkout -b branchv1.0 v1.0 => create and checkout branch1.0 based on tag v1.0 
+	 f. git tag -a v1.4 -m "my version 1.4" 
+	 g. git push origin v1.4 => can do not need upstream can push from anywhere
+	 h. git branch -d client => delete branch client
+	 1. git ls-files -m => list modified file
+	 2. git add -u => add all modifed files 
+	 3. git status --porcelain -uno => list modified and staged files but not untracked files
+	 
+	 	 
+
+	 
+101) Msbuild:
+     a. <Target Name="Build">
+          <MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
+          <Csc Sources="@(Compile)" OutputAssembly="$(OutputPath)$(AssemblyName).exe" />
+        </Target>
+        <Target Name="Clean" >
+          <Delete Files="$(OutputPath)$(AssemblyName).exe" />
+        </Target>
+        <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+		=> Add targets to PortableCSharpLib.csproj
+     b. msbuild PortableCSharpLib.csproj /t:build /p:OutputPath=output\  /p:AssemblyName=test => run 'build' target and write targets to 'output\' with test as the name 	
+     c. run C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vsvarsall.bat to set up msbuild enviroment
+	 d. To include MSBuild.Community.Tasks.Targets (install from NuGet): 
+         <PropertyGroup>
+           <MSBuildCommunityTasksPath>E:\Code\build</MSBuildCommunityTasksPath>
+         </PropertyGroup>
+         <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>  
+	 e. To define target to assocate git commit hash with assembly version number:
+        <PropertyGroup>
+          <Major>1</Major>
+          <Minor>0</Minor>
+          <Build>0</Build>
+          <Revision>0</Revision>
+        </PropertyGroup>
+        <Target Name="Version">
+        <GitVersion LocalPath="$(MSBuildProjectDirectory)">
+            <Output TaskParameter="CommitHash" PropertyName="Revision" />
+        </GitVersion>
+        <AssemblyInfo
+            CodeLanguage="CS"
+            OutputFile="Properties\AssemblyInfo.cs"
+            AssemblyTitle="YourAssmblyName"
+            AssemblyDescription="Description"
+            AssemblyCompany=""
+            AssemblyProduct="Productname"
+            AssemblyCopyright="Copyright"
+            ComVisible="false"
+            CLSCompliant="true"
+            AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
+            AssemblyVersion="$(Major).$(Minor).$(Build)"
+            AssemblyFileVersion="$(Major).$(Minor).$(Build)" />
+        </Target>  
+	f.  allow automatic increment of Build and Revision =>  AssemblyVersion="$(Major).$(Minor).*"
+	h. run python script to build project => 
+	    python E:\Code\PythonScript\PythonScript\MsBuild.py -p PortableCSharpLib.csproj -a "/t:GitBuild /p:OutputPath=output /p:Minor=10 /p:Major=2 /p:Configuration=Release"
+
+102) python read file error: json.decoder.JSONDecodeError: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)
+	1. microsoft insert UTF-8 BOM character at the beginning of utf-8 file
+    2. open the file using utf-8-sig instead => with open(dependencyFileName, 'r', encoding='utf-8-sig') as f:
+     
+103) MVC entityframework data model:
+    a. use virtual to define navigation property
+	b. use ICollection to define one-to-many property	
+  
+104) Xamarin
+    1. make sure right save version libararies are installed for all projects
+	2. if encounter strange error like breakpoints not hit
+	   a. check nuget packages for all projects in the solution, make sure they are of same version
+	   b. install microsoft.bcl and microsoft.bcl.build for all projects => dont understnad why
+	3. deploy error: Mono.AndroidTools.InstallFailedException: Unexpected install output:    pkg: /data/local/tmp/android.crosswrd-Signed.apk
+	                 Failure [INSTALL_PARSE_FAILED_MANIFEST_MALFORMED]		 
+	   a. attribute [IntentFilter(new String[] { "Xamarin.TraderMobile.QuoteService" })] of a service can cause the error
+
+105) VS C# error:
+    1. missing compiler required memeter => add microsoft.csharp to reference
+
+106) NuGet:
+     update-package -reinstall -projectname <project> => reinstall all packages from packages.config and add to reference 
+	 install-package <package> => install package
+	 
+107) bash
+     - run bash command from windows command: 
+	   D:\cygwin64\bin\bash.exe bash.exe -l -c 'ls'
+	   D:\cygwin64\bin\bash.exe -c -l '/cygdrive/d/home/sync/sync.sh /cygdrive/e/Code/ /cygdrive/d/OneDrive/Code/ /cygdrive/d/home/sync/exclude_file.txt 2'
+
+108) creating virtual machine using Hyper-V: http://www.groovypost.com/howto/create-virtual-machine-windows-10-hyper-v/
+
