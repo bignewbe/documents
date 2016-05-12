@@ -777,7 +777,7 @@ cvs update -r DRUPAL-4-7
 	2) right click Databases and click attach to select mdf file
 	3) to detach: right click the attached database => Task => Detach
 
-92) configure sql server express and iis: http://www.codeproject.com/Articles/674930/Configuring-IIS-ASP-NET-and-SQL-Server
+92) web deployment, web publish, configure sql server express and iis: http://www.codeproject.com/Articles/674930/Configuring-IIS-ASP-NET-and-SQL-Server
     1) configure TCP/IP in SQL Server Configuration Manager to allow connection using IP address
 	   a. Protocols for SQLEXPRESS => Enable TCP/IP => Enable Listen All => set TCP Port to 1433 in IP Address
 	2) configure IIS to run IIS using NetworkService identity
@@ -797,7 +797,7 @@ cvs update -r DRUPAL-4-7
 	
 	References: https://www.youtube.com/watch?v=-ymjT8C-tHc
 	            https://www.youtube.com/watch?v=q7LBgyQwNLc
-				
+				https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k(WebApplicationProjects.PackagePublishOverview);k(TargetFrameworkMoniker-.NETFramework,Version%3Dv4.6.1)&rd=true				
 				
 	   
 93) test sql server connection: create an empty file with .udl extension and open it
@@ -934,4 +934,12 @@ cvs update -r DRUPAL-4-7
 	   D:\cygwin64\bin\bash.exe -c -l '/cygdrive/d/home/sync/sync.sh /cygdrive/e/Code/ /cygdrive/d/OneDrive/Code/ /cygdrive/d/home/sync/exclude_file.txt 2'
 
 108) creating virtual machine using Hyper-V: http://www.groovypost.com/howto/create-virtual-machine-windows-10-hyper-v/
+
+
+http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
+
+109) Xamarin, Porable libararies:
+     - sometimes if we cannot install nuget package for portable library we can mannually add it, like SignalR for portable
+	 - 
+
 
