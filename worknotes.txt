@@ -770,7 +770,7 @@ cvs update -r DRUPAL-4-7
 	    a) via Code First Migration triggered by running update-database in terminal. Since all data are retained in this case, we usually use 
 		   AddOrUpdate to handle exisiting data.
 	    b) via ApplicationDbInitializer,  which is triggered when DbContext is first used, and when model is changed compare with last run. 
-		   Since in this case the table is dropped, we dont have to handle exisiting data.	
+		   Since in this case the table is dropped, we dont have to handle exisiting data. But note that in this case all old data is lost.	
 	
 91) Attached mdf file to sql server
     1) run sql management tool as administrator
