@@ -873,6 +873,8 @@ cvs update -r DRUPAL-4-7
 	   2. git checkout --track origin/serverfix
 	   3. git checkout serverfix
 	 - git fetch => retrieve info about brach from remote
+	 - git push home --delete dev => delete remote branch dev on home
+	 - git push home dev:hangzhou => push dev to remote brach hangzhou
 	 
 	 
 	 	 
