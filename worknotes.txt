@@ -875,6 +875,7 @@ cvs update -r DRUPAL-4-7
 	 - git fetch => retrieve info about brach from remote
 	 - git push home --delete dev => delete remote branch dev on home
 	 - git push home dev:hangzhou => push dev to remote brach hangzhou
+	 - git config --global credential.helper cache => keep username and password in memory for a few minutes to avoid input password repeatedly
 	 
 	 
 	 	 
