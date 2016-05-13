@@ -771,6 +771,19 @@ cvs update -r DRUPAL-4-7
 		   AddOrUpdate to handle exisiting data.
 	    b) via ApplicationDbInitializer,  which is triggered when DbContext is first used, and when model is changed compare with last run. 
 		   Since in this case the table is dropped, we dont have to handle exisiting data. But note that in this case all old data is lost.	
+    2. migration from exisiting database
+	   - Add-Migration Initial -IgnoreChanges => create a snapshot of the schema so that subsequent migration can follow
+	   - update-database => apply initial to database
+	   - modify the model -> add migration -> apply migration
+	   - in order to prevent data loss, we use CreateDatabaseIfNotExists when we set 
+	     Database.SetInitializer<ApplicationDbContext>(new ApplicationDbInitializer()) in ApplicationDbContext
+		 => this means database will never be dropped and will will not lose any data.
+    3. migrate production database in server: http://stackoverflow.com/questions/17020393/asp-net-mvc-4-migrations-how-to-run-update-database-on-a-production-server
+	   - as in the post, one way is to run update-database -script after add-migration, and then run the generated sql command in database
+
+	   
+	     
+	   
 	
 91) Attached mdf file to sql server
     1) run sql management tool as administrator
@@ -840,20 +853,27 @@ cvs update -r DRUPAL-4-7
 	c. "sudo command" will then use root previlige
 
 100) Git:
-     a. clone single branch:  "git clone user@git-server:project_name.git -b branch_name --single-branch /some/folder"
-	 b. view files: git ls-tree --full-tree -r HEAD	 
-	 $ git checkout -b release-1.2 develop: Switched to a new branch "release-1.2" which is created based on develop branch	 
-     $ ./bump-version.sh 1.2: Files modified successfully, version bumped to 1.2.
-     $ git commit -a -m "Bumped version number to 1.2": Bumped version number to 1.2
-	 c. git clone --branch <tag_name> <repo_url>: checkout a tag but we cannot push to repositoryd
-	 d. visualize git log: git log --graph --full-history --all --color --date=short --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%ad %s"
-	 e. git checkout -b branchv1.0 v1.0 => create and checkout branch1.0 based on tag v1.0 
-	 f. git tag -a v1.4 -m "my version 1.4" 
-	 g. git push origin v1.4 => can do not need upstream can push from anywhere
-	 h. git branch -d client => delete branch client
-	 1. git ls-files -m => list modified file
-	 2. git add -u => add all modifed files 
-	 3. git status --porcelain -uno => list modified and staged files but not untracked files
+     - clone single branch:  "git clone user@git-server:project_name.git -b branch_name --single-branch /some/folder"
+	 - view files: git ls-tree --full-tree -r HEAD	 
+	 - git checkout -b release-1.2 develop: Switched to a new branch "release-1.2" which is created based on develop branch	 
+     - ./bump-version.sh 1.2: Files modified successfully, version bumped to 1.2.
+     - git commit -a -m "Bumped version number to 1.2": Bumped version number to 1.2
+	 - git clone --branch <tag_name> <repo_url>: checkout a tag but we cannot push to repositoryd
+	 - visualize git log: git log --graph --full-history --all --color --date=short --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%ad %s"
+	 - git checkout -b branchv1.0 v1.0 => create and checkout branch1.0 based on tag v1.0 
+	 - git tag -a v1.4 -m "my version 1.4" 
+	 - git push origin v1.4 => can do not need upstream can push from anywhere
+	 - git branch -d client => delete branch client
+	 - git ls-files -m => list modified file
+	 - git add -u => add all modifed files 
+	 - git status --porcelain -uno => list modified and staged files but not untracked files
+	 - git push origin --delete serverfix => delete remote brach
+	 - create new brach based on remote brach =>
+	   1. git checkout -b serverfix origin/serverfix
+	   2. git checkout --track origin/serverfix
+	   3. git checkout serverfix
+	 - git fetch => retrieve info about brach from remote
+	 
 	 
 	 	 
 
