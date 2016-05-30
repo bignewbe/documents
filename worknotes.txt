@@ -877,8 +877,6 @@ cvs update -r DRUPAL-4-7
 	 - git push home dev:hangzhou => push dev to remote brach hangzhou
 	 - git config --global credential.helper cache => keep username and password in memory for a few minutes to avoid input password repeatedly
 	 
-	 
-	 	 
 
 	 
 101) Msbuild:
@@ -965,4 +963,41 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
      - sometimes if we cannot install nuget package for portable library we can mannually add it, like SignalR for portable
 	 - 
 
+110) Sql Server configuration
+     - allow login using username and password => Enable SQL Server login mode in Management Studio
+	   1. enable SQL server and Windows Authentication mode  => Properties => Security
+	   2. allow remote connection in Properties => Connections
+	   3. create account in Security => login 
+     - allow remote connection via Tcp in Configuration Manager
+	   1. enable TCP/IP and and set port to 1433 in Protocols for SQLEXPRESS
+       2. enable named pipe in Protocols for SQLEXPRESS
+	   3. restart SQL Server and SQL Server Browser in Configuration Manager
+	 - allow inbound on port 1433 in Windows Firewall (may not needed)
+	 - add data connection in VisualStudio
+	    open Server Explorer => Add Connections => type in "Ip Address\SQLEXPRESS" => select SQL Server Login => type in username and password
+	 - copy database to the server by detaching and attaching the database
+	 
+	 
+111) web deployment using deployment package : https://msdn.microsoft.com/en-us/library/ff356104(v=vs.110).aspx
+     - Generate deployment package in visual studio => we can indicate whether to include App_Data and ConnectionString
+     - Web Server: install web deployment tool and Remote Agent Service: https://technet.microsoft.com/en-us/library/dd569030(v=ws.10).aspx
+	   1. Programs and Features => right click of Web Deploy => click Change => install Remote Agent	   
+	 - Web Server: make sure Web Deployment Agent Service and Web Management Service is running in "Services"
+	   1. Services => enable above two services
+ 	 - Local computer:
+        1. install web deployment tool (msdeploy.exe)	 
+	    1. run ".\MetalTrader.deploy.cmd /t /m:120.26.217.254 /u:Administrator /p:Windows2012" from power shell or cygwin with Administrator
+	    2. or run "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -source:package='D:\DeploymentPackage\MetalTrader.zip' -dest:auto,computerName="120.26.217.254", userName="Administrator",password="Windows2012",includeAcls="False" -verb:sync -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension -skip:objectname='dirPath',absolutepath='obj\\Release\\Package\\PackageTmp\\App_Data$' -skip:objectname='dirPath',absolutepath='MetalTrader\\App_Data$' -setParamFile:"D:\DeploymentPackage\MetalTrader.SetParameters.xml" -whatif			
+		          "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -source:package='D:\DeploymentPackage\MetalTrader.zip' -dest:auto,computerName="120.26.217.254", 
+		           userName="Administrator",password="Windows2012",includeAcls="False" -verb:sync -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension 
+				   -skip:objectname='dirPath',absolutepath='obj\\Release\\Package\\PackageTmp\\App_Data$' -skip:objectname='dirPath',absolutepath='MetalTrader\\App_Data$' 
+				   -setParamFile:"D:\DeploymentPackage\MetalTrader.SetParameters.xml" -whatif
+				   
+				  
+	 
+
+
+ 	   
+
+    
 
