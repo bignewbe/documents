@@ -772,14 +772,30 @@ cvs update -r DRUPAL-4-7
 	    b) via ApplicationDbInitializer,  which is triggered when DbContext is first used, and when model is changed compare with last run. 
 		   Since in this case the table is dropped, we dont have to handle exisiting data. But note that in this case all old data is lost.	
     2. migration from exisiting database
-	   - Add-Migration Initial -IgnoreChanges => create a snapshot of the schema so that subsequent migration can follow
+	   - Add-Migration Initial -IgnoreChanges => create a snapshot of the schema so that subsequent migration can follow. 
+	     however we must make sure the model and code must match in this case, in order to apply the change to database. 
 	   - update-database => apply initial to database
 	   - modify the model -> add migration -> apply migration
 	   - in order to prevent data loss, we use CreateDatabaseIfNotExists when we set 
 	     Database.SetInitializer<ApplicationDbContext>(new ApplicationDbInitializer()) in ApplicationDbContext
-		 => this means database will never be dropped and will will not lose any data.
+		 => this means database will never be dropped and will not lose any data.
+	   - this approach is best if we want to reverse engineer the database to create model. in the case, code and model are out of sync, it does not work. 
     3. migrate production database in server: http://stackoverflow.com/questions/17020393/asp-net-mvc-4-migrations-how-to-run-update-database-on-a-production-server
 	   - as in the post, one way is to run update-database -script after add-migration, and then run the generated sql command in database
+	4. https://msdn.microsoft.com/en-us/data/dn579398.aspx
+	   handle out of sync between code and database, for example, we switch between different databases and do not keep all databases up to date while we work on specific database. 
+	   a. delegate database and migration, so that everything start from scrach. note that each migration keeps a snapshot of the model, add-migration simply compare current model with the snapshot  
+	      to determine the difference to apply to the database. in this case, model is compared to an empty snapshot. 
+	   b. 
+	     - backup models and create code first model from existing database
+		 - enable-migration => add-migration inital -ignorechanges => update-database (here all changes of the models by code generation are ignored, so that no change will be applied to database. 
+		   however, a snapshot is created such that subsequent change can be applied.)
+		 - change models to the latest version in backup
+		 - add-migration second => update-database
+	   c. if all migration history are kept, we should be able to determine from MigrationHistory of the code and the database which migrations are needed for current database.
+	      in this case, we just need to run update-database. the important is that history should be complete, such that both the database and the model can be updated to the latest status and match each other. 
+		   
+		 
 
 	   
 	     
@@ -807,7 +823,9 @@ cvs update -r DRUPAL-4-7
 	
 	7) before publish from visual studio, we need to add application to IIS: Default Web Site -> Add Application, otherwise we will see many assemblies could
 	   not be resolved warnings and deployment fail.
-	
+	   
+	8) before deployment, we have to first install the IIS, Asp.Net, etc. from server manager
+		
 	References: https://www.youtube.com/watch?v=-ymjT8C-tHc
 	            https://www.youtube.com/watch?v=q7LBgyQwNLc
 				https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k(WebApplicationProjects.PackagePublishOverview);k(TargetFrameworkMoniker-.NETFramework,Version%3Dv4.6.1)&rd=true				
@@ -876,9 +894,26 @@ cvs update -r DRUPAL-4-7
 	 - git push home --delete dev => delete remote branch dev on home
 	 - git push home dev:hangzhou => push dev to remote brach hangzhou
 	 - git config --global credential.helper cache => keep username and password in memory for a few minutes to avoid input password repeatedly
-	 
+	 - git fetch --all => git reset --hard origin/master => git pull: git pull ignore local change
+
+     - git delete tag:  git push origin :tagname
+         Or, more expressively, use the --delete option:  git push --delete origin tagname
+         If you also need to delete the local tag, use:   git tag --delete tagname		 
+	 - git pull abandon merge => reset --hard		
+     - git config --global credential.helper cache => remember git credential
+	 - git pull ignore local/remote change: http://stackoverflow.com/questions/2073841/how-can-i-discard-remote-changes-and-mark-a-file-as-resolved
+	   git checkout --ours . # checkout our local version of all files to keep local copy
+       git add -u            # mark all conflicted files as merged
+       git commit            # commit the merge 
+	   if we use 'git checkout --theirs .' means we want to keep the remote copy 
+     - git set upstream branch => git branch --set-upstream-to ali/master
+	 - get commit numbers of local/remote/ and common ancestor 
+	   LOCAL=$(git rev-parse @)
+       REMOTE=$(git rev-parse @{u})
+       BASE=$(git merge-base @ @{u})
 
 	 
+	   
 101) Msbuild:
      a. <Target Name="Build">
           <MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
@@ -953,6 +988,8 @@ cvs update -r DRUPAL-4-7
      - run bash command from windows command: 
 	   D:\cygwin64\bin\bash.exe bash.exe -l -c 'ls'
 	   D:\cygwin64\bin\bash.exe -c -l '/cygdrive/d/home/sync/sync.sh /cygdrive/e/Code/ /cygdrive/d/OneDrive/Code/ /cygdrive/d/home/sync/exclude_file.txt 2'
+	 - bash script '\r' command not recoginzed => run dos2unix file
+	 
 
 108) creating virtual machine using Hyper-V: http://www.groovypost.com/howto/create-virtual-machine-windows-10-hyper-v/
 
@@ -993,11 +1030,17 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 				   -skip:objectname='dirPath',absolutepath='obj\\Release\\Package\\PackageTmp\\App_Data$' -skip:objectname='dirPath',absolutepath='MetalTrader\\App_Data$' 
 				   -setParamFile:"D:\DeploymentPackage\MetalTrader.SetParameters.xml" -whatif
 				   
-				  
-	 
+112) windows server
+     - install .Net 3.5 on Windows 2012 R2 => we need to enable windows update as in http://serverfault.com/questions/463604/unable-to-install-net-3-5-on-windows-server-2012
 
 
- 	   
-
+113) visual studio:  
+     MSBUILD : error MSB4017: Could not run the "GenerateResource" task because MSBuild could not create or connect to a task host with runtime "CLR2" and architecture "x86"
+     => Click Start>>right-click Computer>>Properties>>Advanced system settings>>click Environment Variables button to open the dialog, then under the System variables section, click New… button, type the Variable name = DISABLEOUTOFPROCTASKHOST, and type the Variable value = 1, then click Ok.	 
     
+     I was trying to create the publish the project using
+     "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" MyProject.csproj /t:package /p:configuration=release
+     The above line works perfectly fine for web projects but for windows project it should be
+     "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" MyProject.csproj /t:publish /p:configuration=release
 
+	 
