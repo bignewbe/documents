@@ -207,6 +207,7 @@ dd if=ss.img of=sss.img bs=1024 skip=0 seek=0 count=1404
 mount -o loop=,offset=32256 /dev/sda1 /windows
 
 7) rsync -avzt --force --delete --delete-excluded --exclude=hd.img --exclude=download/ --exclude=bkp/ --exclude=tmp/ --exclude=temp/ --exclude=sequence/ /home/liping/ liping@131.155.26.30:~/bkp/mbs-pc50/linux/
+   rsync -av --delete --delete-excluded --chmod=ugo=rwX Lib /cygdrive/z/
 
 8) tar xvf *.tar.bz2
 
@@ -782,10 +783,12 @@ cvs update -r DRUPAL-4-7
 	   - this approach is best if we want to reverse engineer the database to create model. in the case, code and model are out of sync, it does not work. 
     3. migrate production database in server: http://stackoverflow.com/questions/17020393/asp-net-mvc-4-migrations-how-to-run-update-database-on-a-production-server
 	   - as in the post, one way is to run update-database -script after add-migration, and then run the generated sql command in database
-	4. https://msdn.microsoft.com/en-us/data/dn579398.aspx
-	   handle out of sync between code and database, for example, we switch between different databases and do not keep all databases up to date while we work on specific database. 
-	   a. delegate database and migration, so that everything start from scrach. note that each migration keeps a snapshot of the model, add-migration simply compare current model with the snapshot  
-	      to determine the difference to apply to the database. in this case, model is compared to an empty snapshot. 
+	4. handle out-of-sync between code and database: https://msdn.microsoft.com/en-us/data/dn579398.aspx
+	   for example, we switch between different databases and do not keep all databases up to date while we work on specific database. 
+	   a. delegate database and migration, so that everything start from scrach. 
+	      - note that each migration keeps a snapshot of the model, add-migration simply compare current model with the snapshot to determine the difference to apply to the database. 
+		    in this case, model is compared to an empty snapshot. 
+		  - enable-migration for specific context => add migration => update-database 
 	   b. 
 	     - backup models and create code first model from existing database
 		 - enable-migration => add-migration inital -ignorechanges => update-database (here all changes of the models by code generation are ignored, so that no change will be applied to database. 
@@ -795,8 +798,6 @@ cvs update -r DRUPAL-4-7
 	   c. if all migration history are kept, we should be able to determine from MigrationHistory of the code and the database which migrations are needed for current database.
 	      in this case, we just need to run update-database. the important is that history should be complete, such that both the database and the model can be updated to the latest status and match each other. 
 		   
-		 
-
 	   
 	     
 	   
@@ -911,7 +912,14 @@ cvs update -r DRUPAL-4-7
 	   LOCAL=$(git rev-parse @)
        REMOTE=$(git rev-parse @{u})
        BASE=$(git merge-base @ @{u})
-
+	   
+     - git cache password: git config --global credential.helper wincred	   
+     - replace branch with another =>
+	   git checkout seotweaks
+       git merge -s ours master
+       git checkout master
+       git merge seotweaks
+	 - git list changes => git status --porcelain -uno
 	 
 	   
 101) Msbuild:
@@ -1017,8 +1025,9 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 	 
 111) web deployment using deployment package : https://msdn.microsoft.com/en-us/library/ff356104(v=vs.110).aspx
      - Generate deployment package in visual studio => we can indicate whether to include App_Data and ConnectionString
-     - Web Server: install web deployment tool and Remote Agent Service: https://technet.microsoft.com/en-us/library/dd569030(v=ws.10).aspx
-	   1. Programs and Features => right click of Web Deploy => click Change => install Remote Agent	   
+     - Web Server: install Remote Agent and Web Management: https://technet.microsoft.com/en-us/library/dd569030(v=ws.10).aspx
+	   1. Remote Agent: install web deployment tool => from Programs and Features, right click of Web Deploy => click Change => install Remote Agent	   
+	   2. Web Management: from Server => IIS => Management tool => install Web Management
 	 - Web Server: make sure Web Deployment Agent Service and Web Management Service is running in "Services"
 	   1. Services => enable above two services
  	 - Local computer:
@@ -1032,7 +1041,17 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 				   
 112) windows server
      - install .Net 3.5 on Windows 2012 R2 => we need to enable windows update as in http://serverfault.com/questions/463604/unable-to-install-net-3-5-on-windows-server-2012
+      a. Start the Local Group Policy Editor(search Edit Group Policy) or Group Policy Management Console.
+      b. Expand Computer Configuration, expand Administrative Templates, and then select System.
+      c. Open the Specify settings for optional component installation and component repair Group Policy setting, and then select Enabled.
+      d. Select the Contact Windows Update directly to download repair content instead of Windows Server Update Services (WSUS) check box.
+	  
+	 - create samba share folder => install File Server => create samba folder => add permission for selected users (import to note that we have add sharing permission from file properties)
+	 - HTTP Error 500.19 - Internal Server Error: This configuration section cannot be used at this path. This happens when the section is locked at a parent level. Locking is either by default (overrideModeDefault="Deny"), 
+	   or set explicitly by a location tag with overrideMode="Deny" or the legacy allowOverride="false". 
+	   solution: => install "Application Development Features (all but CGI)" from Server => Add role and feature => IIS => Application Development Features
 
+	 
 
 113) visual studio:  
      MSBUILD : error MSB4017: Could not run the "GenerateResource" task because MSBuild could not create or connect to a task host with runtime "CLR2" and architecture "x86"
@@ -1042,5 +1061,32 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
      "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" MyProject.csproj /t:package /p:configuration=release
      The above line works perfectly fine for web projects but for windows project it should be
      "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" MyProject.csproj /t:publish /p:configuration=release
+
+114) JIRA
+     - issue created but not visible in board => delete the default board and create a new scrum board for the project
+
+
+115) withdraw singapore cpf:
+    a. fill cpf - lm form from cpf website
+	b. get renunciation letter from ica
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	 
