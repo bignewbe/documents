@@ -989,6 +989,9 @@ cvs update -r DRUPAL-4-7
 	   D:\cygwin64\bin\bash.exe bash.exe -l -c 'ls'
 	   D:\cygwin64\bin\bash.exe -c -l '/cygdrive/d/home/sync/sync.sh /cygdrive/e/Code/ /cygdrive/d/OneDrive/Code/ /cygdrive/d/home/sync/exclude_file.txt 2'
 	 - bash script '\r' command not recoginzed => run dos2unix file
+	 - list all directories in a directory: for f in /cygdrive/d/home/liping/D/www/bonobo/App_Data/Repositories/*; do if [[ -d $f ]]; then echo $(basename $f);fi;done > tmp.txt
+	 - read list from file: for f in $(cat tmp.txt);do echo $f;done
+	 - find all directories in current folder: find . -type d -maxdepth 1
 	 
 
 108) creating virtual machine using Hyper-V: http://www.groovypost.com/howto/create-virtual-machine-windows-10-hyper-v/
