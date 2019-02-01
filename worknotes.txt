@@ -920,6 +920,12 @@ cvs update -r DRUPAL-4-7
        git checkout master
        git merge seotweaks
 	 - git list changes => git status --porcelain -uno
+	 - undo clone single branch 
+	   You can tell Git to pull all branches like this: 
+	   git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+	   git fetch origin
+	 - remember git password in cygwin: https://stackoverflow.com/questions/18683935/store-https-passwords-with-cygwins-git
+	   git config --global credential.helper 'cache --timeout=36000' => remember for 10 hours
 	 
 	   
 101) Msbuild:
@@ -1073,9 +1079,24 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
     a. fill cpf - lm form from cpf website
 	b. get renunciation letter from ica
 	
-
+116) System.IO.FileLoadException: Could not load file or assembly 'Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040) ---> System.IO.FileLoadException: Could not load file or assembly 'Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)
+     - fix => add bindingRedirect to app.config
+      <dependentAssembly>
+        <assemblyIdentity name="Castle.Core" publicKeyToken="407dd0808d44fbdc" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.1.1.0" newVersion="4.1.1.0" />
+      </dependentAssembly>
+ 
 	
-
+117) docker
+     - access docker repository in linux container on windows: https://blog.jongallant.com/2017/11/ssh-into-docker-vm-windows/
+	   Get container with access to Docker Daemon
+       Run container with full root access
+       Switch to host file system
+       docker run --privileged -it -v /var/run/docker.sock:/var/run/docker.sock jongallant/ubuntu-docker-client 
+       docker run --net=host --ipc=host --uts=host --pid=host -it --security-opt=seccomp=unconfined --privileged --rm -v /:/host alpine /bin/sh
+       chroot /host
+	   
+	 - 
 
 
 
