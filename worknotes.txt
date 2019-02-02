@@ -1096,7 +1096,8 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
        docker run --net=host --ipc=host --uts=host --pid=host -it --security-opt=seccomp=unconfined --privileged --rm -v /:/host alpine /bin/sh
        chroot /host
 	   
-	 - 
+	 - build .net core cosole docker image 
+	   https://docs.microsoft.com/en-us/dotnet/core/docker/docker-basics-dotnet-core
 
 
 
