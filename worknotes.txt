@@ -1098,6 +1098,9 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 	   
 	 - build .net core cosole docker image 
 	   https://docs.microsoft.com/en-us/dotnet/core/docker/docker-basics-dotnet-core
+	   
+	 - remove all stopped containers => docker rm $(docker ps -a -q)
+	 
 
 
 
