@@ -1100,6 +1100,12 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 	   https://docs.microsoft.com/en-us/dotnet/core/docker/docker-basics-dotnet-core
 	   
 	 - remove all stopped containers => docker rm $(docker ps -a -q)
+	 - view container ip address => docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
+	 - mount courrent directory and list the cotents => docker run --rm -v ${PWD}:/data alpine ls -la /data
+	 - WORKDIR in dockfile will be automatically created 
+	 
+	 
+	 
 	 
 
 
