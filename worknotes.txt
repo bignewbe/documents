@@ -1103,6 +1103,14 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 	 - view container ip address => docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
 	 - mount courrent directory and list the cotents => docker run --rm -v ${PWD}:/data alpine ls -la /data
 	 - WORKDIR in dockfile will be automatically created 
+	 - dotnet run 
+	   a. docker run --rm -it --workdir /app -v E:/data:/app/config -e "ENV_BITTREXSERVER=Docker" -e "ENV_CONFIG_FOLDER=config" --name bittrexserver bittrexserver
+	 - remove "none" docker images => docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
+	 - run c# tcp client server in container 
+       a. docker run --rm -it --workdir /app -v E:/data/ServiceRegistry:/app/config --network host -e "ENV=Docker" -e "ENV_CONFIG_FOLDER=config" --name serviceregistry serviceregistry
+       b. docker run --rm -it --workdir /app -v E:/data/BittrexServer:/app/config --network host -e "ENV=Docker" -e "ENV_CONFIG_FOLDER=config"--name bittrexserver bittrexserver
+       c. important is we have to run both of them in host network, then we can connect to them as the normal  	   
+	   d. we mount windows folder to VM such that we can change the configuration 
 	 
 	 
 	 
