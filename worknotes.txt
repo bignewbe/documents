@@ -208,6 +208,11 @@ mount -o loop=,offset=32256 /dev/sda1 /windows
 
 7) rsync -avzt --force --delete --delete-excluded --exclude=hd.img --exclude=download/ --exclude=bkp/ --exclude=tmp/ --exclude=temp/ --exclude=sequence/ /home/liping/ liping@131.155.26.30:~/bkp/mbs-pc50/linux/
    rsync -av --delete --delete-excluded --chmod=ugo=rwX Lib /cygdrive/z/
+   let cgwin rsync use windows perssion: https://stackoverflow.com/questions/5798807/rsync-on-windows-wrong-permissions-for-created-directories
+   - Try adding the 'noacl' flag to your Cygwin mounts in C:\cygwin\etc\fsta: none /cygdrive cygdrive user,noacl,posix=0 0 0
+   - or You can pass custom permissions via rsync using the 'chmod' option: rsync -rvz --chmod=ugo=rwX -e ssh source destination
+   protocol version mismatch — is your shell clean? => https://serverfault.com/questions/267154/protocol-version-mismatch-is-your-shell-clean
+   - reason is that .bashrc generate output by echo, ssh tried to run that as a command which result in error 
 
 8) tar xvf *.tar.bz2
 
@@ -448,12 +453,15 @@ text('Interpreter','latex', 'String','$$\pi\times DoD=4^o$$','Position',[0.5,0.5
 41) apt-cache search package
 #search package
 
+42) disable ssh password
+1) run in local computer: ssh-keygen -t rsa  #generate pub key in local machine in (~/.ssh/id_rsa.pub)
+2) run in local computer: ssh-copy-id -i $HOME/.ssh/id_rsa.pub user@remote
+3) in cygwin .ssh folder may exit in the cygwin installation location iso $HOME
+ => better solution: http://www.linuxproblem.org/art_9.html
+ - remote host: the perssiom for home directory and .ssh has to be 700; for authorized_keys has to be 600. 
+ - add -v to see debug info. if offered key is not accepted, check the permissions above.
 
-42) ssh password
-1) ssh-keygen -t rsa  #generate pub key in local machine in (~/.ssh/id_rsa.pub)
-2) copy the key to the remote computer to (~/.ssh/authorized_keys)
-
-
+ 
 43) #transcode campus2.avi into camp2.avi; -b means the given bit rate; -psnr shows the psnr of the transcoded video
     ffmpeg -i campus2.avi -b 20000 -psnr -deinterlace camp2.avi
 
@@ -797,9 +805,6 @@ cvs update -r DRUPAL-4-7
 		 - add-migration second => update-database
 	   c. if all migration history are kept, we should be able to determine from MigrationHistory of the code and the database which migrations are needed for current database.
 	      in this case, we just need to run update-database. the important is that history should be complete, such that both the database and the model can be updated to the latest status and match each other. 
-		   
-	   
-	     
 	   
 	
 91) Attached mdf file to sql server
@@ -870,6 +875,8 @@ cvs update -r DRUPAL-4-7
     a. create in /usr/bin "sudo" with following content:    cygstart --action=runas "$@"
 	b. make sudo executeable: chmod +x ~/bin/sudo
 	c. "sudo command" will then use root previlige
+	cywin cannt open dispay: using ssh -Y instead of -X
+	
 
 100) Git:
      - clone single branch:  "git clone user@git-server:project_name.git -b branch_name --single-branch /some/folder"
@@ -926,6 +933,7 @@ cvs update -r DRUPAL-4-7
 	   git fetch origin
 	 - remember git password in cygwin: https://stackoverflow.com/questions/18683935/store-https-passwords-with-cygwins-git
 	   git config --global credential.helper 'cache --timeout=36000' => remember for 10 hours
+
 	 
 	   
 101) Msbuild:
@@ -1112,23 +1120,109 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
        c. important is we have to run both of them in host network, then we can connect to them as the normal  	   
 	   d. we mount windows folder to VM such that we can change the configuration 
 	 
+	 - run docker registry with tls enabled:
+	   docker run -d --restart=always --name registry -v "$(pwd)"/certs:/certs -e REGISTRY_HTTP_ADDR=0.0.0.0:443 -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key -p 443:443 registry:2
+	 - run insecure registry:
+   	   server: docker run -d -p 5000:5000 --restart=always --name registry registry:2 => https://docs.docker.com/registry/deploying/
+	   client: add registry to daemon: "insecure-registries" : ["myregistrydomain.com:5000"] => https://docs.docker.com/registry/insecure/
+	 - push image to remote registry:
+	   docker tag rhel-httpd registry-host:5000/myadmin/rhel-httpd
+	   docker push registry-host:5000/myadmin/rhel-httpd
+	 - docker expose vs publish ports: expose => ports can be used by container within same network. publish => publish to host 
+	 - docker connect to tcp server within a container: 1) make server listening to 0.0.0.0 instead of 127.0.0.1; 2) publish port
+	 - docker error: http://%2F%2F.%2Fpipe%2Fdocker_engine/v1.35/info: open //./pipe/docker_engine: The system cannot find the file specified. In the default daemon configuration on Windows, the docker client must be run elevated to connect. This error may also indicate that the docker daemon is not running
+	   cd "C:\Program Files\Docker\Docker"
+       ./DockerCli.exe -SwitchDaemon
+	 - docker login into container and run bash: docker exec -it imageid bash	 
+	 - docker failed to start in linux => run
+	    systemctl start docker
+		systemctl status docker
 	 
 	 
+	run mysql: 
+	  docker run -d -p 3306:3306 --name mysql-latest -e MYSQL_ROOT_PASSWORD=seller-soft mysql:latest
+	run captureserver:
+docker run --rm --workdir /app -v E:/data/CryptoCaptureServer:/app/config -v E:/data:/app/data -e "ENV=Docker" -e "ENV_CONFIG_FOLDER=config" --name cryptocaptureserver cryptocaptureserverdocker run --rm -it --workdir /app -v E:/data/CryptoCaptureServer:/app/config -v E:/data:/app/data -e "ENV=Docker" -e "ENV_CONFIG_FOLDER=config" --name cryptocaptureserver cryptocaptureserver
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 2000:2000 -p 2001:2001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=Zookeeper1" --name Zookeeper1 zookeeper	 	 
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3001:3001              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService okex_future_capture_service
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3004:3004              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureQuoteService" --name OkexFutureQuoteService okex_future_quote_service
+                
+docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 2000:2000 -p 2001:2001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=Zookeeper1" --name Zookeeper1 localhost:5000/zookeeper:latest
+docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3001:3001              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService 121.43.98.245:5000/okex_future_capture_service:latest
+docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3004:3004              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureQuoteService" --name OkexFutureQuoteService localhost:5000/okex_future_quote_service:latest
+
+
+ssh $hzcts 'docker-compose up' & ssh $hkcts 'docker-compose up'
+ssh $hzcts 'docker-compose down' & ssh $hkcts 'docker-compose down'
+
+ssh $hzcts 'docker stop Zookeeper1 & docker stop OkexFutureQuoteService' & ssh $hkcts 'docker stop OkexFutureCaptureService'
+
+
+docker stack deploy -c ./docker-compose.yml zoo
+docker stack rm zoo
+
+     - set timezone in dockfile => 
+       ENV TZ=Asia/Shanghai
+       RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ 
+118) centos
+     - user is not in sudoer's file => 1) ssh root@localhost and then 2) add user to /etc/sudoers	 
+	 - get public ip address: curl ifconfig.me, curl icanhazip.com, curl ipecho.net/plain, curl ifconfig.co, 	 
+
+	 
+119) 外包
+     - 外包费用计算： https://www.cnblogs.com/GmrBrian/p/3226801.html
+
+	 
+120) 4cnconsult
+     - 
+
+121) java deploytment:
+     点击package打包，复制target目录下的内容到服务器。
+     运行命令：
+     
+     运行springboot应用： nohup java -jar   xxxx.jar --spring.profiles.active=test   
+     test 表示 运行环境，可以指定以下几个值：dev, test, prod
+      
+     运行控制台应用： nohup java -jar xxxx.jar  
+     如果是生产环境： nohup java -Dapp.profile=prod  -jar xxxx.jar  
+     
+     
+     例子：
+     
+     nohup java -jar /data/application/4cnconsult/4cnconsult-webapi/_4cnconsult-webapi-1.0-SNAPSHOT.jar -spring.profiles.active=prod >webapi.out 2>&1 &
+     nohup java -jar -Dapp.profile=prod /data/application/4cnconsult/4cnconsult-jingdata-capturer/_4cnconsult-jingdata-capturer-1.0-SNAPSHOT.jar > ./jingdata-capturer.out 2>&1 &
+     nohup java -jar -Dapp.profile=prod /data/application/4cnconsult/4cnconsult-jingdata-converter/_4cnconsult-jingdata-converter-1.0-SNAPSHOT.jar > ./jingdata-converter.out  2>&1 &
+     nohup java -jar -Dapp.profile=prod /data/application/4cnconsult/4cnconsult-itjuzi-capturer/_4cnconsult-itjuzi-capturer-1.0-SNAPSHOT.jar > ./itjuzi-capturer.out  2>&1 &
+     nohup java -jar -Dapp.profile=prod /data/application/4cnconsult/4cnconsult-itjuzi-converter/_4cnconsult-itjuzi-converter-1.0-SNAPSHOT.jar > ./itjuzi-converter.out  2>&1 &   
+
+
+
+122) bash github git repo script:
+     git init
+     find -name "*.sln" -o -name "*.csproj" -o -name "*.cs" -o -name "*.json" -o -name "packages.config" -o -name "App.config" -o -name "*.xaml" -o -name "Dockerfile" -o -name ".dockerignore" -o -name "NLog.*" | grep -v "/obj/" | grep -v "/bin/" | grep -v "/packages/" | xargs git add
+	 git add -u
+	 git remote remove origin
+	 git remote add origin git@github.com:bignewbe/$(basename -- $PWD).git
+	 git commit -m "first commit to git hub"
+	 git push --set-upstream origin $(git branch | grep \* | cut -d ' ' -f2)
+	 
+	 
+	 git remote add origin https://github.com/bignewbe/$(basename -- $PWD).git
+	 git push -u origin master
 	 
 
+123) find 
+     
 
 
 
 
-
-
-
-
-
-
-
-
-
+apikey = "be79722b-46e4-4d42-aa09-be3d73e4d715"
+secretkey = "261FEAF832A272FCF961F7BE49EB3350"
+IP = "47.90.96.154,47.52.248.120"
+Display Name = "v3 api2"
+Permissions = "Enquiry/Trade"
 
 
 	 
