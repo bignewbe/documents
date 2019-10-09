@@ -429,7 +429,7 @@ tar -cvzf rate_control_h264.tar.gz --exclude '*.OPJ' --exclude '*.dat' --exclude
     #A third one should be added to remove all blanks and tabs immediately before the end of line: 
     sed -e 's/#.*//' -e 's/[ ^I]*$//' -e '/^$/ d' 
 
-    #remove the blank before the line 
+    #remove the blank before the line ;
     sed 's/[ ]*//' <f1 >f2
 
     #remove blank lines 
@@ -438,7 +438,12 @@ tar -cvzf rate_control_h264.tar.gz --exclude '*.OPJ' --exclude '*.dat' --exclude
     # 86) sed: repace part of file name with some other string 
     for f in *; do nf=`echo $f | sed 's/235955/235959/g'`; echo $f; mv $f $nf; done;
     for f in *; do nf=`echo $f | sed 's/215955/235959/g'`; if [ $f != $nf ]; then mv $f $nf; fi; done;
-
+    
+	for f in *; do nf=`echo $f | sed 's/-190628/-CON/g'`; if [ $f != $nf ]; then echo $f; sed 's/-190628/-CON/g' <$f >$nf; fi; done;
+    for f in $(find . | grep json | grep Param); do echo $f; sed 's/"Id"/"GivenId"/g' <$f >temp.json; mv temp.json $f; done
+	
+    bash file '\r' command not found => remove trailing \r character that causes this error: sed -i 's/\r$//' filename
+	
 40) #matlab
 
 surf(X,YY,Z1)
@@ -450,7 +455,7 @@ text('Interpreter','latex', 'String','$$\pi\times DoD=4^o$$','Position',[0.5,0.5
 
 
 
-41) apt-cache search package
+41) apt-cache search cd 
 #search package
 
 42) disable ssh password
@@ -458,7 +463,7 @@ text('Interpreter','latex', 'String','$$\pi\times DoD=4^o$$','Position',[0.5,0.5
 2) run in local computer: ssh-copy-id -i $HOME/.ssh/id_rsa.pub user@remote
 3) in cygwin .ssh folder may exit in the cygwin installation location iso $HOME
  => better solution: http://www.linuxproblem.org/art_9.html
- - remote host: the perssiom for home directory and .ssh has to be 700; for authorized_keys has to be 600. 
+ - remote host: the permision for home directory and .ssh has to be 700; for authorized_keys has to be 600. 
  - add -v to see debug info. if offered key is not accepted, check the permissions above.
 
  
@@ -1137,25 +1142,94 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 	 - docker failed to start in linux => run
 	    systemctl start docker
 		systemctl status docker
+	 - failed to select share drive: 
+	 - debug docker error:
+	   a. check config file carefully   
 	 
 	 
 	run mysql: 
 	  docker run -d -p 3306:3306 --name mysql-latest -e MYSQL_ROOT_PASSWORD=seller-soft mysql:latest
-	run captureserver:
+
+	  run captureserver:
 docker run --rm --workdir /app -v E:/data/CryptoCaptureServer:/app/config -v E:/data:/app/data -e "ENV=Docker" -e "ENV_CONFIG_FOLDER=config" --name cryptocaptureserver cryptocaptureserverdocker run --rm -it --workdir /app -v E:/data/CryptoCaptureServer:/app/config -v E:/data:/app/data -e "ENV=Docker" -e "ENV_CONFIG_FOLDER=config" --name cryptocaptureserver cryptocaptureserver
 docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 2000:2000 -p 2001:2001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=Zookeeper1" --name Zookeeper1 zookeeper	 	 
-docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3001:3001              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService okex_future_capture_service
-docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3004:3004              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureQuoteService" --name OkexFutureQuoteService okex_future_quote_service
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3003:3003              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService okex_future_capture_service
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3004:3004              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureTradeService" --name OkexFutureTradeService okex_future_trade_service
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3005:3005              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureQuoteService" --name OkexFutureQuoteService okex_future_quote_service
+
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3006:3006              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSpotCaptureService" --name OkexSpotCaptureService okex_spot_capture_service
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3007:3007              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSpotTradeService"   --name OkexSpotTradeService   okex_spot_trade_service
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3008:3008              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSpotQuoteService"   --name OkexSpotQuoteService   okex_spot_quote_service
                 
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 2000:2000 -p 2001:2001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=Zookeeper1" --name Zookeeper1 localhost:5000/zookeeper:latest
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3001:3001              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService 121.43.98.245:5000/okex_future_capture_service:latest
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3004:3004              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureQuoteService" --name OkexFutureQuoteService localhost:5000/okex_future_quote_service:latest
 
-
 ssh $hzcts 'docker-compose up' & ssh $hkcts 'docker-compose up'
 ssh $hzcts 'docker-compose down' & ssh $hkcts 'docker-compose down'
+ssh $hzcts 'docker stop Zookeeper1 & docker stop OkexFutureQuoteService' & ssh $hkcts 'docker stop OkexFutureCaptureService & docker stop OkexFutureTradeService'
+ssh $hzcts './StartZookeeper.sh' 
+ssh $hkcts './StartOkexFutureCaptureService.sh & ./StartOkexFutureTradeService.sh'
+ssh $hzcts './StartOkexFutureQuoteService.sh' 
 
-ssh $hzcts 'docker stop Zookeeper1 & docker stop OkexFutureQuoteService' & ssh $hkcts 'docker stop OkexFutureCaptureService'
+docker push 121.43.98.245:5000/okex_future_quote_service; docker push 121.43.98.245:5000/okex_future_trade_service; docker push 121.43.98.245:5000/okex_future_capture_service
+
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/Zookeeper/Zookeeper
+docker build -t zookeeper .
+docker tag zookeeper 121.43.98.245:5000/zookeeper
+docker push 121.43.98.245:5000/zookeeper
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
+docker build -f OkexSwapCaptureService/Dockerfile -t okex_swap_capture_service .
+docker tag okex_swap_capture_service 121.43.98.245:5000/okex_swap_capture_service
+docker push 121.43.98.245:5000/okex_swap_capture_service
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
+docker build -f OkexSwapTradeService/Dockerfile -t okex_swap_trade_service .
+docker tag okex_swap_trade_service 121.43.98.245:5000/okex_swap_trade_service
+docker push 121.43.98.245:5000/okex_swap_trade_service
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
+docker build -f OkexSwapQuoteService/Dockerfile -t okex_swap_quote_service .
+docker tag okex_swap_quote_service 121.43.98.245:5000/okex_swap_quote_service
+docker push 121.43.98.245:5000/okex_swap_quote_service
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
+docker build -f OkexFutureCaptureService/Dockerfile -t okex_future_capture_service .
+docker tag okex_future_capture_service 121.43.98.245:5000/okex_future_capture_service
+docker push 121.43.98.245:5000/okex_future_capture_service
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
+docker build -f OkexFutureTradeService/Dockerfile -t okex_future_trade_service .
+docker tag okex_future_trade_service 121.43.98.245:5000/okex_future_trade_service
+docker push 121.43.98.245:5000/okex_future_trade_service
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
+docker build -f OkexFutureQuoteService/Dockerfile -t okex_future_quote_service .
+docker tag okex_future_quote_service 121.43.98.245:5000/okex_future_quote_service
+docker push 121.43.98.245:5000/okex_future_quote_service
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices/OkexSpotCaptureService
+docker build -t okex_spot_capture_service .
+docker tag okex_spot_capture_service 121.43.98.245:5000/okex_spot_capture_service
+docker push 121.43.98.245:5000/okex_spot_capture_service
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices/OkexSpotTradeService
+docker build -t okex_spot_trade_service .
+docker tag okex_spot_trade_service 121.43.98.245:5000/okex_spot_trade_service
+docker push 121.43.98.245:5000/okex_spot_trade_service
+
+cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
+docker build -f OkexSpotQuoteService/Dockerfile -t okex_spot_quote_service .
+docker tag okex_spot_quote_service 121.43.98.245:5000/okex_spot_quote_service
+docker push 121.43.98.245:5000/okex_spot_quote_service
+
+docker tag okex_future_quote_service 47.90.96.154:5000/okex_future_quote_service
+docker push 47.90.96.154:5000/okex_future_quote_service
+docker tag okex_spot_quote_service 47.90.96.154:5000/okex_spot_quote_service
+docker push 47.90.96.154:5000/okex_spot_quote_service
+
 
 
 docker stack deploy -c ./docker-compose.yml zoo
@@ -1197,7 +1271,6 @@ docker stack rm zoo
      nohup java -jar -Dapp.profile=prod /data/application/4cnconsult/4cnconsult-itjuzi-converter/_4cnconsult-itjuzi-converter-1.0-SNAPSHOT.jar > ./itjuzi-converter.out  2>&1 &   
 
 
-
 122) bash github git repo script:
      git init
      find -name "*.sln" -o -name "*.csproj" -o -name "*.cs" -o -name "*.json" -o -name "packages.config" -o -name "App.config" -o -name "*.xaml" -o -name "Dockerfile" -o -name ".dockerignore" -o -name "NLog.*" | grep -v "/obj/" | grep -v "/bin/" | grep -v "/packages/" | xargs git add
@@ -1212,11 +1285,59 @@ docker stack rm zoo
 	 git push -u origin master
 	 
 
-123) find 
-     
+123) - find csharp code 
+       find -name "*.sln" -o -name "*.csproj" -o -name "*.cs" -o -name "*.json" -o -name "packages.config" -o -name "App.config" -o -name "*.xaml" -o -name "Dockerfile" -o -name ".dockerignore" -o -name "NLog.*" | grep -v "/obj/" | grep -v "/bin/" | grep -v "/packages/" | xargs git add
+	 - find document
+       find -name "*.doc" -o -name "*.docx" -o -name "*.ppt" -o -name "*.pptx" -o -name "*.txt" -o -name "*.xml" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "Dockerfile" -o -name ".dockerignore" -o -name "NLog.*" | grep -v "/obj/" | grep -v "/bin/" | grep -v "/packages/" | xargs git add
 
 
+124) C# 8.0 new feature
+     - switch case 
+	 - list range and index 
+	 - 
 
+125) zookeper, service keeper, ibeatmanager
+     - beatmanager: simple functionality, to count number of heatbeat and raise heatbeat timout event
+	 - client  	 
+
+126) dotnet 
+     - dotnet error like "MsBuild not found" etc can be due to version mismatch between the target version and installed version => create global.json in an upstream folder forcing enviroment to use the right version
+	 - if dotnet entry complain "dotnet-blabal.dll" not found, that means .dll does not exist, check the spell error
+	 
+127) Okex Crypto Currency trading: 
+     - note that DateTime.Parse convert string to local time. currently, timestamp in ticker, candle are in local time. however, time in balance, order, position are in UTC. need to be fixed in Okex.
+	   how to fix: change DateTime.Parse in Okex. and change ToLocalTime in CryptoCaptureApp (CancelOrders, Display Quote, Show Time in Screen)	   	 
+
+     OkexSpotProxy:  
+     - sync data with server as follows:
+        - initialize order, balance and ticker information from dumpfile and server upon start	 
+		- update order, balance and ticker information after receiving from websocket
+		- polling server periodically 
+		- in order not to block the socket thread, we buffer data into a queue when update order/balance/ticker 
+		
+	 SpotSwingFixedRatio
+	    - sync local order/balance with proxy
+		  - in simulation mode, we manually update this information when place/cancel order, and in order_closed event
+		  - in real mode, they are updated in orderOpened/orderCancelled/orderClosed/accountBalanceUpdated event
+		  - in real mode, we also periodically refresh this data
+		- strategies
+		  1. sell: dynamic, min profit and min ratio, buy: fixed, fixed ratios, qty: available/num		  
+		  2. sell: dynamic, min rise and min ratio, buy: dynamic, min drop and min ratio, qty: available/num		  
+		  3. sell: dynamic, min rise and min ratio, buy: dynamic, min drop and min ratio, or min profit, qty: one to one
+		  4. sell: fixed, price delta, buy: fixed, price delta, 
+		  5. sell: dynamic, above largest std, qty: available/num, buy: 
+		  
+		  
+		  
+	 CryptoCaptureApp:
+	    data flow: messageClient (order, balance, ticker) -> OkexProxy -> SpotSwingFixedRatio -> SpotTraderVM  
+		                          
+128) awk:
+     awk 'NR>=1 && NR<=2' test.txt > 1.txt;  //outfirst two lines to 1.txt
+	 awk -F';' 'NR > 2 {$1 = $1 + 1000; print $0}' test.txt |  //semicolon as delimiter; add 1000 to first column
+	 sed 's/ /;/g' >> 1.txt; mv 1.txt test.txt //change delimiter from space to semicolon
+	 
+     for f in `find . | grep Okex_ | grep .txt`; do echo $f; awk 'NR>=1 && NR<=2' $f > temp.txt; awk -F';' 'NR > 2 {$1 = $1 - 28800; print $0}' $f | sed 's/ /;/g' >> temp.txt; mv temp.txt $f; done	
 
 apikey = "be79722b-46e4-4d42-aa09-be3d73e4d715"
 secretkey = "261FEAF832A272FCF961F7BE49EB3350"
@@ -1224,5 +1345,14 @@ IP = "47.90.96.154,47.52.248.120"
 Display Name = "v3 api2"
 Permissions = "Enquiry/Trade"
 
-
+126) trading
+     - 动手前 我告诉大家  一定确定3点   
+	 1：你做好亏损的准备，知道自己的亏损承受能力，超出了不玩  
+	 2：认清你准备动手的位置是半山腰还是接近山顶还是接近山底  这样你才知道你的仓位控制的比例  
+	 3：到哪里止盈止损  提前想好自己为什么买  如果只是抓反弹  0.5%的收益该走就走  后面涨100%也跟你没关系 
+	 4: 不要追涨，不要幻想这一次不一样。忘记过去的价格。宁可错过。
+	 5： 
+	 
+	 - 耐心，机会很多，肯定有更好的，宁可错过
+	 - 
 	 
