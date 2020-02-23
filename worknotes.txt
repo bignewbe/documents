@@ -1019,6 +1019,7 @@ cvs update -r DRUPAL-4-7
 	 - list all directories in a directory: for f in /cygdrive/d/home/liping/D/www/bonobo/App_Data/Repositories/*; do if [[ -d $f ]]; then echo $(basename $f);fi;done > tmp.txt
 	 - read list from file: for f in $(cat tmp.txt);do echo $f;done
 	 - find all directories in current folder: find . -type d -maxdepth 1
+	 - check git repo:  for f in $(find /cygdrive/e/Code/20180722_IBTrader_1.0.1/ -type d -maxdepth 1); do ./CheckModifiedRepo.sh $f; done
 	 
 
 108) creating virtual machine using Hyper-V: http://www.groovypost.com/howto/create-virtual-machine-windows-10-hyper-v/
@@ -1164,6 +1165,12 @@ docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/a
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 2000:2000 -p 2001:2001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=Zookeeper1" --name Zookeeper1 localhost:5000/zookeeper:latest
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3001:3001              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService 121.43.98.245:5000/okex_future_capture_service:latest
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3004:3004              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureQuoteService" --name OkexFutureQuoteService localhost:5000/okex_future_quote_service:latest
+
+docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3012:3012              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSubscribeService" --name OkexSubscribeService 121.43.98.245:5000/okex_subscribe_service:latest  --restart unless-stopped 
+docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3008:3008              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSpotQuoteService" --name OkexSpotQuoteService 121.43.98.245:5000/okex_spot_quote_service:latest --restart unless-stopped 
+
+
+
 
 ssh $hzcts 'docker-compose up' & ssh $hkcts 'docker-compose up'
 ssh $hzcts 'docker-compose down' & ssh $hkcts 'docker-compose down'
