@@ -1255,8 +1255,7 @@ docker push $name
 
 
 #################################
-docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3007:3007  -e "ENV=DEV" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=SpotTrader"   --name spottrader $name
-
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto/Okex:/app/data -p 3007:3007  -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=SpotTrader"   --name spot spot
 
 cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
 name=47.90.96.154:5000/okex_spot_quote_service:v5
@@ -1466,6 +1465,25 @@ Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;
 automapper: 
 - inherit AutoMapper.Profile and create map between to class
 - use ProjectTo extension method to covert type
+
+autofac:
+- register class as interface
+- 
+
+
+
+给大家整理出来 各板块龙头哈：
+DEX龙头:UNI、sushi
+借贷龙头：AAve、comp、MKR
+聚合器龙头：1inch
+聚合理财：yfi、yfii
+保险:cover、wnxm
+Dao龙头：Ant
+衍生品龙头：SNX
+数据类龙头：GRT
+虚拟机龙头：Link、Api3、Band
+Layer2龙头：ZRX、LRC、OMG
+记住每个板块 龙头先动 其他尾随 所以玩币第一要买板块龙头强势币
 
 
 
