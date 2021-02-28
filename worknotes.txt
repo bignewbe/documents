@@ -1267,6 +1267,10 @@ name=47.90.96.154:5000/spottrader:v5
 docker build -f SpotTraderConsole/Dockerfile -t $name .
 docker push $name
 
+rsync -avz ~/E/data/Okex/testparam.json $hkcts:~/data/config/
+Get-DbContext
+$env:CONN="HD1"
+
 cd ~/E/Code/20180722_IBTrader_1.0.1/CryptoCapture
 name=47.90.96.154:5000/future_take_profit:v5
 docker build -f SwapConTraderConsole/Dockerfile -t $name .
@@ -1276,9 +1280,6 @@ cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices/OkexSubscribeService
 name=47.90.96.154:5000/okex_subscribe_service:v5
 docker build -t $name .
 docker push $name
-
-
-
 
 cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
 name=47.90.96.154:5000/okex_future_quote_service:v5
