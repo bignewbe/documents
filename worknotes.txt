@@ -1268,6 +1268,7 @@ docker build -f SpotTraderConsole/Dockerfile -t $name .
 docker push $name
 
 rsync -avz ~/E/data/Okex/testparam.json $hkcts:~/data/config/
+
 Get-DbContext
 $env:CONN="HD1"
 
