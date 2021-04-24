@@ -1262,12 +1262,19 @@ name=47.90.96.154:5000/okex_spot_quote_service:v5
 docker build -f OkexSpotQuoteService/Dockerfile -t $name .
 docker push $name
 
+#power sehll
+cd 'D:\Code\20210315_CryptoTrader\CryptoCapture\'
+docker build -f .\SpotTraderConsole\Dockerfile -t 47.90.96.154:5000/spottrader:v5 .
+
+
 cd ~/E/Code/20180722_IBTrader_1.0.1/CryptoCapture
 name=47.90.96.154:5000/spottrader:v5
 docker build -f SpotTraderConsole/Dockerfile -t $name .
 docker push $name
 
 rsync -avz ~/E/data/Okex/testparam.json $hkcts:~/data/config/
+rsync -avz appsetings.DKR.json  $hkcts:~/appsetings/
+
 
 Get-DbContext
 $env:CONN="HD1"
