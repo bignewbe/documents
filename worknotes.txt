@@ -1182,86 +1182,19 @@ ssh $hzcts './StartZookeeper.sh'
 ssh $hkcts './StartOkexFutureCaptureService.sh & ./StartOkexFutureTradeService.sh'
 ssh $hzcts './StartOkexFutureQuoteService.sh' 
 
-docker push 121.43.98.245:5000/okex_future_quote_service; docker push 121.43.98.245:5000/okex_future_trade_service; docker push 121.43.98.245:5000/okex_future_capture_service
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/Zookeeper/Zookeeper; name=47.90.96.154:5000/zookeeper; docker build -t $name .; docker push $name
+cd $root/OkexServices; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeService/Dockerfile -t $name .; docker push $name
+cd $root/OkexServices; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexSpotQuoteService/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;             docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
 
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/Zookeeper/Zookeeper
-docker build -t zookeeper .
-docker tag zookeeper 121.43.98.245:5000/zookeeper
-docker push 121.43.98.245:5000/zookeeper
-q
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
-docker build -f OkexSwapCaptureService/Dockerfile -t okex_swap_capture_service .
-docker tag okex_swap_capture_service 121.43.98.245:5000/okex_swap_capture_service
-docker push 121.43.98.245:5000/okex_swap_capture_service
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
-docker build -f OkexSwapTradeService/Dockerfile -t okex_swap_trade_service .
-docker tag okex_swap_trade_service 121.43.98.245:5000/okex_swap_trade_service
-docker push 121.43.98.245:5000/okex_swap_trade_service
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
-docker build -f OkexSwapQuoteService/Dockerfile -t okex_swap_quote_service .
-docker tag okex_swap_quote_service 121.43.98.245:5000/okex_swap_quote_service
-docker push 121.43.98.245:5000/okex_swap_quote_service
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
-docker build -f OkexFutureCaptureService/Dockerfile -t okex_future_capture_service .
-docker tag okex_future_capture_service 121.43.98.245:5000/okex_future_capture_service
-docker push 121.43.98.245:5000/okex_future_capture_service
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
-docker build -f OkexFutureTradeService/Dockerfile -t okex_future_trade_service .
-docker tag okex_future_trade_service 121.43.98.245:5000/okex_future_trade_service
-docker push 121.43.98.245:5000/okex_future_trade_service
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
-docker build -f OkexFutureQuoteService/Dockerfile -t okex_future_quote_service .
-docker tag okex_future_quote_service 121.43.98.245:5000/okex_future_quote_service
-docker push 121.43.98.245:5000/okex_future_quote_service
-
-
-docker tag okex_future_quote_service 47.90.96.154:5000/okex_future_quote_service
-docker push 47.90.96.154:5000/okex_future_quote_service
-docker tag okex_spot_quote_service 47.90.96.154:5000/okex_spot_quote_service
-docker push 47.90.96.154:5000/okex_spot_quote_service
-
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices/OkexSpotCaptureService
-docker build -t okex_spot_capture_service .
-docker tag okex_spot_capture_service 121.43.98.245:5000/okex_spot_capture_service
-docker push 121.43.98.245:5000/okex_spot_capture_service
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices/OkexSpotTradeService
-docker build -t okex_spot_trade_service .
-docker tag okex_spot_trade_service 121.43.98.245:5000/okex_spot_trade_service
-docker push 121.43.98.245:5000/okex_spot_trade_service
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
-docker build -f OkexSpotQuoteService/Dockerfile -t okex_spot_quote_service .
-docker tag okex_spot_quote_service 121.43.98.245:5000/okex_spot_quote_service
-docker push 121.43.98.245:5000/okex_spot_quote_service
-
-#################################
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices/OkexSpotCaptureService
-name=47.90.96.154:5000/okex_spot_capture_service:v1
-docker build -t $name .
-docker push $name
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices/OkexSpotTradeService
-name=47.90.96.154:5000/okex_spot_trade_service:v1
-docker build -t $name .
-docker push $name
-
+cd $root/OkexServices; name=47.90.96.154:5000/okex_spot_trade_service:v5; docker build -f OkexSpotTradeService/Dockerfile -t $name .; docker push $name
 
 #################################
 docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto/Okex:/app/data -p 3007:3007  -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=SpotTrader"   --name spot spot
 
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
-name=47.90.96.154:5000/okex_spot_quote_service:v5
-docker build -f OkexSpotQuoteService/Dockerfile -t $name .
-docker push $name
 
+<<<<<<< HEAD
 #power sehll
 cd 'D:\Code\20210315_CryptoTrader\CryptoCapture\'
 docker build -f .\SpotTraderConsole\Dockerfile -t 47.90.96.154:5000/spottrader:v5 .
@@ -1271,9 +1204,14 @@ cd ~/E/Code/20180722_IBTrader_1.0.1/CryptoCapture
 name=47.90.96.154:5000/spottrader:v5
 docker build -f SpotTraderConsole/Dockerfile -t $name .
 docker push $name
+=======
+
+rsync -avz ~/E/appsettings/appsettings.DKR.json $hkcts:~/appsettings/
+>>>>>>> 73bf26ab244a6ee29f4514065fce77c42d620891
 
 rsync -avz ~/E/data/Okex/testparam.json $hkcts:~/data/config/
 rsync -avz appsetings.DKR.json  $hkcts:~/appsetings/
+
 
 
 Get-DbContext
@@ -1284,10 +1222,6 @@ name=47.90.96.154:5000/future_take_profit:v5
 docker build -f SwapConTraderConsole/Dockerfile -t $name .
 docker push $name
 
-cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices/OkexSubscribeService
-name=47.90.96.154:5000/okex_subscribe_service:v5
-docker build -t $name .
-docker push $name
 
 cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
 name=47.90.96.154:5000/okex_future_quote_service:v5
