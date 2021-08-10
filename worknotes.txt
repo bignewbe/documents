@@ -1076,7 +1076,6 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 	 - HTTP Error 500.19 - Internal Server Error: This configuration section cannot be used at this path. This happens when the section is locked at a parent level. Locking is either by default (overrideModeDefault="Deny"), 
 	   or set explicitly by a location tag with overrideMode="Deny" or the legacy allowOverride="false". 
 	   solution: => install "Application Development Features (all but CGI)" from Server => Add role and feature => IIS => Application Development Features
-
 	 
 
 113) visual studio:  
@@ -1150,6 +1149,11 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 	 - debug docker error:
 	   a. check config file carefully   
 	 
+     - move docker to another disk:
+         wsl --shutdown
+         wsl --export docker-desktop-data docker-desktop-data.tar
+         wsl --unregister docker-desktop-data
+         wsl --import docker-desktop-data D:\docker\ docker-desktop-data.tar --version 2
 	 
 	run mysql: 
 	  docker run -d -p 3306:3306 --name mysql-latest -e MYSQL_ROOT_PASSWORD=seller-soft mysql:latest
@@ -1172,7 +1176,7 @@ docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data 
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3012:3012              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSubscribeService" --name OkexSubscribeService 121.43.98.245:5000/okex_subscribe_service:latest  --restart unless-stopped 
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3008:3008              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSpotQuoteService" --name OkexSpotQuoteService 121.43.98.245:5000/okex_spot_quote_service:latest --restart unless-stopped 
 
-
+docker run --rm --workdir /app -v E:/appsettings:/app/config -v E:/data:/app/data -p 30013:30013 -p 5001:5001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=SpotTrader" --name SpotTrader 47.90.96.154:5000/spottrader:v5
 
 
 ssh $hzcts 'docker-compose up' & ssh $hkcts 'docker-compose up'
@@ -1182,36 +1186,41 @@ ssh $hzcts './StartZookeeper.sh'
 ssh $hkcts './StartOkexFutureCaptureService.sh & ./StartOkexFutureTradeService.sh'
 ssh $hzcts './StartOkexFutureQuoteService.sh' 
 
+cd $root/Zookeeper; name=47.90.96.154:5000/zookeeper;                     docker build -f Zookeeper/Dockerfile -t $name .; docker push $name
+
+
 root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/Zookeeper/Zookeeper; name=47.90.96.154:5000/zookeeper; docker build -t $name .; docker push $name
-cd $root/OkexServices; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeService/Dockerfile -t $name .; docker push $name
-cd $root/OkexServices; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexSpotQuoteService/Dockerfile -t $name .; docker push $name
+cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeService/Dockerfile -t $name .; docker push $name
+cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexSpotQuoteService/Dockerfile -t $name .; docker push $name
 cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;             docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
 
-cd $root/OkexServices; name=47.90.96.154:5000/okex_spot_trade_service:v5; docker build -f OkexSpotTradeService/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/BinanceTrader; name=47.90.96.154:5000/binance_subscribe_service;  docker build -f BinanceSubsribeService/Dockerfile -t $name .; docker push $name
+cd $root/BinanceTrader; name=47.90.96.154:5000/binance_spot_quote_service; docker build -f BinanceQuoteService/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceTrader/Dockerfile -t $name .; docker push $name
+
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_subscribe_service;    docker build -f HuobiSubscribeService/Dockerfile -t $name .; docker push $name
+cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_spot_quote_service;   docker build -f HuobiQuoteService/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
+
+
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;             docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceTrader/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
+
 
 #################################
-docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto/Okex:/app/data -p 3007:3007  -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=SpotTrader"   --name spot spot
+docker run --rm -it --workdir /app -v C:/Users/liping/%USERPROFILE%/.aspnet/https:/https -v E:/appsettings:/app/config -v E:/data:/app/data -p 3013:3013 -p 5001:5001 -p 8000:80 -p 8001:443 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=SpotTrader" --name SpotTrader 47.90.96.154:5000/spottrader:v5
+docker run --rm -it -p 8000:80 -p 8001:443 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e ASPNETCORE_Kestrel__Certificates__Default__Password="password" -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -v %USERPROFILE%\.aspnet\https:/https/ mcr.microsoft.com/dotnet/core/samples:aspnetapp
 
 
-<<<<<<< HEAD
-#power sehll
-cd 'D:\Code\20210315_CryptoTrader\CryptoCapture\'
-docker build -f .\SpotTraderConsole\Dockerfile -t 47.90.96.154:5000/spottrader:v5 .
-
-
-cd ~/E/Code/20180722_IBTrader_1.0.1/CryptoCapture
-name=47.90.96.154:5000/spottrader:v5
-docker build -f SpotTraderConsole/Dockerfile -t $name .
-docker push $name
-=======
-
-rsync -avz ~/E/appsettings/appsettings.DKR.json $hkcts:~/appsettings/
->>>>>>> 73bf26ab244a6ee29f4514065fce77c42d620891
+docker run --rm -it --workdir /app --mount type=bind,source=E:/appsettings/appsettings.DKR.json,target=/app/wwwroot/appsettings.DKR.json -v E:/data:/app/data -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=FZWebTrader.Client" --name fzclient fzclient
+docker run --rm -it --workdir /app -v E:/appsettings/appsettings.DKR.json:/app/wwwroot/appsettings.DKR.json -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e "ENV=DKR" -e "SERVICE_NAME=FZWebTrader.Client" --name fzclient fzclient
 
 rsync -avz ~/E/data/Okex/testparam.json $hkcts:~/data/config/
 rsync -avz appsetings.DKR.json  $hkcts:~/appsetings/
-
 
 
 Get-DbContext
@@ -1361,11 +1370,28 @@ Permissions = "Enquiry/Trade"
 	 
 127) sqlserver in docker
    server side: 
-   -. start sql server => docker run -d -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Password!' -p 1306:1433 --name sql -h sql mcr.microsoft.com/mssql/server:2019-latest
-   -.     
+     - start sql server => docker run --restart always -d -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Password!' -p 1306:1433 --name sqlserver -h sqlserver mcr.microsoft.com/mssql/server:2019-latest
    client side: 
-   - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
+     - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
 
+128) https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
+    - blazor: var clientHandler = new HttpClientHandler(); clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+    - grpcui: using "-insecure" 
+
+129) entity framework
+    - add-migration create
+    - update-database
+
+130) blazor 
+     - when debug: start server side, the client side will be started automatically
+     - 
+     
+131) OS installation/backup/migrate
+     1. using clozilalive device-to-device/disk-to-disk copy
+     2. unplug src disk otherwise, there will be conflict in disk signature
+     3. using diskpart to delete recovery partition such that we can extend volume to use unallocated space
+     
+     
 
 这部分工作可以肢解成这样
 Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;User ID=SA;Password=***********
