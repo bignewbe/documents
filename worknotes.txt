@@ -1353,6 +1353,20 @@ Permissions = "Enquiry/Trade"
    - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
 
 
+
+
+UR cobot:
+  - real time control using servoj/servoc/speedl: https://dof.robotiq.com/discussion/1255/smooth-real-time-target-update-movement-on-ur
+  
+  
+  
+
+
+
+
+
+
+
 这部分工作可以肢解成这样
 Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;User ID=SA;Password=***********
 
