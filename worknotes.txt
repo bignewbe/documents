@@ -1192,13 +1192,11 @@ cd $root/Zookeeper; name=47.90.96.154:5000/zookeeper;                     docker
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeService/Dockerfile -t $name .; docker push $name
 cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexSpotQuoteService/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;     docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
 
 cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeServiceV5/Dockerfile -t $name .; docker push $name
 cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexQuoteServiceV5/Dockerfile -t $name .; docker push $name
-
 cd $root/CryptoCapture; name=47.90.96.154:5000/okex_take_profit;  docker build -f TraderBase/Dockerfile -t $name .; docker push $name
-
-
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/BinanceTrader; name=47.90.96.154:5000/binance_subscribe_service;  docker build -f BinanceSubsribeService/Dockerfile -t $name .; docker push $name
@@ -1416,20 +1414,6 @@ Permissions = "Enquiry/Trade"
      https://47.90.96.154:6001/_configuration/FZWebTrader.Client
      
      
-
-
-
-UR cobot:
-  - real time control using servoj/servoc/speedl: https://dof.robotiq.com/discussion/1255/smooth-real-time-target-update-movement-on-ur
-  
-  
-  
-
-
-
-
-
-
 
 这部分工作可以肢解成这样
 Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;User ID=SA;Password=***********
