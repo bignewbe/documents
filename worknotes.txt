@@ -1192,7 +1192,13 @@ cd $root/Zookeeper; name=47.90.96.154:5000/zookeeper;                     docker
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeService/Dockerfile -t $name .; docker push $name
 cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexSpotQuoteService/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;             docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
+
+cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeServiceV5/Dockerfile -t $name .; docker push $name
+cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexQuoteServiceV5/Dockerfile -t $name .; docker push $name
+
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_take_profit;  docker build -f TraderBase/Dockerfile -t $name .; docker push $name
+
+
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/BinanceTrader; name=47.90.96.154:5000/binance_subscribe_service;  docker build -f BinanceSubsribeService/Dockerfile -t $name .; docker push $name
@@ -1204,20 +1210,24 @@ cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_subscribe_service;    docker 
 cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_spot_quote_service;   docker build -f HuobiQuoteService/Dockerfile -t $name .; docker push $name
 cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
 
-
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;             docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
 cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceTrader/Dockerfile -t $name .; docker push $name
 cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
 
 
+
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzserver; docker build -f Server/Dockerfile -t $name .; 
+cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzclient; docker build -f Client/Dockerfile -t $name .; 
+
+
 #################################
 docker run --rm -it --workdir /app -v C:/Users/liping/%USERPROFILE%/.aspnet/https:/https -v E:/appsettings:/app/config -v E:/data:/app/data -p 3013:3013 -p 5001:5001 -p 8000:80 -p 8001:443 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=SpotTrader" --name SpotTrader 47.90.96.154:5000/spottrader:v5
 docker run --rm -it -p 8000:80 -p 8001:443 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e ASPNETCORE_Kestrel__Certificates__Default__Password="password" -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -v %USERPROFILE%\.aspnet\https:/https/ mcr.microsoft.com/dotnet/core/samples:aspnetapp
 
-
 docker run --rm -it --workdir /app --mount type=bind,source=E:/appsettings/appsettings.DKR.json,target=/app/wwwroot/appsettings.DKR.json -v E:/data:/app/data -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=FZWebTrader.Client" --name fzclient fzclient
-docker run --rm -it --workdir /app -v E:/appsettings/appsettings.DKR.json:/app/wwwroot/appsettings.DKR.json -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e "ENV=DKR" -e "SERVICE_NAME=FZWebTrader.Client" --name fzclient fzclient
+docker run --rm -it --workdir /app -v E:/appsettings/appsettings.DKR.json:/app/wwwroot/appsettings.DKR.json -v E:/appsettings/appsettings.json:/app/wwwroot/appsettings.json -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e "ENV=DKR" -e "SERVICE_NAME=FZWebTrader.Client" --name fzclient fzclient
 
 rsync -avz ~/E/data/Okex/testparam.json $hkcts:~/data/config/
 rsync -avz appsetings.DKR.json  $hkcts:~/appsetings/
@@ -1236,6 +1246,7 @@ cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
 name=47.90.96.154:5000/okex_future_quote_service:v5
 docker build -f OkexFutureQuoteService/Dockerfile -t $name .
 docker push $name
+
 
 
 
@@ -1333,8 +1344,7 @@ docker stack rm zoo
 		  2. sell: dynamic, min rise and min ratio, buy: dynamic, min drop and min ratio, qty: available/num		  
 		  3. sell: dynamic, min rise and min ratio, buy: dynamic, min drop and min ratio, or min profit, qty: one to one
 		  4. sell: fixed, price delta, buy: fixed, price delta, 
-		  5. sell: dynamic, above largest std, qty: available/num, buy: 		  
-		  
+		  5. sell: dynamic, above largest std, qty: available/num, buy: 		  		  
 		  
 	 CryptoCaptureApp:
 	    data flow: messageClient (order, balance, ticker) -> OkexProxy -> SpotSwingFixedRatio -> SpotTraderVM  		
@@ -1363,8 +1373,7 @@ Permissions = "Enquiry/Trade"
 	 2：认清你准备动手的位置是半山腰还是接近山顶还是接近山底  这样你才知道你的仓位控制的比例  
 	 3：到哪里止盈止损  提前想好自己为什么买  如果只是抓反弹  0.5%的收益该走就走  后面涨100%也跟你没关系 
 	 4: 不要追涨，不要幻想这一次不一样。忘记过去的价格。宁可错过。
-	 5： 
-	 
+	 5： 	 
 	 - 耐心，机会很多，肯定有更好的，宁可错过
 	 - 
 	 
@@ -1374,9 +1383,17 @@ Permissions = "Enquiry/Trade"
    client side: 
      - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
 
-128) https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
+128) certificate : https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-2.2
+
+    https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
     - blazor: var clientHandler = new HttpClientHandler(); clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
     - grpcui: using "-insecure" 
+    dotnet dev-certs https -ep %APPDATA%\ASP.NET\Https\TT.Core.Portal.Web.AzureHybrid.pfx -p password
+    dotnet dev-certs https --trust
+    dotnet user-secrets -p TT.Core.Portal.Web.AzureHybrid.csproj set "Kestrel:Certificates:Development:Password" "password"    
+    https://docs.microsoft.com/en-us/aspnet/core/security/authentication/certauth?view=aspnetcore-5.0
+    
+    
 
 129) entity framework
     - add-migration create
@@ -1390,6 +1407,13 @@ Permissions = "Enquiry/Trade"
      1. using clozilalive device-to-device/disk-to-disk copy
      2. unplug src disk otherwise, there will be conflict in disk signature
      3. using diskpart to delete recovery partition such that we can extend volume to use unallocated space
+     
+131) asp.net 
+    - configuration
+      - priority: hard-code > launchSetting/enviroment variable > appsettings.json   
+     
+     https://localhost:6001/.well-known/openid-configuration
+     https://47.90.96.154:6001/_configuration/FZWebTrader.Client
      
      
 
