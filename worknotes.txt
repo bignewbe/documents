@@ -1186,38 +1186,41 @@ ssh $hzcts './StartZookeeper.sh'
 ssh $hkcts './StartOkexFutureCaptureService.sh & ./StartOkexFutureTradeService.sh'
 ssh $hzcts './StartOkexFutureQuoteService.sh' 
 
-cd $root/Zookeeper; name=47.90.96.154:5000/zookeeper;                     docker build -f Zookeeper/Dockerfile -t $name .; docker push $name
+cd $root/Zookeeper; name=47.90.96.154:5000/zookeeper;             docker build -f Zookeeper/Dockerfile -t $name .; docker push $name
+
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service; docker build -f OkexQuoteServiceV5/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_trader;    docker build -f OkexTrader/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_spot_trader;    docker build -f OkexSpotTrader/Dockerfile -t $name .; docker push $name
 
 
 root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeService/Dockerfile -t $name .; docker push $name
-cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexSpotQuoteService/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;     docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
-
-cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeServiceV5/Dockerfile -t $name .; docker push $name
-cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexQuoteServiceV5/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/okex_take_profit;  docker build -f TraderBase/Dockerfile -t $name .; docker push $name
-
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/BinanceTrader; name=47.90.96.154:5000/binance_subscribe_service;  docker build -f BinanceSubsribeService/Dockerfile -t $name .; docker push $name
 cd $root/BinanceTrader; name=47.90.96.154:5000/binance_spot_quote_service; docker build -f BinanceQuoteService/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceTrader/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceSpotTrader/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_swap_trader;        docker build -f BinanceSpotSwapTrader/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_subscribe_service;    docker build -f HuobiSubscribeService/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_spot_quote_service;   docker build -f HuobiQuoteService/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
+
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzserver; docker build -f Server/Dockerfile -t $name .; docker push $name
+cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzclient; docker build -f Client/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;             docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
 cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceTrader/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_trader;  docker build -f OkexTrader/Dockerfile -t $name .; docker push $name
 
-
-
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzserver; docker build -f Server/Dockerfile -t $name .; 
-cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzclient; docker build -f Client/Dockerfile -t $name .; 
+cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service;  docker build -f OkexSubscribeServiceV5/Dockerfile -t $name .; docker push $name
+cd $root/BinanceTrader; name=47.90.96.154:5000/binance_subscribe_service;  docker build -f BinanceSubsribeService/Dockerfile -t $name .; docker push $name
 
 
 #################################
@@ -1381,6 +1384,7 @@ Permissions = "Enquiry/Trade"
    client side: 
      - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
 
+
 128) certificate : https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-2.2
 
     https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
@@ -1413,6 +1417,12 @@ Permissions = "Enquiry/Trade"
      https://localhost:6001/.well-known/openid-configuration
      https://47.90.96.154:6001/_configuration/FZWebTrader.Client
      
+
+
+
+
+
+
      
 
 这部分工作可以肢解成这样
