@@ -1186,38 +1186,42 @@ ssh $hzcts './StartZookeeper.sh'
 ssh $hkcts './StartOkexFutureCaptureService.sh & ./StartOkexFutureTradeService.sh'
 ssh $hzcts './StartOkexFutureQuoteService.sh' 
 
-cd $root/Zookeeper; name=47.90.96.154:5000/zookeeper;                     docker build -f Zookeeper/Dockerfile -t $name .; docker push $name
-
-
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeService/Dockerfile -t $name .; docker push $name
-cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexSpotQuoteService/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;     docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
-
-cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service:v5;  docker build -f OkexSubscribeServiceV5/Dockerfile -t $name .; docker push $name
-cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service:v5; docker build -f OkexQuoteServiceV5/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/okex_take_profit;  docker build -f TraderBase/Dockerfile -t $name .; docker push $name
+cd $root/Zookeeper; name=47.90.96.154:5000/zookeeper;             docker build -f Zookeeper/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/BinanceTrader; name=47.90.96.154:5000/binance_subscribe_service;  docker build -f BinanceSubsribeService/Dockerfile -t $name .; docker push $name
+cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service; docker build -f OkexQuoteServiceV5/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_trader;    docker build -f OkexTrader/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_spot_trader;    docker build -f OkexSpotTrader/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_swap_trader;    docker build -f OkexSwapTrader/Dockerfile -t $name .; docker push $name
+
+root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/BinanceTrader; name=47.90.96.154:5000/binance_spot_quote_service; docker build -f BinanceQuoteService/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceTrader/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceSpotTrader/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_swap_trader;        docker build -f BinanceSpotSwapTrader/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_subscribe_service;    docker build -f HuobiSubscribeService/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_spot_quote_service;   docker build -f HuobiQuoteService/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
+
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzserver; docker build -f Server/Dockerfile -t $name .; docker push $name
+cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzclient; docker build -f Client/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;             docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
 cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceTrader/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_trader;  docker build -f OkexTrader/Dockerfile -t $name .; docker push $name
 
-
-
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzserver; docker build -f Server/Dockerfile -t $name .; 
-cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzclient; docker build -f Client/Dockerfile -t $name .; 
+cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service;  docker build -f OkexSubscribeServiceV5/Dockerfile -t $name .; docker push $name
+cd $root/BinanceTrader; name=47.90.96.154:5000/binance_subscribe_service;  docker build -f BinanceSubsribeService/Dockerfile -t $name .; docker push $name
 
 
 #################################
@@ -1381,6 +1385,7 @@ Permissions = "Enquiry/Trade"
    client side: 
      - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
 
+
 128) certificate : https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-2.2
 
     https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
@@ -1413,6 +1418,85 @@ Permissions = "Enquiry/Trade"
      https://localhost:6001/.well-known/openid-configuration
      https://47.90.96.154:6001/_configuration/FZWebTrader.Client
      
+
+
+
+
+
+
+     
+
+这部分工作可以肢解成这样
+Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;User ID=SA;Password=***********
+
+
+我们公司半年目标/团队搭建/PR节奏这些以前都说过，和以前没啥不一样，主要纠结可能是杨健的可替代性以及能力方面吧。
+
+工作大致优先级：
+- 搭出几个象样的demo好拍视频 
+- 招人和团队建设，为以后发展做准备。策略是一边进一边出只留下一拨能一起干事的人。曹操说的包容性多样性我是认同的。但是短期and/or长期一定要能出活帮我们。
+- 之后可以更多PR
+- 商业化
+
+
+杨健的工作：
+1. 运维(阿里云容器这些) - 他做的基本上都是我说的，东西也不多，我都可以顶上，原先也是想给他机会多学点东西。
+2. 公司官网 - 这个也简单，有了效果图，找谁估计都快
+3. 他之前搭的ros web端 - 稍微复杂。商业化之前都没用，他的东西离能用也还远，不影响我们短期目标；长期的话我主要怕沟通费劲事被功半，然后在我看来他能力也一般（这个和曹操看法有所不同），很多东西会但都不深，信心不太足。
+4. research：虽然他自己兴趣很大，但我倒没关心他这方面的价值
+
+所以在我看来，短期他在与不在不影响我们的目标。长期，不能说没有纠结，我偏向从市场找两个人（前端+运维）替换他，对团队能力建设可能更好。看看曹操你那边情况好不好办，留下也可以的。
+
+昨天是想过先把评价给你你们看看，后来想想来点震动也好，所以就直接发了，效果是达到了 
+
+
+1. 杨健前端和运维交接 
+2. URCap开发    - 我们视觉获得UR认证的唯一途径
+3. 大族对接    
+4. 招人：产品经理、前端、算法、系统
+5. 官网找外包做 - 薇薇
+6. 租办公室     - 看看23还有没有空的
+7. UR ROS代码封装  - 子峰
+8. ppf集成测试     - 子峰、佳诚
+9. 新框架单元测试  - 键驰 
+10. ppf算法优化    - 运鑫
+
+
+
+
+automapper: 
+- inherit AutoMapper.Profile and create map between to class
+- use ProjectTo extension method to covert type
+
+autofac:
+- register class as interface
+- 
+
+
+
+给大家整理出来 各板块龙头哈：
+DEX龙头:UNI、sushi
+借贷龙头：AAve、comp、MKR
+聚合器龙头：1inch
+聚合理财：yfi、yfii
+保险:cover、wnxm
+Dao龙头：Ant
+衍生品龙头：SNX
+数据类龙头：GRT
+虚拟机龙头：Link、Api3、Band
+Layer2龙头：ZRX、LRC、OMG
+记住每个板块 龙头先动 其他尾随 所以玩币第一要买板块龙头强势币
+
+
+
+
+
+
+
+
+
+
+    
      
 
 这部分工作可以肢解成这样
