@@ -1194,7 +1194,8 @@ root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/CryptoCapture; name=47.90.96.154:5000/okex_trader;    docker build -f OkexTrader/Dockerfile -t $name .; docker push $name
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/CryptoCapture; name=47.90.96.154:5000/okex_spot_trader;    docker build -f OkexSpotTrader/Dockerfile -t $name .; docker push $name
-
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_swap_trader;    docker build -f OkexSwapTrader/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/BinanceTrader; name=47.90.96.154:5000/binance_spot_quote_service; docker build -f BinanceQuoteService/Dockerfile -t $name .; docker push $name
@@ -1384,7 +1385,6 @@ Permissions = "Enquiry/Trade"
    client side: 
      - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
 
-
 128) certificate : https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-2.2
 
     https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
@@ -1393,8 +1393,7 @@ Permissions = "Enquiry/Trade"
     dotnet dev-certs https -ep %APPDATA%\ASP.NET\Https\TT.Core.Portal.Web.AzureHybrid.pfx -p password
     dotnet dev-certs https --trust
     dotnet user-secrets -p TT.Core.Portal.Web.AzureHybrid.csproj set "Kestrel:Certificates:Development:Password" "password"    
-    https://docs.microsoft.com/en-us/aspnet/core/security/authentication/certauth?view=aspnetcore-5.0
-    
+    https://docs.microsoft.com/en-us/aspnet/core/security/authentication/certauth?view=aspnetcore-5.0    
     
 
 129) entity framework
@@ -1415,14 +1414,7 @@ Permissions = "Enquiry/Trade"
       - priority: hard-code > launchSetting/enviroment variable > appsettings.json   
      
      https://localhost:6001/.well-known/openid-configuration
-     https://47.90.96.154:6001/_configuration/FZWebTrader.Client
-     
-
-
-
-
-
-
+     https://47.90.96.154:6001/_configuration/FZWebTrader.Client     
      
 
 这部分工作可以肢解成这样
@@ -1436,6 +1428,7 @@ Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;
 - 招人和团队建设，为以后发展做准备。策略是一边进一边出只留下一拨能一起干事的人。曹操说的包容性多样性我是认同的。但是短期and/or长期一定要能出活帮我们。
 - 之后可以更多PR
 - 商业化
+
 
 
 杨健的工作：
@@ -1462,14 +1455,13 @@ Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;
 
 
 
-
 automapper: 
 - inherit AutoMapper.Profile and create map between to class
 - use ProjectTo extension method to covert type
 
 autofac:
 - register class as interface
-- 
+ 
 
 
 
@@ -1485,10 +1477,6 @@ Dao龙头：Ant
 虚拟机龙头：Link、Api3、Band
 Layer2龙头：ZRX、LRC、OMG
 记住每个板块 龙头先动 其他尾随 所以玩币第一要买板块龙头强势币
-
-
-
-
 
 
 
