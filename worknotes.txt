@@ -1258,43 +1258,10 @@ cd $root/FZWebTrader; name=47.90.96.154:5000/personalweb; docker build -f Person
 - uniMMR = Account Equity/Maintainance Margin Amount
 - what is Maintainance Margin Amount?
 
-[
-    {
-        "accountAlias": "SgsR",    // unique account code
-        "asset": "USDT",    // asset name
-        "balance": "122607.35137903", // wallet balance
-        "crossWalletBalance": "23.72469206", // crossed wallet balance
-        "crossUnPnl": "0.00000000"  // unrealized profit of crossed positions
-        "availableBalance": "23.72469206",       // available balance
-        "maxWithdrawAmount": "23.72469206",     // maximum amount for transfer out
-        "marginAvailable": true,    // whether the asset can be used as margin in Multi-Assets mode
-        "updateTime": 1617939110373
-    }
-]
 
-riskLevelChange
-{
-    "e":"riskLevelChange",      // Event Type
-    "E":1587727187525,      // Event Time
-    "u":"1.99999999",      // uniMMR level
-    "s":"MARGIN_CALL",        //MARGIN_CALL, SUPPLY_MARGIN, REDUCE_ONLY, FORCE_LIQUIDATION 
-    "eq":"30.23416728",      // account equity in USD value
-    "ae":"30.23416728",      // actual equity without collateral rate in USD value
-    "m":"15.11708371"      // total maintenance margin in USD value 
-}  
-
-ACCOUNT_UPDATE
-{
-        "a":"USDT",                   // Asset
-        "wb":"122624.12345678",       // Wallet Balance
-        "cw":"100.12345678",          // Cross Wallet Balance
-        "bc":"50.12345678"            // Balance Change except PnL and Commission
-},
-
-
-# copy to server and build it
+- copy to server and build it
 cd ~/E/Code/20180722_IBTrader_1.0.1/;
-rsync -avz --exclude=obj --exclude=bin --exclude=.git --exclude=.vs CryptoCapture/ $hkcts:~/CryptoCapture/
+rsync -avz --delete --exclude=obj --exclude=bin --exclude=.git --exclude=.vs CryptoCapture/ $hkcts:~/CryptoCapture/
 
 root=~/
 cd $root/CryptoCapture; name=localhost:5000/okex_swap_trader;    docker build -f OkexSwapTrader/Dockerfile -t $name .; 
@@ -1470,7 +1437,6 @@ Permissions = "Enquiry/Trade"
    client side: 
      - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
 
-
 128) certificate : https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-2.2
 
     https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
@@ -1479,7 +1445,7 @@ Permissions = "Enquiry/Trade"
     dotnet dev-certs https --trust
     dotnet user-secrets -p TT.Core.Portal.Web.AzureHybrid.csproj set "Kestrel:Certificates:Development:Password" "password"    
     https://docs.microsoft.com/en-us/aspnet/core/security/authentication/certauth?view=aspnetcore-5.0
-    
+   
 
 129) entity framework
     - add-migration
@@ -1495,8 +1461,6 @@ Permissions = "Enquiry/Trade"
     - configuration
       - priority: hard-code > launchSetting/enviroment variable > appsettings.json        
      https://localhost:6001/.well-known/openid-configuration
-     https://47.90.96.154:6001/_configuration/FZWebTrader.Client
-     
 
 132) blazor
     - when debug: start server side, the client side will be started automatically
@@ -1750,7 +1714,7 @@ name=IMG_0010;
 
 
 
-     
+   
 
 这部分工作可以肢解成这样
 Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;User ID=SA;Password=***********
@@ -1763,6 +1727,7 @@ Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;
 - 招人和团队建设，为以后发展做准备。策略是一边进一边出只留下一拨能一起干事的人。曹操说的包容性多样性我是认同的。但是短期and/or长期一定要能出活帮我们。
 - 之后可以更多PR
 - 商业化
+
 
 
 杨健的工作：
@@ -1789,6 +1754,16 @@ Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;
 
 
 
+<<<<<<< HEAD
+=======
+automapper: 
+- inherit AutoMapper.Profile and create map between to class
+- use ProjectTo extension method to covert type
+
+autofac:
+- register class as interface
+ 
+>>>>>>> origin/master
 
 
 
@@ -1804,9 +1779,6 @@ Dao龙头：Ant
 虚拟机龙头：Link、Api3、Band
 Layer2龙头：ZRX、LRC、OMG
 记住每个板块 龙头先动 其他尾随 所以玩币第一要买板块龙头强势币
-
-
-
 
 
 
@@ -1887,7 +1859,6 @@ Layer2龙头：ZRX、LRC、OMG
 对于表决权, 根据“退出协议", 我已经把表决权委托给贾奎，他可以按约定的条款行使我的表决权。 否则，可能要先撤销之前的协议。
 
 李平
-
 
 
 
