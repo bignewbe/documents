@@ -461,13 +461,16 @@ text('Interpreter','latex', 'String','$$\pi\times DoD=4^o$$','Position',[0.5,0.5
 41) apt-cache search cd 
 #search package
 
-42) disable ssh password
+42) ssh
+- disable ssh password
 1) run in local computer: ssh-keygen -t rsa  #generate pub key in local machine in (~/.ssh/id_rsa.pub)
 2) run in local computer: ssh-copy-id -i $HOME/.ssh/id_rsa.pub user@remote
 3) in cygwin .ssh folder may exit in the cygwin installation location iso $HOME
  => better solution: http://www.linuxproblem.org/art_9.html
- - remote host: the permision for home directory and .ssh has to be 700; for authorized_keys has to be 600. 
- - add -v to see debug info. if offered key is not accepted, check the permissions above.
+   * remote host: the permision for home directory and .ssh has to be 700; for authorized_keys has to be 600. 
+   * add -v to see debug info. if offered key is not accepted, check the permissions above.
+- github ssh key: WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! 
+   * run 'ssh-keygen -R github.com' in local computer to update known hosts
 
  
 43) #transcode campus2.avi into camp2.avi; -b means the given bit rate; -psnr shows the psnr of the transcoded video
@@ -815,10 +818,6 @@ cvs update -r DRUPAL-4-7
 	      in this case, we just need to run update-database. the important is that history should be complete, such that both the database and the model can be updated to the latest status and match each other. 
 	   
 	
-91) Attached mdf file to sql server
-    1) run sql management tool as administrator
-	2) right click Databases and click attach to select mdf file
-	3) to detach: right click the attached database => Task => Detach
 
 92) web deployment, web publish, configure sql server express and iis: http://www.codeproject.com/Articles/674930/Configuring-IIS-ASP-NET-and-SQL-Server
     1) configure TCP/IP in SQL Server Configuration Manager to allow connection using IP address
@@ -845,7 +844,6 @@ cvs update -r DRUPAL-4-7
 				https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k(WebApplicationProjects.PackagePublishOverview);k(TargetFrameworkMoniker-.NETFramework,Version%3Dv4.6.1)&rd=true				
 				
 	   
-93) test sql server connection: create an empty file with .udl extension and open it
 
 94) set Asp.Net web app to use SSL: http://www.asp.net/mvc/overview/security/create-an-aspnet-mvc-5-app-with-facebook-and-google-oauth2-and-openid-sign-on
     1) enable SSL in project properties: view => properties window
@@ -941,6 +939,11 @@ cvs update -r DRUPAL-4-7
 	   git fetch origin
 	 - remember git password in cygwin: https://stackoverflow.com/questions/18683935/store-https-passwords-with-cygwins-git
 	   git config --global credential.helper 'cache --timeout=36000' => remember for 10 hours
+	 - replace master with dev:
+       - git checkout dev
+       - git merge -s ours master
+       - git checkout master
+       - git merge dev
 
 	 
 	   
@@ -990,9 +993,23 @@ cvs update -r DRUPAL-4-7
 	h. run python script to build project => 
 	    python E:\Code\PythonScript\PythonScript\MsBuild.py -p PortableCSharpLib.csproj -a "/t:GitBuild /p:OutputPath=output /p:Minor=10 /p:Major=2 /p:Configuration=Release"
 
-102) python read file error: json.decoder.JSONDecodeError: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)
-	1. microsoft insert UTF-8 BOM character at the beginning of utf-8 file
-    2. open the file using utf-8-sig instead => with open(dependencyFileName, 'r', encoding='utf-8-sig') as f:
+102) python:
+     - python read file error: json.decoder.JSONDecodeError: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)
+	   1. microsoft insert UTF-8 BOM character at the beginning of utf-8 file
+       2. open the file using utf-8-sig instead => with open(dependencyFileName, 'r', encoding='utf-8-sig') as f:
+	 - python virtual env
+	   1. create env by running from terminal: python -m venv env_name
+	   2. activate env: env_name\Scripts\activate.bat
+	   3. install dependencies: pip install -r requirements.txt
+	 - visual studio breakpoints not effective => use ananconda
+	 - install coco api: pip install pycocotools-windows
+	 - install cocoapi: pip install "git+https://github.com/philferriere/cocoapi.git#egg=pycocotools&subdirectory=PythonAPI"
+	 - create vitual enviroment: python -m venv name
+	 - check tensotflow version: 
+	     python -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 2
+         python3 -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 3
+	 
+	   
      
 103) MVC entityframework data model:
     a. use virtual to define navigation property
@@ -1034,7 +1051,7 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
      - sometimes if we cannot install nuget package for portable library we can mannually add it, like SignalR for portable
 	 - 
 
-110) Sql Server configuration
+110) Sql Server
      - allow login using username and password => Enable SQL Server login mode in Management Studio
 	   1. enable SQL server and Windows Authentication mode  => Properties => Security
 	   2. allow remote connection in Properties => Connections
@@ -1046,7 +1063,14 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 	 - allow inbound on port 1433 in Windows Firewall (may not needed)
 	 - add data connection in VisualStudio
 	    open Server Explorer => Add Connections => type in "Ip Address\SQLEXPRESS" => select SQL Server Login => type in username and password
-	 - copy database to the server by detaching and attaching the database
+	 - copy database to the server by detaching and attaching the database	 
+	 - test sql server connection: create an empty file with .udl extension and open it	 
+     - Attached mdf file to sql server
+       1) run sql management tool as administrator
+	   2) right click Databases and click attach to select mdf file
+	   3) to detach: right click the attached database => Task => Detach
+	 - copy database/table to another database: in SQL management studio => right click db => Import Data wizzard
+
 	 
 	 
 111) web deployment using deployment package : https://msdn.microsoft.com/en-us/library/ff356104(v=vs.110).aspx
@@ -1155,20 +1179,21 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
          wsl --unregister docker-desktop-data
          wsl --import docker-desktop-data D:\docker\ docker-desktop-data.tar --version 2
 	 
+	 
 	run mysql: 
 	  docker run -d -p 3306:3306 --name mysql-latest -e MYSQL_ROOT_PASSWORD=seller-soft mysql:latest
 
 	  run captureserver:
 docker run --rm --workdir /app -v E:/data/CryptoCaptureServer:/app/config -v E:/data:/app/data -e "ENV=Docker" -e "ENV_CONFIG_FOLDER=config" --name cryptocaptureserver cryptocaptureserverdocker run --rm -it --workdir /app -v E:/data/CryptoCaptureServer:/app/config -v E:/data:/app/data -e "ENV=Docker" -e "ENV_CONFIG_FOLDER=config" --name cryptocaptureserver cryptocaptureserver
-docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 2000:2000 -p 2001:2001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=Zookeeper1" --name Zookeeper1 zookeeper	 	 
-docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3003:3003              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService okex_future_capture_service
 docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3004:3004              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureTradeService" --name OkexFutureTradeService okex_future_trade_service
 docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3005:3005              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureQuoteService" --name OkexFutureQuoteService okex_future_quote_service
 
 docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3006:3006              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSpotCaptureService" --name OkexSpotCaptureService okex_spot_capture_service
 docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3007:3007              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSpotTradeService"   --name OkexSpotTradeService   okex_spot_trade_service
 docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3008:3008              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexSpotQuoteService"   --name OkexSpotQuoteService   okex_spot_quote_service
-                
+
+docker run --rm --workdir /app -v E:/appsettings:/app/config -v E:/data:/app/data -p 2000:2000 -p 2001:2001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=Zookeeper1" --name Zookeeper1 47.90.96.154:5000/zookeeper
+docker run --rm --workdir /app -v E:/Code/20180722_IBTrader_1.0.1/appsettings:/app/config -v E:/data/Crypto:/app/data -p 3003:3003              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService okex_future_capture_service                
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 2000:2000 -p 2001:2001 -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=Zookeeper1" --name Zookeeper1 localhost:5000/zookeeper:latest
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3001:3001              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureCaptureService" --name OkexFutureCaptureService 121.43.98.245:5000/okex_future_capture_service:latest
 docker run --rm --workdir /app -v ~/appsettings:/app/config -v ~/data:/app/data -p 3004:3004              -e "ENV=DKR" -e "ENV_CONFIG_FOLDER=config" -e "SERVICE_NAME=OkexFutureQuoteService" --name OkexFutureQuoteService localhost:5000/okex_future_quote_service:latest
@@ -1186,42 +1211,100 @@ ssh $hzcts './StartZookeeper.sh'
 ssh $hkcts './StartOkexFutureCaptureService.sh & ./StartOkexFutureTradeService.sh'
 ssh $hzcts './StartOkexFutureQuoteService.sh' 
 
+root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/Zookeeper; name=47.90.96.154:5000/zookeeper;             docker build -f Zookeeper/Dockerfile -t $name .; docker push $name
+
+
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/okex_spot_trader;    docker build -f OkexSpotTrader/Dockerfile -t $name .; docker push $name
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceSpotTrader/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/Okex; name=47.90.96.154:5000/okex_spot_quote_service; docker build -f OkexQuoteServiceV5/Dockerfile -t $name .; docker push $name
+
 root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/CryptoCapture; name=47.90.96.154:5000/okex_trader;    docker build -f OkexTrader/Dockerfile -t $name .; docker push $name
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/CryptoCapture; name=47.90.96.154:5000/okex_spot_trader;    docker build -f OkexSpotTrader/Dockerfile -t $name .; docker push $name
+cd $root/BinanceTrader; name=47.90.96.154:5000/binance_spot_quote_service; docker build -f BinanceQuoteService/Dockerfile -t $name .; docker push $name
+
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/CryptoCapture; name=47.90.96.154:5000/okex_swap_trader;    docker build -f OkexSwapTrader/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/BinanceTrader; name=47.90.96.154:5000/binance_spot_quote_service; docker build -f BinanceQuoteService/Dockerfile -t $name .; docker push $name
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceSpotTrader/Dockerfile -t $name .; docker push $name
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_swap_trader;        docker build -f BinanceSpotSwapTrader/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/binance_swap_trader;        docker build -f BinanceSwapTrader/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_subscribe_service;    docker build -f HuobiSubscribeService/Dockerfile -t $name .; docker push $name
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/HuobiTrader; name=47.90.96.154:5000/huobi_spot_quote_service;   docker build -f HuobiQuoteService/Dockerfile -t $name .; docker push $name
-root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/CryptoCapture; name=47.90.96.154:5000/huobi_spot_trader;        docker build -f HuobiTrader/Dockerfile -t $name .; docker push $name
+cd $root/CryptoCapture; name=47.90.96.154:5000/monitor; docker build -f Monitor/Dockerfile -t $name .; docker push $name
+
 
 root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzserver; docker build -f Server/Dockerfile -t $name .; docker push $name
 cd $root/FZWebTrader/FZWebTrader; name=47.90.96.154:5000/fzclient; docker build -f Client/Dockerfile -t $name .; docker push $name
 
 root=~/E/Code/20180722_IBTrader_1.0.1
-cd $root/CryptoCapture; name=47.90.96.154:5000/spottrader:v5;             docker build -f SpotTraderConsole/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/binance_spot_trader;        docker build -f BinanceTrader/Dockerfile -t $name .; docker push $name
-cd $root/CryptoCapture; name=47.90.96.154:5000/okex_trader;  docker build -f OkexTrader/Dockerfile -t $name .; docker push $name
+cd $root/FZWebTrader; name=47.90.96.154:5000/personalweb; docker build -f PersonalWeb/Dockerfile -t $name .; docker push $name
 
-cd $root/Okex; name=47.90.96.154:5000/okex_subscribe_service;  docker build -f OkexSubscribeServiceV5/Dockerfile -t $name .; docker push $name
-cd $root/BinanceTrader; name=47.90.96.154:5000/binance_subscribe_service;  docker build -f BinanceSubsribeService/Dockerfile -t $name .; docker push $name
+- fix "Order would trigger immediately"
+  1. after error detected, change stop order to limit order, and keep it for 2xintervals
+  2. 
+- stop-limit order: it is possilbe order got triggered but not executed
+
+- Wallet Balance = Total Net Transfer + Total Realized Profit + Total Net Funding Fee - Total Commission
+- Account Equity = Wallet Balance + unrealized PNL
+- Margin Balance = Wallet Balance + Unrealized PNL
+- Initial Margin = Notional Position Value / Leverage Level
+- Avail Balance =  Acount Equity - Initial Margin
+- Maintenance Margin = Notional Position Value * Maintenance Margin Rate - Maintenance Amount
+- Maintainance Margin Rate and Maintainance Amount are given by Binance
+- uniMMR = Account Equity/Maintainance Margin Amount
+- what is Maintainance Margin Amount?
+
+[
+    {
+        "accountAlias": "SgsR",    // unique account code
+        "asset": "USDT",    // asset name
+        "balance": "122607.35137903", // wallet balance
+        "crossWalletBalance": "23.72469206", // crossed wallet balance
+        "crossUnPnl": "0.00000000"  // unrealized profit of crossed positions
+        "availableBalance": "23.72469206",       // available balance
+        "maxWithdrawAmount": "23.72469206",     // maximum amount for transfer out
+        "marginAvailable": true,    // whether the asset can be used as margin in Multi-Assets mode
+        "updateTime": 1617939110373
+    }
+]
+
+riskLevelChange
+{
+    "e":"riskLevelChange",      // Event Type
+    "E":1587727187525,      // Event Time
+    "u":"1.99999999",      // uniMMR level
+    "s":"MARGIN_CALL",        //MARGIN_CALL, SUPPLY_MARGIN, REDUCE_ONLY, FORCE_LIQUIDATION 
+    "eq":"30.23416728",      // account equity in USD value
+    "ae":"30.23416728",      // actual equity without collateral rate in USD value
+    "m":"15.11708371"      // total maintenance margin in USD value 
+}  
+
+ACCOUNT_UPDATE
+{
+        "a":"USDT",                   // Asset
+        "wb":"122624.12345678",       // Wallet Balance
+        "cw":"100.12345678",          // Cross Wallet Balance
+        "bc":"50.12345678"            // Balance Change except PnL and Commission
+},
+
+
+# copy to server and build it
+cd ~/E/Code/20180722_IBTrader_1.0.1/;
+rsync -avz --exclude=obj --exclude=bin --exclude=.git --exclude=.vs CryptoCapture/ $hkcts:~/CryptoCapture/
+
+root=~/
+cd $root/CryptoCapture; name=localhost:5000/okex_swap_trader;    docker build -f OkexSwapTrader/Dockerfile -t $name .; 
+cd $root/CryptoCapture; name=localhost:5000/binance_spot_trader; docker build -f BinanceSpotTrader/Dockerfile -t $name .;
+cd $root/CryptoCapture; name=localhost:5000/okex_spot_trader;    docker build -f OkexSpotTrader/Dockerfile -t $name .; 
+cd $root/CryptoCapture; name=localhost:5000/binance_swap_trader; docker build -f BinanceSwapTrader/Dockerfile -t $name .; 
+
+
+
+rsync -avz --force --delete --delete-excluded --exclude=.git/ --exclude=obj/ --exclude=bin/ --exclude=.vs/ --exclude=packages/ ./CryptoCapture $hkcts:~/
 
 
 #################################
@@ -1248,8 +1331,6 @@ cd ~/E/Code/20180722_IBTrader_1.0.1/OkexServices
 name=47.90.96.154:5000/okex_future_quote_service:v5
 docker build -f OkexFutureQuoteService/Dockerfile -t $name .
 docker push $name
-
-
 
 
 docker stack deploy -c ./docker-compose.yml zoo
@@ -1311,10 +1392,10 @@ docker stack rm zoo
        find -name "*.doc" -o -name "*.docx" -o -name "*.ppt" -o -name "*.pptx" -o -name "*.txt" -o -name "*.xml" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "*.pdf" -o -name "Dockerfile" -o -name ".dockerignore" -o -name "NLog.*" | grep -v "/obj/" | grep -v "/bin/" | grep -v "/packages/" | xargs git add
 
 
-124) C# 8.0 new feature
+124) C# 
      - switch case 
 	 - list range and index 
-	 - 
+	 - Task.Run vs Task.Factory.StartNew: StartNew allow child thread attached to parent => child has t
 
 125) zookeper, service keeper, ibeatmanager
      - beatmanager: simple functionality, to count number of heatbeat and raise heatbeat timout event
@@ -1352,13 +1433,17 @@ docker stack rm zoo
 	    data flow: messageClient (order, balance, ticker) -> OkexProxy -> SpotSwingFixedRatio -> SpotTraderVM  		
 	 
 		                          
-128) awk:
-     awk 'NR>=1 && NR<=2' test.txt > 1.txt;  //outfirst two lines to 1.txt
-	 awk -F';' 'NR > 2 {$1 = $1 + 1000; print $0}' test.txt |  //semicolon as delimiter; add 1000 to first column
-	 sed 's/ /;/g' >> 1.txt; mv 1.txt test.txt //change delimiter from space to semicolon
-	 
-     for f in `find . | grep Okex_ | grep .txt`; do echo $f; awk 'NR>=1 && NR<=2' $f > temp.txt; awk -F';' 'NR > 2 {$1 = $1 - 28800; print $0}' $f | sed 's/ /;/g' >> temp.txt; mv temp.txt $f; done	
-
+128) awk/du:
+     - awk 'NR>=1 && NR<=2' test.txt > 1.txt;                    //outfirst two lines to 1.txt
+	 - awk -F';' 'NR > 2 {$1 = $1 + 1000; print $0}' test.txt |  //semicolon as delimiter; add 1000 to first column
+	 - sed 's/ /;/g' >> 1.txt; mv 1.txt test.txt                 //change delimiter from space to semicolon	 
+     - for f in `find . | grep Okex_ | grep .txt`; do echo $f; awk 'NR>=1 && NR<=2' $f > temp.txt; awk -F';' 'NR > 2 {$1 = $1 - 28800; print $0}' $f | sed 's/ /;/g' >> temp.txt; mv temp.txt $f; done	
+     - # moving all directories meeting the size criteria to another location:
+       for d in $(du -sk * | awk -v m=1000 '$1 > 1024*m {print $2}')
+	   do 
+         mv $d $DESTINATION
+  	   done
+	   
 129) dotnet and nuget restore packages:
     - restore nuget packages: 
 	  for f in $(find . -type d -maxdepth 1); do f1=`realpath $f`; echo $f1; cd $f1; dotnet restore; ~/bin/nuget.exe restore; cdp; done
@@ -1390,21 +1475,16 @@ Permissions = "Enquiry/Trade"
 
     https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
     - blazor: var clientHandler = new HttpClientHandler(); clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-    - grpcui: using "-insecure" 
     dotnet dev-certs https -ep %APPDATA%\ASP.NET\Https\TT.Core.Portal.Web.AzureHybrid.pfx -p password
     dotnet dev-certs https --trust
     dotnet user-secrets -p TT.Core.Portal.Web.AzureHybrid.csproj set "Kestrel:Certificates:Development:Password" "password"    
     https://docs.microsoft.com/en-us/aspnet/core/security/authentication/certauth?view=aspnetcore-5.0
     
-    
 
 129) entity framework
-    - add-migration create
+    - add-migration
     - update-database
 
-130) blazor 
-     - when debug: start server side, the client side will be started automatically
-     - 
      
 131) OS installation/backup/migrate
      1. using clozilalive device-to-device/disk-to-disk copy
@@ -1413,11 +1493,257 @@ Permissions = "Enquiry/Trade"
      
 131) asp.net 
     - configuration
-      - priority: hard-code > launchSetting/enviroment variable > appsettings.json   
-     
+      - priority: hard-code > launchSetting/enviroment variable > appsettings.json        
      https://localhost:6001/.well-known/openid-configuration
      https://47.90.96.154:6001/_configuration/FZWebTrader.Client
      
+
+132) blazor
+    - when debug: start server side, the client side will be started automatically
+    - disable authentication
+	  - change Router to not use authentication
+	  - remove Authorize from client side and server side
+	  - at client side, tell httpClient to not add token: 
+	- reload javascript using F5 so that change will take effect
+
+
+123) windows 
+    - windows update problem
+	  - run %temp% and delete temp files
+	  - right click system disk => diskclean to delete files 
+	  - run as admin:
+   	    - sfc /scannow
+		- DISM /Online /Cleanup-Image /CheckHealth
+		- DISM /Online /Cleanup-Image /ScanHealth
+		- DISM /Online /Cleanup-Image /RestoreHealth
+	- remote desktop copy/paste does not work
+	  - run gpedit.msc 
+	  - go to "Computer Configuration\Administrative Templates\Windows Components\Remote Desktop Services\Remote Desktop Session Host\Device and Resource Redirection"
+	  - disable "Do not allow Clipboard redirection"
+
+
+124) c# automapper/autofac
+- inherit AutoMapper.Profile and create map between to class
+- use ProjectTo extension method to covert type
+
+autofac:
+- register class as interface
+- 
+
+125) deep learning
+    - 
+	
+126) nvidia gpu
+    - nvidia-smi -L: list gpu version
+	- for tensorflow, check tensorflow, cuda, cuDNN compatibility: https://www.tensorflow.org/install/source	 
+	- install nvidia cuda in windows for docker container on wsl 2
+	  - install docker desktop	  
+	  - install cuda from nvidia web (we can install GPU driver from here. no need to install GPU driver separatey)
+	  - install wsl2 from cmd: wsl --install; wsl --update
+	  - install Ubuntu on wsl2
+	  - make docker desktop available to Ubuntu: 
+	    - Docker Desktop: Setttings -> Resources -> WSL Integration
+		- Ubuntu: docker context ls; docker context use xxx;
+	  - install nvidia container toolkit inside Ubuntu:
+	    - distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+		- curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add
+		- curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+		- sudo apt update
+		- sudo apt install -y nvidia-docker2	
+	  - test a bechmark Docker container: sudo docker run --gpus all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark	
+	  - run cuda container mapping local drive:
+	    - start x server XLaunch
+        - name=cuda;img=nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04;sudo docker run -it --rm --gpus=all -p 8888:8888 -p 6006:6006 -v /home/ping/.bashrc:/root/.bashrc -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg -v /mnt/d:/root/d -v /mnt/e:/root/e -e DISPLAY -e WAYLAND_DISPLAY -e XDG_RUNTIME_DIR -e PULSE_SERVER --hostname $name --name $name $img bash      
+          name=cuda;
+          img=47.90.96.154:5000/cuda-devel-self:v1;
+          img=nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04;
+          docker run --rm -it \
+             --gpus=all \
+             --user=$(id -u) \
+             --user 1000:1000 \
+             -p 6001:6006 \
+             -v /home/ping/.bashrc:/root/.bashrc \
+             -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+             -v /mnt/wslg:/mnt/wslg \
+		     -v /mnt/d:/root/d \
+             -v /mnt/e:/root/e \
+             -e DISPLAY -e WAYLAND_DISPLAY -e XDG_RUNTIME_DIR -e PULSE_SERVER \
+             --hostname $name \
+             --name $name $img bash   	  
+	  
+      - nvidia-smi and nvcc -V shows different cuda version: https://stackoverflow.com/questions/53422407/different-cuda-versions-shown-by-nvcc-and-nvidia-smi
+	    - nvidia-smi shows cuda installed with gpu driver 
+		- nvcc shows cuda runtime version, which is expected to be used 
+	 
+	  - setup mmdection
+	    - enter above containder: docker exec -it cuda bash
+		- install basic packages: apt update; apt install wget git vim unzip tree ffmpeg libsm6 libxext6
+		- https://mmdetection.readthedocs.io/en/latest/get_started.html
+		- install miniconda
+		  - mkdir -p ~/miniconda3
+	      - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+	      - bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+	      - rm -rf ~/miniconda3/miniconda.sh
+	      - ~/miniconda3/bin/conda init bash
+	      - ~/miniconda3/bin/conda init zsh
+	      - * restart the terminal (otherwise wont work)
+	
+		- create conda env
+		  - conda create --name openmmlab python=3.8 -y
+	      - conda activate openmmlab			
+		- install pytorch
+		  - https://pytorch.org/get-started/locally/ => generate install command
+	      - nvcc -V to check nvidia runtime version
+	      - conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
+		- install mmdection	 
+	      - pip install -U openmim
+	      - mim install mmengine
+	      - mim install mmcv-full (do now follow the instruction to avoid error)
+		  - mim install mmcv
+		- clone repo if not mapped
+		  - git clone https://github.com/open-mmlab/mmdetection.git
+		  - cd mmdetection
+		  - pip install -v -e .
+		- errors
+		  - fix AssertionError: MMCV==2.2.0 is used but incompatible. Please install mmcv>=2.0.0rc4, <2.2.0.
+		    - https://github.com/open-mmlab/mmcv/issues/3096
+		    - change mmdet/init.py" line9 "2.2.0" to "2.2.1" to forcely make it compatible
+      	  - fix libGL.so.1: cannot open shared object file: No such file or directory: 
+      	    - apt install ffmpeg libsm6 libxext6 		
+			
+				
+127) set up Mask-RCNN-TF2 docker container
+     - check tensorflow, cuda, cuDNN compatibility: https://www.tensorflow.org/install/source	 
+     - start cuda container as above, for example, nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+	 - apt update; apt install -y python3 python3-pip gedit git 
+ 	 - pip3 install -r requirements.txt	 
+	 - pip3 install -U albumentations
+	 
+	 - fix libGL.so.1: cannot open shared object file: No such file or directory: 
+ 	   - apt install ffmpeg libsm6 libxext6 
+	 	 
+	 - change in code: 1) chage KE.Layer to KL.Layer; 2) comment import keras.engine; 3) etc
+	 - check tensorflow info:  tf.sysconfig.get_build_info()		
+
+128) cmake:
+     
+Think of INCLUDE as an #include in C or C++. It is useful when you  
+have defined custom commands, custom targets, all your CMakeLists.txt  
+have parts in common, etc and you want to write them only once.  
+INCLUDE helps you to re-use CMake "code". For instance, I have an  
+arisnova.cmake file where I have the following custom targets and  
+commands: GENERATE_DOCUMENTATION(Doxyfile),  
+GENERATE_DISTCLEAN_TARGET() and GENERATE_UNINSTALL_TARGET(). As I want  
+to use these commands in all my projects, I have an  
+INCLUDE(arisnova.cmake) in the "root" CMakeLists.txt of every project.
+
+You would use ADD_SUBDIRECTORY and its sibling SUBDIRS when your  
+project has multiple directories. For instance, imagine you have these  
+source tree:
+alarmclock
+      |
+      \--- libwakeup
+      \--- clock
+
+Usually, you'd have three CMakeLists.txt here: one in the 'alarmclock'  
+directory (the "root" CMakeLists.txt), one in the 'libwakeup'  
+directory and one in the 'clock' directory. For instance:
+
+* alarmclock/CMakeLists.txt
+
+PROJECT( alarmclock )
+ADD_SUBDIRECTORY( libwakeup )
+ADD_SUBDIRECTORY( clock )
+
+* alarmclock/libwakeup/CMakeLists.txt
+PROJECT( libwakeup )
+SET( wakeup_SRCS wakeup.cpp )
+ADD_LIBRARY( wakeup SHARED ${wakeup_SRCS} )
+
+* alarmclock/clock/CMakeLists.txt
+PROJECT( clock )
+SET( clock_SRCS clock.cpp )
+ADD_EXECUTABLE( clock ${clock_SRCS} )
+TARGET_LINK_LIBRARIES( clock wakeup )
+
+You can of course combine INCLUDE and ADD_SUBDIRECTORY/SUBDIRS in the  
+same CMakeLists.txt, as they have very different purposes.
+
+
+128)conda 
+  - add conda to path: "C:\Users\yourusername\Anaconda3", "C:\Users\yourusername\Anaconda3\Scripts", "C:\Users\yourusername\Anaconda3\Library\bin"
+  - create vitual env: conda create -n venv python=3.x
+  - init shell: conda init cmd.exe; conda init powershell
+  - activate venv: conda activate venv
+
+129) ubuntu/linux
+  - install lsb_release: apt-get update && apt-get install -y lsb-release && apt-get clean all 
+
+130) tensorboard
+    - inside containder run: tensorboard --logdir=runs/ --host 0.0.0.0 --port 8888
+	 
+131) OpenCV cvat: data annotation tool
+    - https://opencv.github.io/cvat/docs/administration/basics/installation/
+	- git clone https://github.com/opencv/cvat
+	- export CVAT_HOST=your-ip-address
+	- docker compose up -d
+	- docker exec -it cvat_server bash -ic 'python3 ~/manage.py createsuperuser'	
+
+132) reconstruct/DepthGen
+  - tifm.exe -r 4 -i castle/castle.own -f castle.feature.w3t50 -t castle.2frm.match.w3t50 -z 50 -s 1
+  - viewer.exe -r 1 -i castle/castle_track_0_25.own -s 10000
+  - viewer.exe -r 3 -i castle/castle.own -f castle.feature.w3t50 -s 1
+  - viewer.exe -r 4 -i castle/castle.own -f castle.feature.w3t50 -t castle.2frm.match.w3t50 -s 1
+  
+name=IMG_0010;
+./tifm -r 6 -i $name.own -k $name.fp -W 3 -T 50 -N 20000 -s 0
+./tifm -r 4 -i $name.own -f $name.fp -t $name.2frm.match -z 30 -s 0
+./DepthGen 17 $name.2frm.match $name.match
+./DepthGen 25 $name.own $name.fp $name.match $name.RR 0 150 -1
+./DepthGen 23 $name.own $name.fp $name.match $name.RR 0.03 150 50 -1  
+
+
+133) vcpkg visual studio
+  - git clone https://github.com/microsoft/vcpkg.git
+  - run bootstrap-vcpkg.bat
+  - run vcpkg integrate install: to make sure this vcpkg will replace the vcpkg shipped with visual studio
+  - set env variable VCPKG_DEFAULT_DRIPLET to x64-windows
+  - add "toolchainFile": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" to CmakePresets.json
+  - install visualization: .\vcpkg.exe install pcl[visualization]:x64-windows --recurse
+  
+
+134) point cloud processing
+  - curvature estimation: Curvature Estimation of 3D Point Cloud Surfaces Through the Fitting of Normal Section Curvatures
+  - 
+
+135) biance future
+  - wallet balance: balance in wallet, does not change until fund transfer/deposit/realized
+  - margin balance = wallet balance + pnl
+  - available balance = wallet balance + pnl - initial margin = margin balance - initial margin
+  - margin ratio = margin balance / initial margin
+  
+136)grpc
+    - install go from go.dev
+    - go install github.com/fullstorydev/grpcui/cmd/grpcui@latest	
+    - grpcui: using "-insecure" => grpcui.exe -insecure 47.90.96.154:5003
+
+137)blazor/asp.netcore/
+    - Unhandled error: some time [Authorize] may cause this problem. try remove it and add it back later sometimes will do the fix. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1463,14 +1789,6 @@ Data Source=47.90.96.154,1306;Initial Catalog=TestDB;Persist Security Info=True;
 
 
 
-
-automapper: 
-- inherit AutoMapper.Profile and create map between to class
-- use ProjectTo extension method to covert type
-
-autofac:
-- register class as interface
-- 
 
 
 
@@ -1563,6 +1881,12 @@ Layer2龙头：ZRX、LRC、OMG
 
 
 
+
+对于如何召开股东会，我保留我的意见，见之前的邮件。
+对于我对各个决议的意见，我保留我的意见，见之前的邮件。 不接受驳回，所有决议没有和我任何协商，到现在我都还没收到有些相关表决事项的内容,我对公司情况也一无所知。
+对于表决权, 根据“退出协议", 我已经把表决权委托给贾奎，他可以按约定的条款行使我的表决权。 否则，可能要先撤销之前的协议。
+
+李平
 
 
 
