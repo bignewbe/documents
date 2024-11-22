@@ -185,11 +185,11 @@ OAuth Token Secret:	LYbAbv8kChKDlrkxpmyCtLLSrknp3A1KkWQrgFds
 
 
 2)    find . -name "*.cpp" -o -name "*.h" | xargs grep -liwC 1 "spiht.h"
+      find . -name "*.hh" -o -name "*.cpp" -o -name "*.cc" -o -name "*.[cChH]" | xargs etags --m --declarations --ignore-indentation
       sed '/.*Default.*:.*/ d'
       sed 's/Default.*Path/Default/g'
-
-
-3)    find . -name "*.hh" -o -name "*.cpp" -o -name "*.cc" -o -name "*.[cChH]" | xargs etags --m --declarations --ignore-indentation
+	  for file in *USDT-SWAP*; do echo $file;                       sed -i '1s/\([A-Za-z0-9]\{3,6\}\)-USDT-SWAP/\1_USDT/' $file; done
+	  for file in *USDT-SWAP*; do echo $file; new_name=$(echo "$file" | sed 's/\([A-Za-z0-9]\{1,6\}\)-USDT-SWAP/\1_USDT/'); echo $new_name; mv $file $new_name; done
 
 4) #expand a file to specific size; add space to end of the file
 
@@ -768,22 +768,7 @@ cvs update -r DRUPAL-4-7
 
 88) fix visual studio error: may userdata is messed up
     common7/IDE/devenv /resetuserdata
-  
-89) ASP.NET mvc5
-    1) every request create UserManager, SignInManager and RoleManager before Controller is created
-    2) Install-Package Microsoft.AspNet.Identity.Samples -Pre => install identity 2.0 sample
-	3) SignInManager.PasswordSignInAsync will only succeed if UserName == Email!
-
-90) Mcv5 database migration
-    1) Enable-Migrations => enable migrate ApplicationDbContext database when model changed
-    2) update-database to update ApplicationDbContext and execute the Seed function in Configuration class
-	3) sqllocaldb.exe stop followed by sqllocaldb.exe delete to stop localDb such that we can delete mdf file
-	4) after update-database, we need to restart visual studio to make the dataconnection right.
-	5) another method is through Seed in ApplicationDbInitializer, which is triggered by first time register or log in 
-	6) database error just delete files, close program and start from fresh
-	7) Add-Migration InitialMigrations -IgnoreChanges => This should generate a blank "InitialMigration" file. Now, add any desired changes to the class you want. Once changes are added, run the update command again:
-    8) update-database -verbose => Now the automatic migration will be applied and the table will be altered with your changes
-	9) if migration fails, try to delete entire migration folder and restart whole process including close studio and open again
+ 
 	
 91) Entity framwork database migration:
     1. two types of migration: 
@@ -1007,13 +992,9 @@ cvs update -r DRUPAL-4-7
 	 - create vitual enviroment: python -m venv name
 	 - check tensotflow version: 
 	     python -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 2
-         python3 -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 3
-	 
+         python3 -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 3 
 	   
-     
-103) MVC entityframework data model:
-    a. use virtual to define navigation property
-	b. use ICollection to define one-to-many property	
+    
   
 104) Xamarin
     1. make sure right save version libararies are installed for all projects
@@ -1050,26 +1031,6 @@ http://appserver.lenovo.com.cn/Lenovo_Series_List.aspx?CategoryCode=A19B02C15
 109) Xamarin, Porable libararies:
      - sometimes if we cannot install nuget package for portable library we can mannually add it, like SignalR for portable
 	 - 
-
-110) Sql Server
-     - allow login using username and password => Enable SQL Server login mode in Management Studio
-	   1. enable SQL server and Windows Authentication mode  => Properties => Security
-	   2. allow remote connection in Properties => Connections
-	   3. create account in Security => login 
-     - allow remote connection via Tcp in Configuration Manager
-	   1. enable TCP/IP and and set port to 1433 in Protocols for SQLEXPRESS
-       2. enable named pipe in Protocols for SQLEXPRESS
-	   3. restart SQL Server and SQL Server Browser in Configuration Manager
-	 - allow inbound on port 1433 in Windows Firewall (may not needed)
-	 - add data connection in VisualStudio
-	    open Server Explorer => Add Connections => type in "Ip Address\SQLEXPRESS" => select SQL Server Login => type in username and password
-	 - copy database to the server by detaching and attaching the database	 
-	 - test sql server connection: create an empty file with .udl extension and open it	 
-     - Attached mdf file to sql server
-       1) run sql management tool as administrator
-	   2) right click Databases and click attach to select mdf file
-	   3) to detach: right click the attached database => Task => Detach
-	 - copy database/table to another database: in SQL management studio => right click db => Import Data wizzard
 
 	 
 	 
@@ -1262,14 +1223,24 @@ cd $root/FZWebTrader; name=47.90.96.154:5000/personalweb; docker build -f Person
 - copy to server and build it
 cd ~/E/Code/20180722_IBTrader_1.0.1/;
 rsync -avz --delete --exclude=obj --exclude=bin --exclude=.git --exclude=.vs CryptoCapture/ $hkcts:~/CryptoCapture/
+rsync -avz --delete --exclude=obj --exclude=bin --exclude=.git --exclude=.vs FZWebTrader/FZWebTrader/ $hkcts:~/FZWebTrader/
 
 root=~/
-cd $root/CryptoCapture; name=localhost:5000/okex_swap_trader;    docker build -f OkexSwapTrader/Dockerfile -t $name .; 
-cd $root/CryptoCapture; name=localhost:5000/binance_spot_trader; docker build -f BinanceSpotTrader/Dockerfile -t $name .;
-cd $root/CryptoCapture; name=localhost:5000/okex_spot_trader;    docker build -f OkexSpotTrader/Dockerfile -t $name .; 
-cd $root/CryptoCapture; name=localhost:5000/binance_swap_trader; docker build -f BinanceSwapTrader/Dockerfile -t $name .; 
+root=~/; cd $root/CryptoCapture; name=localhost:5000/okex_swap_trader;    docker build -f OkexSwapTrader/Dockerfile -t $name .; 
+root=~/; cd $root/CryptoCapture; name=localhost:5000/binance_spot_trader; docker build -f BinanceSpotTrader/Dockerfile -t $name .;
+root=~/; cd $root/CryptoCapture; name=localhost:5000/okex_spot_trader;    docker build -f OkexSpotTrader/Dockerfile -t $name .; 
+root=~/; cd $root/CryptoCapture; name=localhost:5000/binance_swap_trader; docker build -f BinanceSwapTrader/Dockerfile -t $name .; 
+root=~/; cd $root/FZWebTrader; name=localhost:5000/fzserver; docker build -f Server/Dockerfile -t $name .; 
 
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/Recon3D; name=47.90.96.154:5000/discovery_server; docker build -f DiscoveryServer/Dockerfile -t $name .; docker push $name
+cd $root/Recon3D; name=47.90.96.154:5000/recon_webapi; docker build -f WebApi/Dockerfile -t $name .; docker push $name
+cd $root/Recon3D; name=47.90.96.154:5000/recon_jobservice; docker build -f JobManager/Dockerfile -t $name  .; docker push $name
 
+cd $root/Recon3D; name=47.90.96.154:5000/recon_jobscheduler; docker build -f JobScheduler/Dockerfile -t $name .
+cd ~/E/appsettings
+
+docker run -it --rm -v E:/Code/cplus/colmap/install/x64-debug:C:/app/colmap --name jobscheduler 47.90.96.154:5000/recon_jobscheduler cmd
 
 rsync -avz --force --delete --delete-excluded --exclude=.git/ --exclude=obj/ --exclude=bin/ --exclude=.vs/ --exclude=packages/ ./CryptoCapture $hkcts:~/
 
@@ -1431,14 +1402,13 @@ Permissions = "Enquiry/Trade"
 	 - 耐心，机会很多，肯定有更好的，宁可错过
 	 - 
 	 
-127) sqlserver in docker
+127) sql server in docker
    server side: 
-     - start sql server => docker run --restart always -d -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Password!' -p 1306:1433 --name sqlserver -h sqlserver mcr.microsoft.com/mssql/server:2019-latest
+     - start sql server => docker run --restart always -d -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Password!' -p 1306:1433 --name sqlserver -h sqlserver mcr.microsoft.com/mssql/server:2022-latest
    client side: 
      - Server Explorer in VS Studio: add connection 'Sever Name = Ip,Port'
 
 128) certificate : https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-2.2
-
     https/ssl/ certificate error :  x509: cannot validate certificate for 47.90.96.154 because it doesn't contain any IP SANs
     - blazor: var clientHandler = new HttpClientHandler(); clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
     dotnet dev-certs https -ep %APPDATA%\ASP.NET\Https\TT.Core.Portal.Web.AzureHybrid.pfx -p password
@@ -1448,8 +1418,20 @@ Permissions = "Enquiry/Trade"
    
 
 129) entity framework
-    - add-migration
-    - update-database
+    - add-migration in power shell
+     - "ConnectionStrings": { "DefaultConnection": "Server=192.168.1.30,1306;Database=recon3d;User ID=SA;Password=Password!;TrustServerCertificate=True;"  },
+	 - install tool: dotnet tool install --global dotnet-ef
+	 - enter the folder where the target project (InitDb) is located, and where the migration is to be added: 
+	 - create migration by run: dotnet ef migrations add init --context ApplicationDbContext  --startup-project ..\WebApi\
+	 - WebApi is the project where migration assembly (InitDb) is configured by:
+	   - builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionStr, b => b.MigrationsAssembly("InitDb").EnableRetryOnFailure()));
+	 - apply migration by run: dotnet ef database update --context ApplicationDbContext  --startup-project ..\WebApi\
+	 - list and apply migration to other db specified by connection string:
+	   -dotnet ef migrations list --context ApplicationDbContext  --startup-project ..\WebApi\ --connection "Server=47.90.96.154,1306;Database=recon3d;User ID=SA;Password=Password!;TrustServerCertificate=True;"
+	   -dotnet ef database update --context ApplicationDbContext  --startup-project ..\WebApi\ --connection "Server=192.168.1.30,1305;Database=recon3d;User ID=SA;Password=Password!;TrustServerCertificate=True;"
+	   -in this process, __EFMigrationsHistory in the db will be checked for applied migrations => it will run into error, if db is created using other tools. in that case, __EFMigrationsHistory witll be wrong.
+	   -thus, it is advisable not to use db.EnsureCreated in the code. always use dotnet migration tool.
+	   
 
      
 131) OS installation/backup/migrate
@@ -1502,7 +1484,8 @@ autofac:
 	- for tensorflow, check tensorflow, cuda, cuDNN compatibility: https://www.tensorflow.org/install/source	 
 	- install nvidia cuda in windows for docker container on wsl 2
 	  - install docker desktop	  
-	  - install cuda from nvidia web (we can install GPU driver from here. no need to install GPU driver separatey)
+	  - install cuda driver from nvidia web (we can install GPU driver from here. no need to install GPU driver separatey)
+	    - run nvidia-smi in powershell to check cuda driver version
 	  - install wsl2 from cmd: wsl --install; wsl --update
 	  - install Ubuntu on wsl2
 	  - make docker desktop available to Ubuntu: 
@@ -1514,8 +1497,8 @@ autofac:
 		- curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
 		- sudo apt update
 		- sudo apt install -y nvidia-docker2	
-	  - test a bechmark Docker container: sudo docker run --gpus all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark	
-	  - run cuda container mapping local drive:
+	    - test a bechmark Docker container: sudo docker run --gpus all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark	
+	  - run cuda container with CUDA Toolkit already installed:
 	    - start x server XLaunch
         - name=cuda;img=nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04;sudo docker run -it --rm --gpus=all -p 8888:8888 -p 6006:6006 -v /home/ping/.bashrc:/root/.bashrc -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg -v /mnt/d:/root/d -v /mnt/e:/root/e -e DISPLAY -e WAYLAND_DISPLAY -e XDG_RUNTIME_DIR -e PULSE_SERVER --hostname $name --name $name $img bash      
           name=cuda;
@@ -1589,49 +1572,21 @@ autofac:
 	 - change in code: 1) chage KE.Layer to KL.Layer; 2) comment import keras.engine; 3) etc
 	 - check tensorflow info:  tf.sysconfig.get_build_info()		
 
-128) cmake:
+128) cmake / CMakeLists.txt / c++:
+     - in windows VS, toolchainFile, CMAKE_BUILD_TYPE etc can be specified in CMakePresets
+     - in cmake command: above can be specified in command => example: build_cmakelists.ps1, and colmap/docker/Dockerfile	 
+     - find_package need to add package cmake path to CMAKE_PREFIX_PATH: 
+	   - find the relevant package cmake path in vcpkg/installed/x64-windows, and add to CMakeLists: list(APPEND CMAKE_PREFIX_PATH "${PackagePath}/protobuf")	 
+	 - if failed to find GTest unitttest, add following to your code, and dont link with gtest_main/gmock_main
+	   int main(int argc, char** argv) {
+          ::testing::InitGoogleMock(&argc, argv);
+          ::testing::InitGoogleTest();
+          return RUN_ALL_TESTS();
+	   }
+	 - to enable conversion between shared_ptr<IProduct> = shared_ptr<Product>, we should use 'public' in "class Product: public IProduct"	 
+}
+
      
-Think of INCLUDE as an #include in C or C++. It is useful when you  
-have defined custom commands, custom targets, all your CMakeLists.txt  
-have parts in common, etc and you want to write them only once.  
-INCLUDE helps you to re-use CMake "code". For instance, I have an  
-arisnova.cmake file where I have the following custom targets and  
-commands: GENERATE_DOCUMENTATION(Doxyfile),  
-GENERATE_DISTCLEAN_TARGET() and GENERATE_UNINSTALL_TARGET(). As I want  
-to use these commands in all my projects, I have an  
-INCLUDE(arisnova.cmake) in the "root" CMakeLists.txt of every project.
-
-You would use ADD_SUBDIRECTORY and its sibling SUBDIRS when your  
-project has multiple directories. For instance, imagine you have these  
-source tree:
-alarmclock
-      |
-      \--- libwakeup
-      \--- clock
-
-Usually, you'd have three CMakeLists.txt here: one in the 'alarmclock'  
-directory (the "root" CMakeLists.txt), one in the 'libwakeup'  
-directory and one in the 'clock' directory. For instance:
-
-* alarmclock/CMakeLists.txt
-
-PROJECT( alarmclock )
-ADD_SUBDIRECTORY( libwakeup )
-ADD_SUBDIRECTORY( clock )
-
-* alarmclock/libwakeup/CMakeLists.txt
-PROJECT( libwakeup )
-SET( wakeup_SRCS wakeup.cpp )
-ADD_LIBRARY( wakeup SHARED ${wakeup_SRCS} )
-
-* alarmclock/clock/CMakeLists.txt
-PROJECT( clock )
-SET( clock_SRCS clock.cpp )
-ADD_EXECUTABLE( clock ${clock_SRCS} )
-TARGET_LINK_LIBRARIES( clock wakeup )
-
-You can of course combine INCLUDE and ADD_SUBDIRECTORY/SUBDIRS in the  
-same CMakeLists.txt, as they have very different purposes.
 
 
 128)conda 
@@ -1673,7 +1628,10 @@ name=IMG_0010;
   - run vcpkg integrate install: to make sure this vcpkg will replace the vcpkg shipped with visual studio
   - set env variable VCPKG_DEFAULT_DRIPLET to x64-windows
   - add "toolchainFile": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" to CmakePresets.json
+  - if we do not use CMakePresets.json, we need to add include("C:/vcpkg/scripts/buildsystems/vcpkg.cmake") to CMakeLists.txt
   - install visualization: .\vcpkg.exe install pcl[visualization]:x64-windows --recurse
+  - error: in triplet x64-windows: Unable to find a valid Visual Studio instance
+    - you have VS2022 IDE installed only. You MUST install MSVC 2019 build tools, vcpkg ignores VS2022 build tools and only accept MSVC 2019.
   
 
 134) point cloud processing
@@ -1690,10 +1648,195 @@ name=IMG_0010;
     - install go from go.dev
     - go install github.com/fullstorydev/grpcui/cmd/grpcui@latest	
     - grpcui: using "-insecure" => grpcui.exe -insecure 47.90.96.154:5003
+	- c++ grpc 
+	  - install: vcpkg.exe install protobuf:x64-windows grpc:x64-windows
+	  - generate: protoc --cpp_out=. --grpc_out=. --plugin=protoc-gen-grpc=D:\vcpkg\installed\x64-windows\tools\grpc\grpc_cpp_plugin.exe general.pro
 
 137)blazor/asp.netcore/
     - Unhandled error: some time [Authorize] may cause this problem. try remove it and add it back later sometimes will do the fix. 
 
+138) structure from motion
+    a) paper: Optimizing the Viewing Graph for Structure-from-Motion
+	  - detect and match feature 
+	  - construct initial view graph (2-view), based on #inliers
+      - reduce #edges using MST and by adding good edges  
+	    - a good edge will form triplet with small triplet reprojection error
+	  - select 3-freame feature tracks that are spatially distributed
+	  - reject 3-frame feature track with parallel transfer lines or close to epipole
+	  - adjust fundamental matrix of all edges by minimizing triplet geometric error over entire view graph
+	  - calibrate focal lengths by minimizing triplet geometric error over entire view graph
+	  - estimate camera pose by enforcing loop constraints (error between relative and absolute poses)
+	  - filter out views with large error
+	  - estimate camera position by minimizing error between relative and absolute positions
+	  - filter out views with large error 
+	  - triangulation
+	  - bundle adjustment
+    b) paper: Structure-from-Motion Revisited
+	  - detect and match feature 
+	  - geometrically verify 2-frame match using Homography/Fundamental Matrix/Similarity Transform
+	    - in general motion and scene, we expect fundamental matrix or essential matrix is the best 
+	  - seed reconstruction (avoid degenerate pair and preferably calibrated, which is known from previous step)
+	  - select best next view (more visible points and more uniform distribution)
+	  - merge new images using 2d-3d correspondence -> solve both camera pose and camera intrinsic
+	  - triangulation using recursive RANSAC 
+  	    - randomly select a point pair from the feature track with sufficient triangulation angle and positive depth
+      	- check each point for support (positive depth + small repeojection error)
+		- remove support set and repeat RANSAC for remaining set
+	  - bundle adjustment (BA)
+	    - Cauchy function used as loss function to account for outliers
+		- we can use different camera model for different images	
+	    - filter out views with large reprojection error
+		- filter out views where camera intrinsic converges to bogus values
+		- filter out points with small triangulation angle
+	  - re-triangulation (RT)
+	    - due to improved camera poses, more points may be recovered
+	  - iterate BA and RT until filtered views and points diminished
+	  - group redundant views for BA
+	    - views are ordered with decreasing visibility
+	    - views with large number of co-visibile points are considered redundant and grouped
+		- only views with close viewing directions are seached for grouping
+		- camera poses of all images with the group are defined with respect to a local pose of the group such that we need to optimize group pose only
+	c) paper: Global Structure-from-Motion Revisited
+	   - existing problems
+	     - decomposing 2-view geometry into relative roation and translation requires accurate intrinsic and is error prone
+		 - co-linear motion 
+	   - steps 
+	     - detect and match features, find inliers to either H/F or E
+		   - filter out image pair by triangluation angle 
+		   - filter out matches by cheirality test 
+		 - calibrate view graph as in paper a)
+		 - rotation averaging by minimizing distance from abosolute rotation and relative roation
+		   - filter out inconsitent views by examining angular distance between Rij and RjRi
+		 - position averaging 
+		   - works well when graph is well connected
+		   - error prone to co-linear motion
+		   - error prone to camera parameters (must be accurate)
+		   * jointly determine translation and 3d points by minimizing angle between back-projected ray from camera center to 2d point and line from 3d point to camera center 		   
+		 - global bundle adjustment
+		 - re-triangulation
+		 - camera clustering
+		 - itereate BA and RT 
+	d) paper: A Vote-and-Verify Strategy for Fast Spatial Verification in Image Retrieval
+	  - each match between sift feature defines a similarity transform
+	  - descretize similarity transform parameters into bins, in multiple levels
+	  - compute the score and select the bins with largest voting scores
+	  - we have 4 dimensions? how 4 dimensions relates to bins at diffent levels? each level, we select best bin for each dimension?  
+	e) paper: Robust Self-calibration of Focal Lengths from the Fundamental Matrix
+	  -
+	f) paper:  Efficient and robust large-scale rotation averaging
+	  - Lie group: a space comprising of a set of continious transformations that can be applied smoothly, and can be studied using calculus
+	    - example, rotaiton -> SO(3), rotation and translation -> SE(3)
+	    - Lie algebra: a local space that local behaviour of the manifold can be described, for example, angle axis is a Lie algebra of Lie group SO(3)
+		- log map: map Lie group -> Lie algebra. 
+		 - thus,  we can measure distance of two elements in Lie group via Lie algebra
+		 - we can also average elements in Lie algebra space -> Frechet mean or the intrinsic average μ ∈ SO(3) of a set of rotations
+	    - Exponential maps: map Lie algebra -> Lie group
+	  - main idea is to use angle axis repesentation to average roation, such that problem is linearized and can be solved using iterative linear method
+	  - steps:
+	    - initialize abosolute rotation
+		- iteration
+          - compute residual rotation in Lie group by cascading absolute and relative rotations		
+		  - convert residual rotaiton to angle axis in Lie algebra space
+		  - solve linear system to obtain the update in angle axis (Lie algebra space) of the absolute rotation
+		  - map the update in agnle axis to SO(3) and update the absolute rotation 
+		- first pass: liear system can be solved using L1 cost function, since it is more robust to outliers
+		- second pass: adjust the quadratic the residual error, and use iterative L2 to solve for rotation again
+	  
+	  
+139) non-linear solver/Levenberg-Marquardt: http://ceres-solver.org/
+     - Jacobian matrix: a linear approximation to the function at given location [[df1/dx1 ... df1/dxm]...[dfn/dx1,...,dfn/dxm]]
+	 - define cost function: model parameters as arguments, each observation gives a corresponding vector of residules 
+    
+140) colmap/glomap/poselib
+     - when compiling glomap
+       - download the latest colmap from main branch, and glomap
+	   - change c++ version to 23 and CMAKE_CUDA_STANDARD to 17 in cmakelists.txt
+	   - download, compile and install PoseLib
+	   - turn off FETCH_COLMAP in cmakelists and add following to cmakelists:
+	      message("=====================================================1======================================================================")
+          #set(CMAKE_FIND_DEBUG_MODE  ON)
+          include("c:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+          set(CMAKE_PREFIX_PATH "C:/vcpkg/installed/x64-windows/debug" "C:/vcpkg/installed/x64-windows")
+          message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+          include_directories("C:/vcpkg/packages/colmap_x64-windows/include")
+          include_directories("C:/vcpkg/packages/suitesparse_x64-windows/include/suitesparse")
+          message("=====================================================2======================================================================/n/n/n")
+       - find_package(SuiteSparse COMPONENTS CHOLMOD REQUIRED) does not work
+	     - instead of linking to SuiteSparse::CHOLMOD, we need to link to "C:/vcpkg/packages/suitesparse_x64-windows/lib/libcholmod.lib" directly
+     - restructure comap
+	   - move inlier/translation/triangulation_angle check in EstimateInitialTwoViewGeometry to its parent InitializeReconstruction
+	 - poselib fix
+	   - 
+	 - enbale SIMD for Eigen => add definition in CMakeLists
+	   - # Enable SIMD in Eigen
+         add_definitions(-DEIGEN_VECTORIZE_SSE4_2 -DEIGEN_VECTORIZE_AVX -DEIGEN_VECTORIZE_AVX2)
+         # Set compiler flags for optimization
+         if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+             # For GCC and Clang, use -march=native to enable all available CPU features
+             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3 -DNDEBUG")
+         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+             # For MSVC, use /arch:AVX2 to enable AVX2 instructions
+             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2 /O2 /DNDEBUG")
+         endif()
+     - build colmap in linux container
+	   - docker pull nvidia/cuda:12.6.2-cudnn-devel-ubuntu22.04
+	     - run from wsl Unbuntu22.04: name=cuda;img=nvidia/cuda:12.6.2-cudnn-devel-ubuntu22.04;sudo docker run -it --rm --gpus=all -m 12g -v /home/ping/.bashrc:/root/.bashrc -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg -v /mnt/e:/root/e -e DISPLAY -e WAYLAND_DISPLAY -e XDG_RUNTIME_DIR -e PULSE_SERVER --hostname $name --name $name $img bash
+         - install cmake 3.28  
+		   RUN  apt update && \     
+                apt remove --purge -y cmake && \
+                apt -y install wget && \
+                wget https://github.com/Kitware/CMake/releases/download/v3.28.0/cmake-3.28.0-linux-x86_64.sh && \
+                sh cmake-3.28.0-linux-x86_64.sh --prefix=/usr/local --exclude-subdir && \
+                export PATH=/usr/local/bin/:$PATH
+         - install g++-13  
+           RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+               apt update && \
+               apt remove --purge -y g++-11 gcc-11 && \
+           	apt install -y g++-13 gcc-13 && \
+               update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 20 && \
+               update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 20 && \
+               update-alternatives --config g++
+         - install missing lib  
+           RUN apt install -y libfmt-dev libflann-dev
+		   
+		   
+    - build colmap in host Developer Command Prompt
+	  - sent enviroment to same as VS: "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat" x64
+	  - run ccmake (bat file): 
+          @echo off
+          set VS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Community
+          set CMAKE_PATH="%VS_PATH%\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
+          set VCPKG_PATH="C:\vcpkg"
+          set INSTALL_DIR="E:\Code\cplus\colmap\install\x64-debug"
+          set BUILD_DIR="E:\Code\cplus\colmap\build\x64-debug"
+          set NINJA="%VS_PATH%\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe"
+          set LINKER_PATH="%VS_PATH%\VC\Tools\MSVC\14.29.30133\bin\HostX64\x64\link.exe"
+          set TOOLCHAIN_FILE="%VCPKG_PATH%\scripts\buildsystems\vcpkg.cmake"
+          set SOURCE_DIR="E:\Code\cplus\colmap"          
+          set SET_ENV="%VS_PATH%\VC\Auxiliary\Build\vcvars64.bat"
+          
+          REM run ccmake
+          call %CMAKE_PATH% -G "Ninja" ^
+            -DCMAKE_C_COMPILER:STRING="cl.exe" ^
+            -DCMAKE_CXX_COMPILER:STRING="cl.exe" ^
+            -DCMAKE_BUILD_TYPE:STRING="Debug" ^
+            -DCMAKE_INSTALL_PREFIX:PATH=%INSTALL_DIR% ^
+            -DCMAKE_TOOLCHAIN_FILE:FILEPATH=%TOOLCHAIN_FILE% ^
+            -DCMAKE_LINKER=%LINKER_PATH% ^
+            --preset="x64-debug" ^
+            -DCMAKE_MAKE_PROGRAM=%NINJA% ^
+            -B %BUILD_DIR% ^
+            %SOURCE_DIR% 2>&1
+	  - enter BUILD_DIR and run %NINJA% install
+	  - build files will be written to BUILD_DIR
+	  - targets will be installed to INSTALL_DIR
+	- build colmap in windows container
+	   - docker run -it --rm  -v C:/vcpkg:C:/vcpkg -v E:/Code/cplus/colmap:C:/colmap build2 cmd /k "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\Tools\\VsDevCmd.bat"
+          	  
+		 
+		 
+		 
+	  
 
 
 
