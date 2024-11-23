@@ -21,7 +21,7 @@ macro(add_gtest TEST_NAME)
     # Parse the arguments to get the optional gtest_filter and link libraries
     set(oneValueArgs FILTER)
     set(multiValueArgs SOURCES LINK_LIBS)
-    cmake_parse_arguments(ARG "FILTER" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    cmake_parse_arguments(ARG "" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # Create the executable
     add_executable(${TEST_NAME} ${ARG_SOURCES})
@@ -40,6 +40,7 @@ macro(add_gtest TEST_NAME)
 endmacro()
 
 macro(print_variables)
+    message(STATUS "___________________________________________________________________ VARIABLES _______________________________________________________")
     message(STATUS "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
     message(STATUS "CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
     message(STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
@@ -54,6 +55,9 @@ macro(print_variables)
     message(STATUS "CUDA_ENABLED = ${CUDA_ENABLED}")
     message(STATUS "CUDA_FOUND = ${CUDA_FOUND}")	
     message(STATUS "IS_FIXUP_BUNDLE = ${IS_FIXUP_BUNDLE}")
+    message(STATUS "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
+    message(STATUS "UNIX = ${UNIX}")
+    message(STATUS "MSVC = ${MSVC}")
 endmacro()
 
 
@@ -80,31 +84,32 @@ if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     set(IS_CLANG TRUE)
 endif()
 
-#if(NOT IS_DEBUG)
-#   if(WIN32)
-#       if (MSVC)
-#           add_compile_options(/arch:AVX2 /O2 /DNDEBUG)
-#       endif()
-#   elseif(UNIX)
-#       add_compile_options(-march=native -O3 -DNDEBUG)
-#       check_cxx_compiler_flag("-mavx2" COMPILER_SUPPORTS_AVX2)
-#       if(COMPILER_SUPPORTS_AVX2)
-#           add_compile_options(-mavx2)
-#       endif()
-#   endif()
-#   if(SIMD_ENABLED)
-#       message(STATUS "Enabling SIMD support")
-#       add_definitions(-DEIGEN_VECTORIZE_SSE4_2 -DEIGEN_VECTORIZE_AVX -DEIGEN_VECTORIZE_AVX2)
-#   else()
-#       add_definitions(-DEIGEN_DONT_VECTORIZE)
-#   endif()
-#else()
-#    add_definitions("-DEIGEN_INITIALIZE_MATRICES_BY_NAN")
-#    if(IS_MSVC)
-#        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /bigobj")
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
-#    endif()
-#endif()
+if(NOT DEFINED VCPKG_ROOT)
+   set(VCPKG_ROOT "D:/vcpkg")
+endif()
+
+# Add self installed libs to search path
+if(UNIX)
+   set(LIB_PATH /usr/local/${CMAKE_BUILD_TYPE}/share)
+endif()
+
+if(MSVC)
+   set(LIB_PATH ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/${CMAKE_BUILD_TYPE}/share)
+endif()
+
+# Get all subdirectories under 'share'
+file(GLOB SUBDIRS RELATIVE ${LIB_PATH} ${LIB_PATH}/*)
+
+# Add each subdirectory to CMAKE_PREFIX_PATH
+foreach(SUBDIR ${SUBDIRS})
+    if(IS_DIRECTORY ${LIB_PATH}/${SUBDIR})
+        file(TO_NATIVE_PATH ${LIB_PATH}/${SUBDIR} SUB_PATH)         	
+        list(APPEND CMAKE_PREFIX_PATH ${SUB_PATH})
+    endif()
+endforeach()
+
+message(STATUS "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
+
 
 if(NOT IS_DEBUG)
    message("======================================================= set Release specific complier options ====================================================")

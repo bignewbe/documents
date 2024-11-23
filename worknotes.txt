@@ -1429,8 +1429,8 @@ Permissions = "Enquiry/Trade"
 	 - list and apply migration to other db specified by connection string:
 	   -dotnet ef migrations list --context ApplicationDbContext  --startup-project ..\WebApi\ --connection "Server=47.90.96.154,1306;Database=recon3d;User ID=SA;Password=Password!;TrustServerCertificate=True;"
 	   -dotnet ef database update --context ApplicationDbContext  --startup-project ..\WebApi\ --connection "Server=192.168.1.30,1305;Database=recon3d;User ID=SA;Password=Password!;TrustServerCertificate=True;"
-	   -in this process, __EFMigrationsHistory in the db will be checked for applied migrations => it will run into error, if db is created using other tools. in that case, __EFMigrationsHistory witll be wrong.
-	   -thus, it is advisable not to use db.EnsureCreated in the code. always use dotnet migration tool.
+     - EF check __EFMigrationsHistory in the db to determine the applied migrations => it will run into error, if db is created using other tools. in that case, __EFMigrationsHistory witll be wrong.
+	 - thus, it is advisable not to use db.EnsureCreated in the code. always use dotnet migration tool.
 	   
 
      
@@ -1648,10 +1648,16 @@ name=IMG_0010;
     - install go from go.dev
     - go install github.com/fullstorydev/grpcui/cmd/grpcui@latest	
     - grpcui: using "-insecure" => grpcui.exe -insecure 47.90.96.154:5003
-	- c++ grpc 
+	- c++ windows
 	  - install: vcpkg.exe install protobuf:x64-windows grpc:x64-windows
 	  - generate: protoc --cpp_out=. --grpc_out=. --plugin=protoc-gen-grpc=D:\vcpkg\installed\x64-windows\tools\grpc\grpc_cpp_plugin.exe general.pro
-
+    - C++ ubuntu
+	  - install: 
+   	     - apt update && apt install -y nlohmann-json3-dev curl zip unzip tar 
+		 - curl -sSL https://github.com/microsoft/vcpkg/archive/refs/heads/master.zip -o vcpkg.zip && unzip vcpkg.zip && mv vcpkg-master vcpkg && cd vcpkg
+		 - ./bootstrap-vcpkg.sh  && ./vcpkg install grpc
+	  - generate: /vcpkg/packages/protobuf_x64-linux/tools/protobuf/protoc --cpp_out=./output --grpc_out=./output --plugin=protoc-gen-grpc=/vcpkg/installed/x64-linux/tools/grpc/grpc_cpp_plugin general.proto
+	  
 137)blazor/asp.netcore/
     - Unhandled error: some time [Authorize] may cause this problem. try remove it and add it back later sometimes will do the fix. 
 
