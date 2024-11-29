@@ -51,6 +51,7 @@ macro(print_variables)
     message(STATUS "IS_DEBUG = ${IS_DEBUG}")
     message(STATUS "CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
     message(STATUS "VCPKG_ROOT = ${VCPKG_ROOT}")
+    message(STATUS "VCG_ROOT = ${VCG_ROOT}")
     message(STATUS "CMAKE_TOOLCHAIN_FILE = ${CMAKE_TOOLCHAIN_FILE}")
     message(STATUS "CUDA_ENABLED = ${CUDA_ENABLED}")
     message(STATUS "CUDA_FOUND = ${CUDA_FOUND}")	
@@ -68,11 +69,30 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 message(STATUS "Build type specified as ${CMAKE_BUILD_TYPE}") 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+
+string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
+if(CMAKE_BUILD_TYPE_LOWER STREQUAL "release")
   set(IS_DEBUG OFF)
 else() 
   set(IS_DEBUG ON) 
 endif()
+
+
+function(TOLOWER_LAST_PART input_path output_path)
+    get_filename_component(parent_dir "${input_path}" DIRECTORY)
+    get_filename_component(last_part "${input_path}" NAME)
+    string(TOLOWER "${last_part}" last_part_lower)
+    set("${output_path}" "${parent_dir}/${last_part_lower}" PARENT_SCOPE)
+endfunction()
+
+if(CMAKE_INSTALL_PREFIX)
+    TOLOWER_LAST_PART("${CMAKE_INSTALL_PREFIX}" CMAKE_INSTALL_PREFIX)
+endif()
+
+if(CMAKE_BINARY_DIR)
+    TOLOWER_LAST_PART("${CMAKE_BINARY_DIR}" CMAKE_BINARY_DIR)
+endif()
+
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(IS_MSVC TRUE)
@@ -84,17 +104,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     set(IS_CLANG TRUE)
 endif()
 
-if(NOT DEFINED VCPKG_ROOT)
-   set(VCPKG_ROOT "D:/vcpkg")
-endif()
-
 # Add self installed libs to search path
 if(UNIX)
-   set(LIB_PATH /usr/local/${CMAKE_BUILD_TYPE}/share)
+   set(LIB_PATH /usr/local/own-${CMAKE_BUILD_TYPE_LOWER}/share)
 endif()
 
 if(MSVC)
-   set(LIB_PATH ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/${CMAKE_BUILD_TYPE}/share)
+   set(LIB_PATH ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/own-${CMAKE_BUILD_TYPE_LOWER}/share)
 endif()
 
 # Get all subdirectories under 'share'
@@ -107,9 +123,6 @@ foreach(SUBDIR ${SUBDIRS})
         list(APPEND CMAKE_PREFIX_PATH ${SUB_PATH})
     endif()
 endforeach()
-
-message(STATUS "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
-
 
 if(NOT IS_DEBUG)
    message("======================================================= set Release specific complier options ====================================================")
@@ -143,21 +156,15 @@ else()
     add_definitions("-DEIGEN_INITIALIZE_MATRICES_BY_NAN")
 endif()
 
+
 if(IS_MSVC)
     message("======================================================= set MSVC specific complier options ====================================================")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /bigobj /fp:fast")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /fp:fast")
-	
+    set(COMMON_FLAGS "${COMMON_FLAGS} /bigobj /fp:fast /EHsc /wd4244 /wd4267 /wd4305 /MP /W3")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")	
+
     # Some fixes for the Glog library.
     add_definitions("-DGLOG_USE_GLOG_EXPORT -DGLOG_NO_ABBREVIATED_SEVERITIES -DGL_GLEXT_PROTOTYPES -DNOMINMAX")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
-    # Disable warning: 'initializing': conversion from 'X' to 'Y', possible loss of data
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4267 /wd4305")
-    # Enable object level parallel builds in Visual Studio.
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")	
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W3")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
     # Avoid pulling in too many header files through <windows.h>
     add_definitions("-DWIN32_LEAN_AND_MEAN")	
 endif()
@@ -175,17 +182,11 @@ if(IS_GNU)
 	#-Wno-conversion: disables warnings related to type conversions
 	#-fno-strict-aliasing: instruct the compiler to be more cautious with optimizations related to pointer aliasing 
 	#-Wno-array-bounds: disables warnings about array bounds checking  
-    set(COMMON_FLAGS "-march=native -fPIC -Wall -fexceptions -Wno-conversion")	
+    set(COMMON_FLAGS "-march=native -fPIC -Wall -fexceptions -Wno-conversion -fno-strict-aliasing -Wno-array-bounds -Wno-maybe-uninitialized")		
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
-	
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")	
+		
     add_definitions(-DEIGEN_DONT_VECTORIZE -DEIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT)
-    set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -Wno-array-bounds")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -Wno-array-bounds")
-
-    # Hide incorrect warnings for uninitialized Eigen variables under GCC.
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-maybe-uninitialized")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-maybe-uninitialized")
 		
 	# following is needed for: find_package(Threads REQUIRED)
     set(CMAKE_THREAD_LIBS_INIT "-lpthread")
@@ -233,7 +234,7 @@ if(TESTS_ENABLED)
     include(CTest)
     enable_testing()
 	find_package(GTest REQUIRED)
-	check_targets(GTest::gtest)
+	check_targets(GTest::gtest GTest::gmock)
 endif()
 
 set(CUDA_MIN_VERSION "7.0")
@@ -264,12 +265,10 @@ if(CUDA_ENABLED)
             set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --compiler-options -fPIC")
         endif()
     
-        message(STATUS "Enabling CUDA support (version: ${CUDAToolkit_VERSION}, "
-                        "archs: ${CMAKE_CUDA_ARCHITECTURES})")
+        message(STATUS "Enabling CUDA support (version: ${CUDAToolkit_VERSION}, archs: ${CMAKE_CUDA_ARCHITECTURES})")
         
         # Ensure the correct CUDA libraries are linked
-        # target_link_libraries(myapp PRIVATE CUDA::cudart)
-    
+        # target_link_libraries(myapp PRIVATE CUDA::cudart)    
         set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --use_fast_math")
     
         # Use a separate stream per thread to allow for concurrent kernel execution
@@ -278,7 +277,18 @@ if(CUDA_ENABLED)
     
         # Suppress warnings:
         # ptxas warning : Stack size for entry function X cannot be statically determined.
-        set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Xptxas=-suppress-stack-size-warning")    	
+        set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Xptxas=-suppress-stack-size-warning")    
+      
+        set(CUDA_CUDA_LIBRARY 
+		    CUDA::cudart 
+			CUDA::cublas 
+			CUDA::cufft 
+			CUDA::curand 
+			CUDA::cusolver 
+			CUDA::cusparse
+			CUDA::cuda_driver)		
+		include_directories(${CUDAToolkit_INCLUDE_DIRS})
+		message(STATUS "CUDAToolkit_INCLUDE_DIRS = ${CUDAToolkit_INCLUDE_DIRS}")
     else()
         set(CUDA_ENABLED OFF)
 	endif()

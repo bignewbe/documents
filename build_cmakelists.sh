@@ -6,25 +6,20 @@ SOURCE_DIR=""
 CMAKE_ARGS=()
 BUILD_TYPE=""
 YES_TO_ALL=false
+CLEAN=false
 
 # Check if the first argument is provided for the source directory
 if [ -n "$1" ]; then
+    echo "first = $1"
     case $1 in
-#        -DPOSELIB_PATH=*)
-#            POSELIB_PATH="${1#*=}"
-#            ;;
-#        -DCOLMAP_PATH=*)
-#            COLMAP_PATH="${1#*=}"
-#            ;;
-#        -DCMAKE_BUILD_TYPE=*)
-#            CMAKE_ARGS+=("$1")
-#            BUILD_TYPE="${1#*=}"
-#            ;;
         -D*)
             CMAKE_ARGS+=("$1")
             ;;
         -y)
             YES_TO_ALL=true
+            ;;
+        -clean)
+            CLEAN=true
             ;;
         *)
             SOURCE_DIR=$(realpath "$1")
@@ -42,12 +37,15 @@ for arg in "$@"; do
         -y)
             YES_TO_ALL=true
             ;;
+        -clean)
+            CLEAN=true
+            ;;
     esac
 done
 
 # Set SOURCE_DIR to current directory if not specified
 if [ -z "$SOURCE_DIR" ]; then 
-  SOURCE_DIR=$(pwd)
+    SOURCE_DIR=$(pwd)
 fi
 
 # Determine BUILD_TYPE
@@ -65,42 +63,35 @@ if [ -z "$BUILD_TYPE" ]; then
     CMAKE_ARGS+=("-DCMAKE_BUILD_TYPE=$BUILD_TYPE")
 fi
 
-# Set default paths if not specified in arguments and replace "release" with $BUILD_TYPE
-# if [[ $SOURCE_DIR == *"glomap"* ]]; then
-#     if [ -z "$POSELIB_PATH" ]; then
-#         POSELIB_PATH="/app/PoseLib/work/install/$BUILD_TYPE/share/PoseLib"
-#     fi
-#     if [ -z "$COLMAP_PATH" ]; then
-#         COLMAP_PATH="/app/colmap/work/install/$BUILD_TYPE/share/colmap"
-#     fi
-#     CMAKE_ARGS+=("-DPOSELIB_PATH=$POSELIB_PATH")
-#     CMAKE_ARGS+=("-DCOLMAP_PATH=$COLMAP_PATH")
-# 	  echo "POSELIB_PATH = $POSELIB_PATH"
-#     echo "COLMAP_PATH = $COLMAP_PATH"
-# fi
-
 # Set directories
-BUILD_DIR="$SOURCE_DIR/build/unix-$BUILD_TYPE"
-INSTALL_DIR="/usr/local/$BUILD_TYPE"
+BUILD_TYPE_LOWER=$(echo "$BUILD_TYPE" | tr '[:upper:]' '[:lower:]')
+BUILD_DIR="$SOURCE_DIR/build/unix-$BUILD_TYPE_LOWER"
+INSTALL_DIR="/usr/local/own-$BUILD_TYPE_LOWER"
 
 echo "SOURCE_DIR = $SOURCE_DIR"
 echo "BUILD_DIR = $BUILD_DIR"
 echo "INSTALL_DIR = $INSTALL_DIR"
 
-install() { 
-   if $YES_TO_ALL; then
-       userInput1="Y"
-   else
-       read -p "++++++++++++++++++++++++++++++++++++++ Running ninja install... (Y/n)? ++++++++++++++++++++++++++ " userInput1
-   fi
-   if [ -z "$userInput1" ] || [ "$userInput1" == "Y" ]; then   
-      pushd "$BUILD_DIR" 
-      ninja -j4 install 
-      popd
-   fi
+install() {
+    if $YES_TO_ALL; then
+        userInput1="Y"
+    else
+        read -p "++++++++++++++++++++++++++++++++++++++ Running ninja install... (Y/n)? ++++++++++++++++++++++++++ " userInput1
+    fi
+    if [ -z "$userInput1" ] || [ "$userInput1" == "Y" ]; then
+        pushd "$BUILD_DIR" 
+        ninja -j4 install 
+        popd
+    fi
 }
 
 build() {    
+    # If -clean is specified, delete the build directory
+    if $CLEAN; then
+        echo "Cleaning build directory..."
+        rm -rvf "$BUILD_DIR"
+    fi
+
     # Base cmake command
     cmake_command="cmake $SOURCE_DIR -GNinja"
     cmake_command+=" -B $BUILD_DIR"
@@ -111,7 +102,9 @@ build() {
     cmake_command+=" -DCMAKE_CXX_STANDARD=23"
     cmake_command+=" -DCMAKE_CXX_STANDARD_REQUIRED=ON"
     cmake_command+=" -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake"
-	    
+    cmake_command+=" -DVCG_ROOT=/vcpkg/vcglib"
+    cmake_command+=" -DVCPKG_ROOT=/vcpkg"
+
     # Append additional -D arguments
     for arg in "${CMAKE_ARGS[@]}"
     do
@@ -128,7 +121,7 @@ build() {
     fi
 
     if [ -z "$userInput1" ] || [ "$userInput1" == "Y" ]; then
-      eval "$cmake_command"
+        eval "$cmake_command"
     fi
 }
 

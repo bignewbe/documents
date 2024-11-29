@@ -4,6 +4,8 @@
 $userInput1 = ""
 $userInput2 = ""
 $userInput3 = ""
+$autoYes = $false
+$additionalArgs = @()
 
 $VS_PATH = $Env:VS_PATH
 $VCPKG_PATH = $Env:VCPKG_PATH
@@ -25,55 +27,75 @@ if ($Env:IS_ENV_SET) {
     $Env:IS_ENV_SET = $true
 }
 
-# Check if the first argument is provided for the source directory
-if ($args.Count -gt 0) {
-    if ([System.IO.Path]::IsPathRooted($args[0])) { 
- 	    $SOURCE_DIR = [System.IO.Path]::GetFullPath($args[0]) 
-	} else { 
-	    $arg = $args[0] 
-		if ($arg.StartsWith(".\")) { 
-		   $arg = $arg.Substring(2) 
-		}
-	    $SOURCE_DIR = [System.IO.Path]::Combine((Get-Location).Path, $arg)
-    }	
-} else {
+# Default build type
+$BUILD_TYPE = ""
+
+# Parse arguments
+foreach ($arg in $args) {
+    if ($arg -like "-DCMAKE_BUILD_TYPE=*") {
+        $BUILD_TYPE = $arg.Split("=")[1]
+    } elseif ($arg -eq "-y") {
+        $autoYes = $true
+    } elseif ($arg -like "-D*") {
+        $additionalArgs += $arg
+    } elseif ([System.IO.Path]::IsPathRooted($arg)) {
+        $SOURCE_DIR = [System.IO.Path]::GetFullPath($arg)
+    } else {
+        $arg = $arg.TrimEnd("\")
+        if ($arg.StartsWith(".\")) {
+            $arg = $arg.Substring(2)
+        }
+        $SOURCE_DIR = [System.IO.Path]::Combine((Get-Location).Path, $arg)
+    }
+}
+
+if (-not $SOURCE_DIR) {
     $SOURCE_DIR = (Get-Location).Path
 }
 
 $SOURCE_DIR = $SOURCE_DIR.TrimEnd('\')
 Write-Host "SOURCE_DIR = $SOURCE_DIR"
 
-# User input for build preset
-$userInput1 = Read-Host "Which preset do you want to build (Y/n)? Y => Release, N => Debug"
-if ([string]::IsNullOrWhiteSpace($userInput1) -or $userInput1 -ieq "Y") {
+# Prompt for build type if not specified and no -y flag
+if (-not $BUILD_TYPE -and -not $autoYes) {
+    $userInput1 = Read-Host "Which preset do you want to build (Y/n)? Y => release, N => debug"
+    if ([string]::IsNullOrWhiteSpace($userInput1) -or $userInput1 -ieq "Y") {
+        $BUILD_TYPE = "Release"
+    } else {
+        $BUILD_TYPE = "Debug"
+    }
+}
+
+# Set default build type to Release if still not set
+if (-not $BUILD_TYPE) {
     $BUILD_TYPE = "Release"
-} else {
-    $BUILD_TYPE = "Debug"   
 }
 
 # Set directories
-$BUILD_DIR = "$SOURCE_DIR\build\win-$BUILD_TYPE"
-$INSTALL_DIR = "$VCPKG_PATH\installed\x64-windows\$BUILD_TYPE"
+$BUILD_TYPE_LOWER = $BUILD_TYPE.ToLower()
+$BUILD_DIR = "$SOURCE_DIR\build\win-$BUILD_TYPE_LOWER"
+$INSTALL_DIR = "$VCPKG_PATH\installed\x64-windows\own-$BUILD_TYPE_LOWER"
 $CMAKE_FILE = "$SOURCE_DIR\CMakeLists.txt"
 $TOOLCHAIN_FILE = "$VCPKG_PATH\scripts\buildsystems\vcpkg.cmake"
+$CMAKE_PATH = "$VS_PATH\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
+$NINJA_PATH = "$VS_PATH\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe"
+$LINKER_PATH = "$VS_PATH\VC\Tools\MSVC\14.42.34433\bin\HostX64\x64\link.exe"
+$COMPILER_PATH = "$VS_PATH\VC\Tools\MSVC\14.42.34433\bin\HostX64\x64\cl.exe"
 
 Write-Host "VS_PATH = $VS_PATH"
+Write-Host "BUILD_TYPE = $BUILD_TYPE"
 Write-Host "TOOLCHAIN_FILE = $TOOLCHAIN_FILE"
 Write-Host "BUILD_DIR = $BUILD_DIR"
 Write-Host "INSTALL_DIR = $INSTALL_DIR"
 
 function Build {
     Write-Host "++++++++++++++++++++++++++++++++++++++ Building... +++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-    $CMAKE_PATH = "$VS_PATH\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
-    $NINJA_PATH = "$VS_PATH\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe"
-    $LINKER_PATH = "$VS_PATH\VC\Tools\MSVC\14.42.34433\bin\HostX64\x64\link.exe"
-    $COMPILER_PATH = "$VS_PATH\VC\Tools\MSVC\14.42.34433\bin\HostX64\x64\cl.exe"
     
     & $CMAKE_PATH -G "Ninja" `
         -DCMAKE_C_COMPILER="$COMPILER_PATH" `
         -DCMAKE_CXX_COMPILER="$COMPILER_PATH" `
         -DCMAKE_LINKER="$LINKER_PATH" `
-        -DCMAKE_MAKE_PROGRAM="$VS_PATH\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe" `
+        -DCMAKE_MAKE_PROGRAM="$NINJA_PATH" `
         -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" `
         -DVCPKG_ROOT="$VCPKG_PATH" `
         -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" `
@@ -81,16 +103,27 @@ function Build {
         -DCMAKE_BUILD_TYPE="$BUILD_TYPE" `
         -DVCPKG_TARGET_TRIPLET="x64-windows" `
         -DIS_FIXUP_BUNDLE=ON `
-        -DPackagePath="D:\vcpkg\installed\x64-windows\share" `
+		-DVCG_ROOT="D:\vcglib" `
+        @additionalArgs `
         -B "$BUILD_DIR" "$SOURCE_DIR"
 }
 
 function Install {
     Write-Host "++++++++++++++++++++++++++++++++++++++ Running ninja install... ++++++++++++++++++++++++++"
-    $userInput3 = Read-Host "Do you want to run ninja install? (Y/n)"
-    if ([string]::IsNullOrWhiteSpace($userInput3) -or $userInput3 -ieq "Y") {
+    $isInstall = $false  
+
+    if (-not $autoYes) {
+        $userInput3 = Read-Host "Do you want to run ninja install? (Y/n)"
+        if ([string]::IsNullOrWhiteSpace($userInput3) -or $userInput3 -ieq "Y") {
+            $isInstall = $true
+        }
+    } else {
+        $isInstall = $true
+    }
+
+    if ($autoYes -or $isInstall) {
         Push-Location $BUILD_DIR
-        & "$VS_PATH\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe" install
+        & $NINJA_PATH install
         Pop-Location
     }
 }
@@ -112,10 +145,14 @@ if (Test-Path $TIMESTAMP_FILE) {
 # Compare timestamps
 $isBuild = $false
 if ($FILE_MOD_TIME -eq $LAST_BUILD_TIME) {
-    $userInput2 = Read-Host "CMakeLists.txt has not been changed since the last build. Do you want to force rebuild... (y/N)?"
-    if ($userInput2 -ieq "Y") {
+    if ($autoYes) {
         $isBuild = $true
-    } 
+    } else {
+        $userInput2 = Read-Host "CMakeLists.txt has not been changed since the last build. Do you want to force rebuild... (Y/n)?"
+        if ([string]::IsNullOrWhiteSpace($userInput2) -or $userInput2 -ieq "Y") {
+            $isBuild = $true
+        } 
+    }
 } else {
     Write-Host "CMakeLists.txt has been modified. Forcing a rebuild..."
     Set-Content -Path $TIMESTAMP_FILE -Value $FILE_MOD_TIME
