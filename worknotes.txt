@@ -1429,7 +1429,7 @@ Permissions = "Enquiry/Trade"
 	 - apply migration by run: dotnet ef database update --context ApplicationDbContext  --startup-project ..\WebApi\
 	 - list and apply migration to other db specified by connection string:
 	   -dotnet ef migrations list --context ApplicationDbContext  --startup-project ..\WebApi\ --connection "Server=47.90.96.154,1306;Database=recon3d;User ID=SA;Password=Password!;TrustServerCertificate=True;"
-	   -dotnet ef database update --context ApplicationDbContext  --startup-project ..\WebApi\ --connection "Server=192.168.1.30,1305;Database=recon3d;User ID=SA;Password=Password!;TrustServerCertificate=True;"
+	   -dotnet ef database update --context ApplicationDbContext  --startup-project ..\WebApi\ --connection "Server=192.168.1.30,1306;Database=recon3d;User ID=SA;Password=Password!;TrustServerCertificate=True;"
      - EF check __EFMigrationsHistory in the db to determine the applied migrations => it will run into error, if db is created using other tools. in that case, __EFMigrationsHistory witll be wrong.
 	 - thus, it is advisable not to use db.EnsureCreated in the code. always use dotnet migration tool.	   
 
@@ -1796,7 +1796,7 @@ name=IMG_0010;
 	   - build: using build_cmakelists.sh
 	   - run: 
               name=compile;
-              img=colmap:12.6.2-dev-ubuntu22.04;
+              img=cuda:12.6.2-vcpkg-ubuntu22.04;
               docker run --rm -it \
                   --gpus=all \
                   -v /home/ping/.bashrc:/root/.bashrc \

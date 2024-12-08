@@ -5,6 +5,7 @@ $userInput1 = ""
 $userInput2 = ""
 $userInput3 = ""
 $autoYes = $false
+$clean = $false
 $additionalArgs = @()
 
 $VS_PATH = $Env:VS_PATH
@@ -34,6 +35,8 @@ $BUILD_TYPE = ""
 foreach ($arg in $args) {
     if ($arg -like "-DCMAKE_BUILD_TYPE=*") {
         $BUILD_TYPE = $arg.Split("=")[1]
+    } elseif ($arg -eq "-clean") {
+        $clean = $true
     } elseif ($arg -eq "-y") {
         $autoYes = $true
     } elseif ($arg -like "-D*") {
@@ -90,7 +93,9 @@ Write-Host "INSTALL_DIR = $INSTALL_DIR"
 
 function Build {
     Write-Host "++++++++++++++++++++++++++++++++++++++ Building... +++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-    
+    if ($clean) {
+		Remove-Item -Path $BUILD_DIR -Recurse -Force
+	}
     & $CMAKE_PATH -G "Ninja" `
         -DCMAKE_C_COMPILER="$COMPILER_PATH" `
         -DCMAKE_CXX_COMPILER="$COMPILER_PATH" `

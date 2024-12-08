@@ -10,7 +10,6 @@ CLEAN=false
 
 # Check if the first argument is provided for the source directory
 if [ -n "$1" ]; then
-    echo "first = $1"
     case $1 in
         -D*)
             CMAKE_ARGS+=("$1")
@@ -104,7 +103,9 @@ build() {
     cmake_command+=" -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake"
     cmake_command+=" -DVCG_ROOT=/vcpkg/vcglib"
     cmake_command+=" -DVCPKG_ROOT=/vcpkg"
-
+    cmake_command+=" -DCMAKE_CXX_FLAGS='-L/usr/lib/gcc/x86_64-linux-gnu/13/'"
+    cmake_command+=" -DCMAKE_EXE_LINKER_FLAGS='-Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/13/'"
+	
     # Append additional -D arguments
     for arg in "${CMAKE_ARGS[@]}"
     do
