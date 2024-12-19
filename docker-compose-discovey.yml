@@ -1,0 +1,14 @@
+services:
+    discovery_server:
+        image: localhost:5000/discovery_server
+        restart: always
+        ports:
+            - "5001:5001"
+        working_dir: /app
+        environment:
+            - ENV=DKR
+            - ENV_CONFIG_FOLDER=appsettings
+            - SERVICE_NAME=DiscoveryServer
+        volumes:
+            - '~/appsettings:/app/appsettings'
+            - '~/data:/app/data'

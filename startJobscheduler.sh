@@ -1,0 +1,1 @@
+docker run --rm -it --workdir /app  --gpus=all -v ~/data/:/app/data/ -v ~/appsettings/:/app/appsettings/  -e APP_SETTING=/app/appsettings/appsettings.DKR.json  --name job localhost:5000/jobscheduler JobScheduler

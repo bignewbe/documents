@@ -1,0 +1,41 @@
+services:
+    discovery_server:
+        image: localhost:5000/discovery_server
+        restart: always
+        ports:
+            - "5001:5001"
+        working_dir: /app
+        environment:
+            - APP_SETTING=/app/appsettings/appsettings.DKR.json
+            - SERVICE_NAME=DiscoveryServer
+        volumes:
+            - ~/appsettings:/app/appsettings
+            - ~/data:/app/data
+    jobservice:
+        image: localhost:5000/recon_jobservice
+        restart: always
+        ports:
+            - "5003:5003"
+            - "5002:5002"
+        working_dir: /app
+        environment:
+            - APP_SETTING=/app/appsettings/appsettings.DKR.json
+            - SERVICE_NAME=JobService
+        volumes:
+            - ~/appsettings:/app/appsettings
+            - ~/data:/app/data
+        depends_on:
+            - discovery_server
+    recon_webapi:
+        image: localhost:5000/recon_webapi
+        restart: always
+        ports:
+            - "5021:5021"
+        working_dir: /app
+        environment:
+            - APP_SETTING=/app/appsettings/appsettings.DKR.json
+            - ASPNETCORE_URLS=http://+:5021
+            - SERVICE_NAME=WebApi
+        volumes:
+            - ~/appsettings:/app/appsettings
+            - ~/data:/app/data
