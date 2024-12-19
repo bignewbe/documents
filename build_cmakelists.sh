@@ -7,6 +7,7 @@ CMAKE_ARGS=()
 BUILD_TYPE=""
 YES_TO_ALL=false
 CLEAN=false
+CUDA=ON
 
 # Check if the first argument is provided for the source directory
 if [ -n "$1" ]; then
@@ -19,6 +20,9 @@ if [ -n "$1" ]; then
             ;;
         -clean)
             CLEAN=true
+            ;;
+        -nocuda)
+            CUDA=OFF
             ;;
         *)
             SOURCE_DIR=$(realpath "$1")
@@ -39,6 +43,9 @@ for arg in "$@"; do
         -clean)
             CLEAN=true
             ;;
+        -nocuda)
+            CUDA=OFF
+            ;;			
     esac
 done
 
@@ -64,8 +71,16 @@ fi
 
 # Set directories
 BUILD_TYPE_LOWER=$(echo "$BUILD_TYPE" | tr '[:upper:]' '[:lower:]')
-BUILD_DIR="$SOURCE_DIR/build/unix-$BUILD_TYPE_LOWER"
-INSTALL_DIR="/usr/local/own-$BUILD_TYPE_LOWER"
+# BUILD_DIR="$SOURCE_DIR/build/unix-$BUILD_TYPE_LOWER"
+# INSTALL_DIR="/usr/local/own-$BUILD_TYPE_LOWER"
+
+if [ "$CUDA" == "ON" ]; then
+  BUILD_DIR="$SOURCE_DIR/build/unix-$BUILD_TYPE_LOWER"
+  INSTALL_DIR="/usr/local/own-$BUILD_TYPE_LOWER"
+else
+  BUILD_DIR="$SOURCE_DIR/build/unix-$BUILD_TYPE_LOWER-nocuda"
+  INSTALL_DIR="/usr/local/own-$BUILD_TYPE_LOWER-nocuda"
+fi  
 
 echo "SOURCE_DIR = $SOURCE_DIR"
 echo "BUILD_DIR = $BUILD_DIR"
@@ -105,6 +120,8 @@ build() {
     cmake_command+=" -DVCPKG_ROOT=/vcpkg"
     cmake_command+=" -DCMAKE_CXX_FLAGS='-L/usr/lib/gcc/x86_64-linux-gnu/13/'"
     cmake_command+=" -DCMAKE_EXE_LINKER_FLAGS='-Wl,-rpath,/usr/lib/gcc/x86_64-linux-gnu/13/'"
+    cmake_command+=" -DCUDA_ENABLED=$CUDA"
+    cmake_command+=" -DOPENGL_ENABLED=$CUDA"	
 	
     # Append additional -D arguments
     for arg in "${CMAKE_ARGS[@]}"

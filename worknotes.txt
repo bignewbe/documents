@@ -1009,8 +1009,31 @@ cvs update -r DRUPAL-4-7
     1. missing compiler required memeter => add microsoft.csharp to reference
 
 106) NuGet:
-     update-package -reinstall -projectname <project> => reinstall all packages from packages.config and add to reference 
-	 install-package <package> => install package
+     - update-package -reinstall -projectname <project> => reinstall all packages from packages.config and add to reference 
+	 - install-package <package> => install package
+	 Add private nuget package:
+	 - start repository in server: docker run -p 5001:8080 -v ./nuget-data:/data bagetter/bagetter:latest
+	 - build nuget package:
+	  - add following to C/Users/ping/AppData/Roaming/NuGet/Nuget.Config
+         <packageSources>
+           <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+           <add key="ping" value="http://47.90.96.154:5001/v3/index.json" allowInsecureConnections="true" />
+         </packageSources>
+	  - add following to PropertyGroup in csproj
+	    <PackageId>Ping.PortableCSharpLib</PackageId>
+	    <Version>1.0.0</Version>
+	    <Authors>Ping</Authors>
+	    <Description>basic funtionalities</Description>
+	    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	    <RepositoryUrl>NA</RepositoryUrl>	
+	  - run in powershell: 
+	    - dotnet pack --configuration Release --verbosity detailed
+		- dotnet nuget push -s http://47.90.96.154:5001/v3/index.json bin\Release\Ping.PortableCSharpLib.1.0.0.nupkg
+    - use nuget package
+	  - run in package manager console: Install-Package Ping.PortableCSharpLib -Source ping
+
+
+	 
 	 
 107) bash
      - run bash command from windows command: 
@@ -1236,6 +1259,16 @@ root=~/E/Code/20180722_IBTrader_1.0.1
 cd $root/Recon3D; name=47.90.96.154:5000/discovery_server; docker build -f DiscoveryServer/Dockerfile -t $name .; docker push $name
 cd $root/Recon3D; name=47.90.96.154:5000/recon_webapi; docker build -f WebApi/Dockerfile -t $name .; docker push $name
 cd $root/Recon3D; name=47.90.96.154:5000/recon_jobservice; docker build -f JobManager/Dockerfile -t $name  .; docker push $name
+
+root=~/E/Code/20180722_IBTrader_1.0.1
+cd $root/Recon3D; name=47.242.217.243:5000/discovery_server; docker build -f DiscoveryServer/Dockerfile -t $name .; docker push $name
+cd $root/Recon3D; name=47.242.217.243:5000/recon_webapi; docker build -f WebApi/Dockerfile -t $name .; docker push $name
+cd $root/Recon3D; name=47.242.217.243:5000/recon_jobservice; docker build -f JobManager/Dockerfile -t $name  .; docker push $name
+cd ~/E/Code/cplus; name=47.242.217.243:5000/jobscheduler; docker build -f Dockerfile -t $name .; docker push $name
+cd ~/E/appsettings
+
+
+
 
 cd $root/Recon3D; name=47.90.96.154:5000/recon_jobscheduler; docker build -f JobScheduler/Dockerfile -t $name .
 cd ~/E/appsettings
@@ -1803,8 +1836,8 @@ name=IMG_0010;
                   -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
                   -v /mnt/wslg:/mnt/wslg \
                   -v /mnt/e/Code/cplus/:/app \
-                  -v /mnt/e/data/:/data \
-                  -v /mnt/e/appsettings:/appsettings \
+                  -v /mnt/e/data/:/app/data \
+                  -v /mnt/e/appsettings:/app/appsettings \
                   -e DISPLAY -e WAYLAND_DISPLAY -e XDG_RUNTIME_DIR -e PULSE_SERVER \
                   -e ENV=DKR \
                   --hostname $name \
