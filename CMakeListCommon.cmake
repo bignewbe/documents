@@ -59,6 +59,7 @@ macro(print_variables)
     message(STATUS "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
     message(STATUS "UNIX = ${UNIX}")
     message(STATUS "MSVC = ${MSVC}")
+    message(STATUS "CMAKE_CUDA_ARCHITECTURES = ${CMAKE_CUDA_ARCHITECTURES}")
 endmacro()
 
 
