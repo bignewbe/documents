@@ -1,0 +1,48 @@
+# Ignore all hidden files and directories
+.*/**
+.*/**
+
+# Ignore specific file types
+*.log
+*.md
+*.bak
+*.pb.h
+*.pb.cc
+CMakePresets.json
+
+# Ignore specific directories and their subdirectories
+work/**
+out/**
+out1/**
+out2/**
+install/**
+build/**
+*bak/**
+
+
+# Allow only C++ source files and CMake files
+#!src/**/*.cpp
+#!src/**/*.hpp
+#!src/**/*.h
+#!src/**/*.c
+#!src/**/*.cu
+#!src/**/*.in
+#!src/**/*.cc
+#!colmap/CMakeLists.txt
+#!colmap/cmake/**
+#!colmap/src/**
+#!colmap/doc/**
+#!colmap/glomap/**
+#!PoseLib/CMakeLists.txt
+#!PoseLib/PoseLib/**
+#!PoseLib/cmake/**
+#!JobSparse/CMakeLists.txt
+#!JobSparse/common/**
+#!JobSparse/JobScheduler/**
+#!JobSparse/proto/**
+#!glomap/**/CMakeLists.txt
+#!glomap/**/*.h
+#!glomap/**/*.cc
+#!glomap/controllers/**
+#!glomap/JobScheduler/**
+#!glomap/proto/**
