@@ -1,14 +1,13 @@
-#!/bin/bash
- ./build_cmakelists.sh CppCommon/ -y; 
- ./build_cmakelists.sh original/PoseLib/ -y; 
- ./build_cmakelists.sh original/colmap/ -y; 
- ./build_cmakelists.sh original/glomap/ -y; 
- ./build_cmakelists.sh openMVS/ -y; 
- ./build_cmakelists.sh JobScheduler/ -y; 
+ ./build_cmakelists.sh CppCommon/ -DCMAKE_CUDA_ARCHITECTURES=70 -y; 
+ ./build_cmakelists.sh original/PoseLib/ -DCMAKE_CUDA_ARCHITECTURES=70 -y; 
+ ./build_cmakelists.sh original/colmap/ -DCMAKE_CUDA_ARCHITECTURES=70 -y; 
+ ./build_cmakelists.sh original/glomap/ -DCMAKE_CUDA_ARCHITECTURES=70 -y; 
+ ./build_cmakelists.sh openMVS/ -DCMAKE_CUDA_ARCHITECTURES=70 -y; 
+ ./build_cmakelists.sh JobScheduler/ -DCMAKE_CUDA_ARCHITECTURES=70 -y; 
 
 # Directory to add
-PATH1="/usr/lobal/own-release/bin"
-PATH2="/usr/lobal/own-release/bin/OpenMVS"
+PATH1="/usr/local/own-release/bin"
+PATH2="/usr/local/own-release/bin/OpenMVS"
 
 # Check if the directory is already in PATH
 if [[ ":$PATH:" != *":$PATH1:"* ]]; then
