@@ -259,10 +259,9 @@ if(CUDA_ENABLED)
     if(CUDA_FOUND)
         message(STATUS "+++++++++++++++++++++++++++++++++++++++++++++++++++++ Set CUDA compiler options... +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+		    # will automatically detect cuda architecture
             set(CMAKE_CUDA_ARCHITECTURES "native")
         endif()
-    
-        add_definitions("-DCOLMAP_CUDA_ENABLED")
     
         # Do not show warnings if the architectures are deprecated.
         set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Wno-deprecated-gpu-targets")

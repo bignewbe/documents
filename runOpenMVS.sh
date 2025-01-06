@@ -8,6 +8,7 @@ useCuda=true
 sparseResult="glomap_inter"
 startStep=1
 clean=false
+singleCamera=no
 
 # Pipeline steps description
 steps=(
@@ -32,6 +33,7 @@ print_help() {
     echo "  sparse=<name>        Name of the sparse result folder (default: glomap_inter)"
     echo "  logFile=<path>       Path to the log file (default: execution_times.log)"
     echo "  useCuda=<true/false> Use CUDA (default: true)"
+    echo "  singleCamera=<yes/no> Single camera (default: no)"
     echo "  startStep=<number>   Step number to start from (default: 1)"
     echo "  -h                   Show this help message"
     echo "Pipeline steps:"
@@ -73,6 +75,10 @@ for arg in "$@"; do
             ;;
         useCuda=*)
             useCuda="${arg#*=}"
+            shift
+            ;;
+        singleCamera=*)
+            singleCamera="${arg#*=}"
             shift
             ;;
         startStep=*)
@@ -129,6 +135,7 @@ echo " - Executable Folder: $exeFolder"
 echo " - Data Folder: $dataFolder"
 echo " - Log File: $logFile"
 echo " - Use CUDA: $useCuda, CUDA Option = $cudaOption"
+echo " - Single camera: $singleCamera"
 echo " - Sparse Folder: $sparsePath"
 echo " - Dense Folder: $densePath"
 echo " - Start Time: $startTime"
@@ -187,6 +194,7 @@ cd $outputFolder
     echo " - Dense Result: $densePath"
     echo " - Log File: $logFile"
     echo " - CUDA Option: $cudaOption"
+    echo " - Single camera: $singleCamera"
 } >> "$logFile"
 
 if [ "$startStep" -le 2 ]; then
@@ -206,7 +214,7 @@ fi
 # --constraint_type POINTS_AND_CAMERAS
 if [ "$startStep" -le 4 ]; then
     start=$(date +%s)
-    "${glomapExeFolder}/glomap" mapper --database_path ${dbPath} --output_path ${dataFolder} --image_path ${imagePath}
+	"${glomapExeFolder}/glomap" mapper --database_path ${dbPath} --output_path ${dataFolder} --image_path ${imagePath} --single_camera $singleCamera
     end=$(date +%s)
     log_time "Time for glomap sparse reconstruction" $((end - start))
 fi

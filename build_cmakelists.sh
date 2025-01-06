@@ -110,7 +110,7 @@ build() {
     cmake_command="cmake $SOURCE_DIR -GNinja"
     cmake_command+=" -B $BUILD_DIR"
     cmake_command+=" -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR"
-    cmake_command+=" -DCMAKE_CUDA_ARCHITECTURES=75"
+#    cmake_command+=" -DCMAKE_CUDA_ARCHITECTURES=75"
     cmake_command+=" -DCMAKE_C_COMPILER=/usr/bin/gcc-13"
     cmake_command+=" -DCMAKE_CXX_COMPILER=/usr/bin/g++-13"
     cmake_command+=" -DCMAKE_CXX_STANDARD=23"

@@ -1554,7 +1554,20 @@ autofac:
       - nvidia-smi and nvcc -V shows different cuda version: https://stackoverflow.com/questions/53422407/different-cuda-versions-shown-by-nvcc-and-nvidia-smi
 	    - nvidia-smi shows cuda installed with gpu driver 
 		- nvcc shows cuda runtime version, which is expected to be used 
-	 
+	  
+	  - nvidia/cuda for ubuntu:
+	    - install gpu driver
+		  - show available drivers: ubuntu-drivers devices
+		  - install and reboot: sudo apt install nvidia-driver-565 && sudo reboot
+		  - run nvidia-smi to show the installed 
+		- install nvidia container toolkit
+		  - distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+          - curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+          - curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+		  - sudo apt update
+		  - sudo apt install -y nvidia-container-toolkit
+		  - sudo systemctl restart docker
+		  
 	  - setup mmdection
 	    - enter above containder: docker exec -it cuda bash
 		- install basic packages: apt update; apt install wget git vim unzip tree ffmpeg libsm6 libxext6

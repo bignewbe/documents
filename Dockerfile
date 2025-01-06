@@ -39,8 +39,8 @@
 #
 #RUN pip3 install --upgrade meson
 #RUN python3 -m pip install jinja2
-
-
+#
+#
 ## Retry cloning the vcpkg repository with logs
 #RUN git clone https://github.com/microsoft/vcpkg.git || echo "git clone failed"
 #WORKDIR /vcpkg
@@ -61,8 +61,8 @@
 #    cd build && \
 #    cmake .. && \
 #    make 
-#	
-FROM cuda:12.6.2-vcpkg-ubuntu22.04 AS builder
+	
+FROM localhost:5000/cuda:12.6.2-vcpkg-ubuntu22.04 AS builder
 WORKDIR /app
 
 COPY CMakeListCommon.cmake  .
@@ -78,9 +78,6 @@ COPY original/colmap/   original/colmap/
 
 RUN chmod +x build_all.sh
 RUN ./build_all.sh
-
-#FROM src:12.6.2-vcpkg-ubuntu22.04 AS builder
-#WORKDIR /app
 
 # Create libs directory and collect necessary libraries
 RUN mkdir -p /libs && \
